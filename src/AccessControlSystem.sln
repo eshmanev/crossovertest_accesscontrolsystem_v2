@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Server", "AccessControl.Server\AccessControl.Server.csproj", "{23A53A15-C3FF-4CD0-820F-15337EFA2D4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Contracts", "AccessControl.Contracts\AccessControl.Contracts.csproj", "{E8207E15-2A39-458B-A292-D9294E37F2FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Client", "AccessControl.Client\AccessControl.Client.csproj", "{E4802918-79CF-42A4-BEDF-805C33BA8F6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vendor.API", "Vendor.API\Vendor.API.csproj", "{C1B2F55F-51D6-4B69-83A8-60608402B136}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simulator", "Simulator", "{03C835F1-837C-4223-9AA0-3BE0D9C06262}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessPointSimulator", "Simulator\AccessPointSimulator\AccessPointSimulator.csproj", "{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23A53A15-C3FF-4CD0-820F-15337EFA2D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23A53A15-C3FF-4CD0-820F-15337EFA2D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23A53A15-C3FF-4CD0-820F-15337EFA2D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23A53A15-C3FF-4CD0-820F-15337EFA2D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8207E15-2A39-458B-A292-D9294E37F2FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8207E15-2A39-458B-A292-D9294E37F2FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8207E15-2A39-458B-A292-D9294E37F2FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8207E15-2A39-458B-A292-D9294E37F2FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4802918-79CF-42A4-BEDF-805C33BA8F6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4802918-79CF-42A4-BEDF-805C33BA8F6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4802918-79CF-42A4-BEDF-805C33BA8F6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4802918-79CF-42A4-BEDF-805C33BA8F6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1B2F55F-51D6-4B69-83A8-60608402B136}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1B2F55F-51D6-4B69-83A8-60608402B136}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1B2F55F-51D6-4B69-83A8-60608402B136}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1B2F55F-51D6-4B69-83A8-60608402B136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800} = {03C835F1-837C-4223-9AA0-3BE0D9C06262}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\TransientFaultHandling.Core.5.1.1209.1\lib\NET4
+	EndGlobalSection
+EndGlobal

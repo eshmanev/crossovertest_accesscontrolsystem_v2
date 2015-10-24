@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="37c086c8-1108-4915-a4d0-6414e439c025" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:9981/AccessPointRegistry" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="AccessPointRegistry.wsdl" MetadataType="Wsdl" ID="32dd92bb-d3ad-4c9d-8b32-fdbabf717f91" SourceId="1" SourceUrl="http://localhost:9981/AccessPointRegistry?wsdl" />
+    <MetadataFile FileName="AccessPointRegistry.xsd" MetadataType="Schema" ID="b2d2c093-b021-4734-93ba-8949f758a385" SourceId="1" SourceUrl="http://localhost:9981/AccessPointRegistry?xsd=xsd1" />
+    <MetadataFile FileName="AccessPointRegistry1.xsd" MetadataType="Schema" ID="97017b91-562d-4dd0-be8b-73cac256acd0" SourceId="1" SourceUrl="http://localhost:9981/AccessPointRegistry?xsd=xsd0" />
+    <MetadataFile FileName="AccessPointRegistry2.xsd" MetadataType="Schema" ID="59ede416-94fc-46b8-9749-dc6b0c232160" SourceId="1" SourceUrl="http://localhost:9981/AccessPointRegistry?xsd=xsd2" />
+    <MetadataFile FileName="AccessPointRegistry.disco" MetadataType="Disco" ID="e50615c8-5477-46c2-8d69-e3e712eebb01" SourceId="1" SourceUrl="http://localhost:9981/AccessPointRegistry?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

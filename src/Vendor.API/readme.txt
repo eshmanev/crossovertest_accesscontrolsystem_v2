@@ -1,0 +1,1 @@
+﻿It's supposed that this library represents a 3rd party Vendor API.
