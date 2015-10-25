@@ -34,21 +34,20 @@ namespace AccessControl.Web
             container
                 .RegisterType<IUserStore<ApplicationUser>, LdapUserStore>()
                 .RegisterType<IAuthenticationManager>(new InjectionFactory(_ => HttpContext.Current.GetOwinContext().Authentication))
-                .RegisterType(typeof(IRequestClient<,>), new InjectionFactory((c, type, name) => CreateRequestClient(type, rabbitMqConfig)))
+                .RegisterType<IRequestClient<IFindUserByName, IFindUserByNameResult>>(new InjectionFactory(_ => CreateRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)))
                 ;
 
             return container;
         }
 
-        private static object CreateRequestClient(Type type, IRabbitMqConfig config)
+        private static IRequestClient<TRequest, TResponse> CreateRequestClient<TRequest, TResponse>(string queueName)
+            where TRequest : class
+            where TResponse : class
         {
-            var genericArgs = type.GetGenericArguments();
-            var clientType = typeof(MessageRequestClient<,>).MakeGenericType(genericArgs);
-            var uri = new Uri(config.Url);
             var bus = Container.Resolve<IBus>();
-            var timeout = TimeSpan.FromSeconds(60);
-            return Activator.CreateInstance(clientType, bus, uri, timeout);
+            var config = Container.Resolve<IRabbitMqConfig>();
+            var url = config.Url.EndsWith("/") ? $"{config.Url}{queueName}" : $"{config.Url}/{queueName}";
+            return new MessageRequestClient<TRequest, TResponse>(bus, new Uri(url), TimeSpan.FromSeconds(30));
         }
-
     }
 }

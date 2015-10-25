@@ -1,4 +1,5 @@
-﻿using AccessControl.Data.Unity;
+﻿using AccessControl.Contracts;
+using AccessControl.Data.Unity;
 using AccessControl.Server.Consumers;
 using AccessControl.Service.Core;
 using MassTransit;
@@ -20,14 +21,14 @@ namespace AccessControl.Server
                 .ConfigureBus(
                     (cfg, host, container) =>
                     {
-                        cfg.ReceiveEndpoint(host, "access_point_queue", e => e.Consumer(() => container.Resolve<RegisterAccessPointConsumer>()));
+                        cfg.ReceiveEndpoint(host, WellKnownQueues.AccessPointManager, e => e.Consumer(() => container.Resolve<RegisterAccessPointConsumer>()));
                     })
                 .Run(
                     cfg =>
                     {
-                        cfg.SetDisplayName("Access Point Service");
+                        cfg.SetServiceName("AccessControl.AccessPointManager");
+                        cfg.SetDisplayName("Access Point Manager");
                         cfg.SetDescription("This service is responsible for access points management");
-                        cfg.SetServiceName("AccessPointService");
                     });
         }
     }

@@ -14,7 +14,7 @@ namespace AccessControl.Client
                 .Run(
                     cfg =>
                     {
-                        cfg.SetServiceName("AccessPointClient");
+                        cfg.SetServiceName("AccessControl.AccessPointClient");
                         cfg.SetDisplayName("Access Point Client");
                         cfg.SetDescription("Represents a glue between Vendor-specific software and Access Control System");
                     });
