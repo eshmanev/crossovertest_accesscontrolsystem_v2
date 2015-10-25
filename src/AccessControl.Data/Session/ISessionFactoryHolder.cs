@@ -1,6 +1,6 @@
 using NHibernate;
 
-namespace AccessControl.Server.Data.Session
+namespace AccessControl.Data.Session
 {
     /// <summary>
     /// Provides a session factory.

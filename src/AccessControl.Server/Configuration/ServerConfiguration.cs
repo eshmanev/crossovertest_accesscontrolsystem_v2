@@ -7,9 +7,6 @@ namespace AccessControl.Server.Configuration
         [ConfigurationProperty("rabbitMq", IsRequired = true)]
         public RabbitMqSection RabbitMq => (RabbitMqSection) base["rabbitMq"];
 
-        [ConfigurationProperty("recreateDatabaseSchema", DefaultValue = false)]
-        public bool RecreateDatabaseSchema => (bool) base["recreateDatabaseSchema"];
-
         IRabbitMqSection IServerConfiguration.RabbitMq => RabbitMq;
     }
 }

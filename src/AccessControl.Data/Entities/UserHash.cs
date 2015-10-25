@@ -1,4 +1,4 @@
-﻿namespace AccessControl.Server.Data.Entities
+﻿namespace AccessControl.Data.Entities
 {
     /// <summary>
     /// Defines a map between user name and user physical hash.

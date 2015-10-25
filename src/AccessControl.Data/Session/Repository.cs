@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Linq;
 
-namespace AccessControl.Server.Data.Session
+namespace AccessControl.Data.Session
 {
     /// <summary>
     ///     Represents a generic repository.

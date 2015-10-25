@@ -1,7 +1,7 @@
-﻿using AccessControl.Server.Data.Entities;
+﻿using AccessControl.Data.Entities;
 using FluentNHibernate.Mapping;
 
-namespace AccessControl.Server.Data.Mappings
+namespace AccessControl.Data.Mappings
 {
     public class AccessPointMap : ClassMap<AccessPoint>
     {

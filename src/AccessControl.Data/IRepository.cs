@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace AccessControl.Server.Data
+namespace AccessControl.Data
 {
     /// <summary>
     /// Represents a generic repository.

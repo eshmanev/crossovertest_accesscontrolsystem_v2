@@ -1,4 +1,5 @@
-﻿using AccessControl.Server.Unity;
+﻿using AccessControl.Data.Unity;
+using AccessControl.Server.Unity;
 using Microsoft.Practices.Unity;
 using Topshelf;
 using Topshelf.Unity;
@@ -14,6 +15,7 @@ namespace AccessControl.Server
         {
             var container = new UnityContainer();
             container.AddExtension(new UnityServerExtension());
+            container.AddExtension(new UnityDataExtension());
 
             HostFactory.Run(
                 cfg =>

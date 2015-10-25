@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AccessControl.Server.Data.Entities
+namespace AccessControl.Data.Entities
 {
     public class AccessPoint
     {

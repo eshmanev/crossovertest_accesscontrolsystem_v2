@@ -1,6 +1,6 @@
 ﻿using FluentNHibernate.Mapping;
 
-namespace AccessControl.Server.Data.Mappings
+namespace AccessControl.Data.Mappings
 {
     internal static class MappingExtensions
     {

@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
-using AccessControl.Server.Data;
-using AccessControl.Server.Data.Entities;
+using AccessControl.Data;
+using AccessControl.Data.Entities;
 using MassTransit;
 
 namespace AccessControl.Server.Consumers

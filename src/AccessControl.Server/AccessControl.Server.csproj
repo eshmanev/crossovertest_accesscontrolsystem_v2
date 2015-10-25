@@ -33,10 +33,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
       <Private>True</Private>
@@ -103,15 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consumers\RegisterAccessPointConsumer.cs" />
-    <Compile Include="Data\Entities\AccessPoint.cs" />
-    <Compile Include="Data\Entities\UserHash.cs" />
-    <Compile Include="Data\IRepository.cs" />
-    <Compile Include="Data\Mappings\AccessPointMap.cs" />
-    <Compile Include="Data\Mappings\MappingExtensions.cs" />
-    <Compile Include="Data\Mappings\UserHashMapMap.cs" />
-    <Compile Include="Data\Session\ISessionFactoryHolder.cs" />
-    <Compile Include="Data\Session\Repository.cs" />
-    <Compile Include="Data\Session\SessionFactoryHolder.cs" />
     <Compile Include="ServerService.cs" />
     <Compile Include="CodeContracts\IRabbitMqSectionContract.cs" />
     <Compile Include="CodeContracts\IServerConfigurationContract.cs" />
@@ -132,6 +119,10 @@
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">
       <Project>{E8207E15-2A39-458B-A292-D9294E37F2FB}</Project>
       <Name>AccessControl.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AccessControl.Data\AccessControl.Data.csproj">
+      <Project>{4b62b8a1-b09a-45fc-b9bd-a08eb54405b7}</Project>
+      <Name>AccessControl.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
