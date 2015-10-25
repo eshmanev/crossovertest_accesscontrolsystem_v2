@@ -1,5 +1,7 @@
 ﻿using AccessControl.Data.Unity;
-using AccessControl.Server.Unity;
+using AccessControl.Server.Consumers;
+using AccessControl.Service.Core;
+using MassTransit;
 using Microsoft.Practices.Unity;
 using Topshelf;
 using Topshelf.Unity;
@@ -13,21 +15,20 @@ namespace AccessControl.Server
         /// </summary>
         public static void Main()
         {
-            var container = new UnityContainer();
-            container.AddExtension(new UnityServerExtension());
-            container.AddExtension(new UnityDataExtension());
-
-            HostFactory.Run(
-                cfg =>
-                {
-                    cfg.UseUnityContainer(container);
-                    cfg.Service<ServerService>(s =>
+            new ServiceRunner()
+                .ConfigureContainer(cfg => cfg.AddExtension(new UnityDataExtension()))
+                .ConfigureBus(
+                    (cfg, host, container) =>
                     {
-                        s.ConstructUsingUnityContainer();
-                        s.WhenStarted((service, control) => service.Start(control));
-                        s.WhenStopped((service, control) => service.Stop(control));
+                        cfg.ReceiveEndpoint(host, "access_point_queue", e => e.Consumer(() => container.Resolve<RegisterAccessPointConsumer>()));
+                    })
+                .Run(
+                    cfg =>
+                    {
+                        cfg.SetDisplayName("Access Point Service");
+                        cfg.SetDescription("This service is responsible for access points management");
+                        cfg.SetServiceName("AccessPointService");
                     });
-                });
         }
     }
 }

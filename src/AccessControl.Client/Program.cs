@@ -1,7 +1,7 @@
-﻿using AccessControl.Client.Unity;
+﻿using AccessControl.Client.Vendor;
+using AccessControl.Service.Core;
 using Microsoft.Practices.Unity;
-using Topshelf;
-using Topshelf.Unity;
+using Vendor.API;
 
 namespace AccessControl.Client
 {
@@ -9,20 +9,23 @@ namespace AccessControl.Client
     {
         public static void Main()
         {
-            var container = new UnityContainer();
-            container.AddExtension(new UnityClientExtension());
-
-            HostFactory.Run(
-                cfg =>
-                {
-                    cfg.UseUnityContainer(container);
-                    cfg.Service<ClientService>(s =>
+            new ServiceRunner<ClientServiceControl>()
+                .ConfigureContainer(ContainerConfig)
+                .Run(
+                    cfg =>
                     {
-                        s.ConstructUsingUnityContainer();
-                        s.WhenStarted((service, control) => service.Start(control));
-                        s.WhenStopped((service, control) => service.Stop(control));
+                        cfg.SetServiceName("AccessPointClient");
+                        cfg.SetDisplayName("Access Point Client");
+                        cfg.SetDescription("Represents a glue between Vendor-specific software and Access Control System");
                     });
-                });
+        }
+
+        private static void ContainerConfig(IUnityContainer container)
+        {
+            container
+                //.RegisterInstance(container)
+                .RegisterType<IAccessPointRegistry, AccessPointRegistry>()
+                .RegisterType<IAccessCheckService, AccessCheckService>();
         }
     }
 }

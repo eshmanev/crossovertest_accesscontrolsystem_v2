@@ -94,17 +94,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientService.cs" />
-    <Compile Include="CodeContracts\IRabbitMqSectionContract.cs" />
-    <Compile Include="CodeContracts\IClientConfigurationContract.cs" />
-    <Compile Include="Configuration\IRabbitMqSection.cs" />
-    <Compile Include="Configuration\IClientConfiguration.cs" />
-    <Compile Include="Configuration\RabbitMqSection.cs" />
-    <Compile Include="Configuration\ClientConfiguration.cs" />
+    <Compile Include="ClientServiceControl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unity\BusConfiguration.cs" />
-    <Compile Include="Unity\UnityClientExtension.cs" />
     <Compile Include="Vendor\AccessPointRegistry.cs" />
     <Compile Include="Vendor\AccessCheckService.cs" />
   </ItemGroup>
@@ -112,6 +104,10 @@
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">
       <Project>{E8207E15-2A39-458B-A292-D9294E37F2FB}</Project>
       <Name>AccessControl.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AccessControl.Service.Core\AccessControl.Service.Core.csproj">
+      <Project>{F92CA63C-0A6E-413A-AA74-2E2C4F354309}</Project>
+      <Name>AccessControl.Service.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Vendor.API\Vendor.API.csproj">
       <Project>{c1b2f55f-51d6-4b69-83a8-60608402b136}</Project>
