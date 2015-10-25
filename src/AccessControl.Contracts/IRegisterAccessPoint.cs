@@ -4,8 +4,8 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts
 {
-    [ContractClass(typeof(IAccessPointContract))]
-    public interface IAccessPoint
+    [ContractClass(typeof(RegisterAccessPointContract))]
+    public interface IRegisterAccessPoint
     {
         Guid AccessPointId { get; }
         string Description { get; }

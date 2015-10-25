@@ -10,6 +10,8 @@ namespace AccessControl.Server.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class IServerConfigurationContract : IServerConfiguration
     {
+        public bool RecreateDatabaseSchema => false;
+
         public IRabbitMqSection RabbitMq
         {
             get

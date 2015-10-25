@@ -40,8 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeContracts\IAccessPointContract.cs" />
-    <Compile Include="IAccessPoint.cs" />
+    <Compile Include="CodeContracts\RegisterAccessPointContract.cs" />
+    <Compile Include="Impl\RegisterAccessPoint.cs" />
+    <Compile Include="IRegisterAccessPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

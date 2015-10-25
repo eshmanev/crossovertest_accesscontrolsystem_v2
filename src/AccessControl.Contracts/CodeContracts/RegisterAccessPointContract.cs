@@ -4,11 +4,11 @@ using System.Diagnostics.Contracts;
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IAccessPoint" /> interface.
+    ///     Represents a contract class for the <see cref="IRegisterAccessPoint" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IAccessPoint))]
+    [ContractClassFor(typeof(IRegisterAccessPoint))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IAccessPointContract : IAccessPoint
+    internal abstract class RegisterAccessPointContract : IRegisterAccessPoint
     {
         public Guid AccessPointId
         {
