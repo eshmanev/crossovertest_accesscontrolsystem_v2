@@ -85,6 +85,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -105,15 +106,12 @@
     <Compile Include="Data\Entities\AccessPoint.cs" />
     <Compile Include="Data\Entities\UserHash.cs" />
     <Compile Include="Data\IRepository.cs" />
-    <Compile Include="Data\IUnitOfWork.cs" />
     <Compile Include="Data\Mappings\AccessPointMap.cs" />
     <Compile Include="Data\Mappings\MappingExtensions.cs" />
     <Compile Include="Data\Mappings\UserHashMapMap.cs" />
     <Compile Include="Data\Session\ISessionFactoryHolder.cs" />
-    <Compile Include="Data\Session\ISessionLocator.cs" />
     <Compile Include="Data\Session\Repository.cs" />
     <Compile Include="Data\Session\SessionFactoryHolder.cs" />
-    <Compile Include="Data\Session\UnitOfWork.cs" />
     <Compile Include="ServerService.cs" />
     <Compile Include="CodeContracts\IRabbitMqSectionContract.cs" />
     <Compile Include="CodeContracts\IServerConfigurationContract.cs" />

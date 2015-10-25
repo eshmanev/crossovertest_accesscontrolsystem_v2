@@ -27,6 +27,7 @@ namespace AccessControl.Server.Unity
                 cfg =>
                 {
                     cfg.UseBsonSerializer();
+                    cfg.UseTransaction();
 
                     var host = cfg.Host(
                         new Uri(_configuration.RabbitMq.Url),

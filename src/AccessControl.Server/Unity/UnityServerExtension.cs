@@ -14,7 +14,7 @@ namespace AccessControl.Server.Unity
 
         public UnityServerExtension()
         {
-            _defaultManager = () => new TransientLifetimeManager();
+            _defaultManager = () => new ContainerControlledLifetimeManager();
         }
 
         protected override void Initialize()
@@ -29,8 +29,6 @@ namespace AccessControl.Server.Unity
 
             Container
                .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
-               .RegisterType<ISessionLocator, UnitOfWork>(_defaultManager())
-               .RegisterType<IUnitOfWork>(_defaultManager(), new InjectionFactory(c => (IUnitOfWork)c.Resolve<ISessionLocator>()))
                .RegisterType(typeof(IRepository<>), typeof(Repository<>), _defaultManager());
         }
     }

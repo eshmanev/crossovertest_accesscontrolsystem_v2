@@ -23,7 +23,7 @@ namespace AccessControl.Server.Consumers
             {
                 AccessPointId = context.Message.AccessPointId,
                 Name = context.Message.Name,
-                Description = context.Message.Name
+                Description = context.Message.Description
             };
             _accessPointRepository.Insert(accessPoint);
             return Task.FromResult(true);

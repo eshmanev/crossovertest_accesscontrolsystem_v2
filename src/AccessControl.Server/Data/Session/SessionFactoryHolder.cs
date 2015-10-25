@@ -85,7 +85,7 @@ namespace AccessControl.Server.Data.Session
         private ISessionFactory CreateSessionFactory()
         {
             var configuration = Fluently.Configure()
-                                        .Mappings(m => m.FluentMappings.AddFromAssemblyOf<UnitOfWork>())
+                                        .Mappings(m => m.FluentMappings.AddFromAssemblyOf<SessionFactoryHolder>())
                                         .Database(MsSqlConfiguration.MsSql2012.ConnectionString(c => c.FromConnectionStringWithKey("AccessControlSystem")))
                                         .ExposeConfiguration(ConfigureHiLoTable)
                                         .BuildConfiguration();

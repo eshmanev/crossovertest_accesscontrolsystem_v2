@@ -15,26 +15,16 @@ namespace AccessControl.Server.Data.Session
     internal class Repository<T> : IRepository<T>
         where T : class
     {
-        private readonly ISessionLocator _sessionLocator;
+        private readonly ISessionFactoryHolder _sessionFactoryHolder;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Repository{T}" /> class.
         /// </summary>
-        public Repository(ISessionLocator sessionLocator)
+        public Repository(ISessionFactoryHolder sessionFactoryHolder)
         {
-            Contract.Requires(sessionLocator != null);
-            _sessionLocator = sessionLocator;
+            Contract.Requires(sessionFactoryHolder != null);
+            _sessionFactoryHolder = sessionFactoryHolder;
         }
-
-        /// <summary>
-        ///     Gets the query.
-        /// </summary>
-        public IQueryable<T> Query => Session.Query<T>().Cacheable();
-
-        /// <summary>
-        ///     Gets the current session.
-        /// </summary>
-        public ISession Session => _sessionLocator.GetSession();
 
         /// <summary>
         ///     Fetches all entities from the repository.
@@ -42,7 +32,7 @@ namespace AccessControl.Server.Data.Session
         /// <returns>A list of entities.</returns>
         public IList<T> GetAll()
         {
-            return Query.ToList();
+            return Query(x => x.ToList());
         }
 
         /// <summary>
@@ -52,7 +42,7 @@ namespace AccessControl.Server.Data.Session
         /// <returns>An entity or null.</returns>
         public T GetById(long id)
         {
-            return Session.Get<T>(id);
+            return Session(x => x.Get<T>(id));
         }
 
         /// <summary>
@@ -62,7 +52,7 @@ namespace AccessControl.Server.Data.Session
         /// <returns>A list of entities.</returns>
         public IList<T> Filter(Expression<Func<T, bool>> predicate)
         {
-            return Query.Where(predicate).ToList();
+            return Query(x => x.Where(predicate).ToList());
         }
 
         /// <summary>
@@ -71,7 +61,7 @@ namespace AccessControl.Server.Data.Session
         /// <returns>A number of entities.</returns>
         public int GetCount()
         {
-            return Query.Count();
+            return Query(x => x.Count());
         }
 
         /// <summary>
@@ -81,7 +71,7 @@ namespace AccessControl.Server.Data.Session
         /// <returns>A number of entities.</returns>
         public int GetCount(Expression<Func<T, bool>> predicate)
         {
-            return Query.Where(predicate).Count();
+            return Query(x => x.Where(predicate).Count());
         }
 
         /// <summary>
@@ -90,7 +80,7 @@ namespace AccessControl.Server.Data.Session
         /// <param name="entity">The entity.</param>
         public void Insert(T entity)
         {
-            Session.SaveOrUpdate(entity);
+            Transaction(x => x.SaveOrUpdate(entity));
         }
 
         /// <summary>
@@ -99,7 +89,7 @@ namespace AccessControl.Server.Data.Session
         /// <param name="entity">The entity.</param>
         public void Update(T entity)
         {
-            Session.Update(entity);
+            Transaction(x => x.Update(entity));
         }
 
         /// <summary>
@@ -108,7 +98,54 @@ namespace AccessControl.Server.Data.Session
         /// <param name="entity">The entity.</param>
         public void Delete(T entity)
         {
-            Session.Delete(entity);
+            Transaction(x => x.Delete(entity));
+        }
+
+        private TResult Session<TResult>(Func<ISession, TResult> action)
+        {
+            using (var session = OpenSession())
+            {
+                return action(session);
+            }
+        }
+
+        private TResult Query<TResult>(Func<IQueryable<T>, TResult> action)
+        {
+            return Session(
+                x =>
+                {
+                    var query = x.Query<T>().Cacheable();
+                    return action(query);
+                });
+        }
+
+        private void Transaction(Action<ISession> action)
+        {
+            Session(
+                x =>
+                {
+                    using (var transaction = x.BeginTransaction())
+                    {
+                        try
+                        {
+                            action(x);
+
+                            if (transaction.IsActive)
+                                transaction.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            if (transaction.IsActive)
+                                transaction.Commit();
+                        }
+                    }
+                    return true;
+                });
+        }
+
+        private ISession OpenSession()
+        {
+            return _sessionFactoryHolder.SessionFactory.OpenSession();
         }
     }
 }
