@@ -20,6 +20,7 @@ namespace AccessControl.LDAP.Service
                             e =>
                             {
                                 e.Consumer(() => container.Resolve<FindUserConsumer>());
+                                e.Consumer(() => container.Resolve<GetPasswordHashConsumer>());
                             });
                     })
                 .Run(

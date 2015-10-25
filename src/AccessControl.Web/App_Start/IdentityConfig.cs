@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AccessControl.Contracts;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using AccessControl.Web.Models.Account;
+using MassTransit;
+using Microsoft.Practices.Unity;
 
 namespace AccessControl.Web
 {
@@ -104,9 +107,19 @@ namespace AccessControl.Web
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
         }
 
-        public override Task<SignInStatus> PasswordSignInAsync(string userName, string password, bool isPersistent, bool shouldLockout)
+        public override async Task<SignInStatus> PasswordSignInAsync(string userName, string password, bool isPersistent, bool shouldLockout)
         {
-            return base.PasswordSignInAsync(userName, password, isPersistent, shouldLockout);
+            if (this.UserManager == null)
+                return SignInStatus.Failure;
+
+            var user = await base.UserManager.FindByNameAsync(userName);
+            if (user == null)
+                return SignInStatus.Failure;
+
+            if (!await UserManager.CheckPasswordAsync(user, password))
+                return SignInStatus.Failure;
+
+            return SignInStatus.Success;
         }
     }
 }

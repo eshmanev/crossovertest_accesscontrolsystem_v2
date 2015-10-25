@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Impl;
@@ -7,19 +8,26 @@ using Microsoft.AspNet.Identity;
 
 namespace AccessControl.Web.Models.Account
 {
-    public class LdapUserStore : IUserStore<ApplicationUser>
+    public class LdapUserStore : IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>
     {
-        private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
+        private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUser;
+        private readonly IRequestClient<IGetPasswordHash, IGetPasswordHashResult> _getPasswordHash;
 
-        public LdapUserStore(IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest)
+        public LdapUserStore(IRequestClient<IFindUserByName, IFindUserByNameResult> findUser,
+            IRequestClient<IGetPasswordHash, IGetPasswordHashResult> getPasswordHash)
         {
-            Contract.Requires(findUserRequest != null);
-            _findUserRequest = findUserRequest;
+            Contract.Requires(findUser != null);
+            Contract.Requires(getPasswordHash != null);
+
+            _findUser = findUser;
+            _getPasswordHash = getPasswordHash;
         }
 
         public void Dispose()
         {
         }
+
+        #region IUserStore<ApplicationUser>
 
         public Task CreateAsync(ApplicationUser user)
         {
@@ -38,12 +46,13 @@ namespace AccessControl.Web.Models.Account
 
         public Task<ApplicationUser> FindByIdAsync(string userId)
         {
-            throw new System.NotImplementedException();
+            // userId and userName are equal
+            return FindByNameAsync(userId);
         }
 
         public async Task<ApplicationUser> FindByNameAsync(string userName)
         {
-            var result = await _findUserRequest.Request(new FindUserByName(userName));
+            var result = await _findUser.Request(new FindUserByName(userName));
             return new ApplicationUser
             {
                 UserName = result.UserName,
@@ -51,5 +60,28 @@ namespace AccessControl.Web.Models.Account
                 PhoneNumber = result.PhoneNumber
             };
         }
+
+        #endregion
+
+        #region IUserPasswordStore<ApplicationUser, string>
+
+        Task IUserPasswordStore<ApplicationUser, string>.SetPasswordHashAsync(ApplicationUser user, string passwordHash)
+        {
+            return Task.FromResult(false);
+        }
+
+        async Task<string> IUserPasswordStore<ApplicationUser, string>.GetPasswordHashAsync(ApplicationUser user)
+        {
+            var result = await _getPasswordHash.Request(new GetPasswordHash(user.UserName));
+            return result.PasswordHash;
+        }
+
+        async Task<bool> IUserPasswordStore<ApplicationUser, string>.HasPasswordAsync(ApplicationUser user)
+        {
+            var result = await _getPasswordHash.Request(new GetPasswordHash(user.UserName));
+            return !string.IsNullOrWhiteSpace(result.PasswordHash);
+        }
+
+        #endregion
     }
 }

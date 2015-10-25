@@ -84,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompositeMembershipProvider.cs" />
+    <Compile Include="Consumers\GetPasswordHashConsumer.cs" />
     <Compile Include="Consumers\FindUserConsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
