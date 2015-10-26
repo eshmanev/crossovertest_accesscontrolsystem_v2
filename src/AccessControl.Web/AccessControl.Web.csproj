@@ -190,6 +190,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AccessPointController.cs" />
     <Compile Include="Controllers\BiometricController.cs" />
     <Compile Include="Services\HttpContextExtensions.cs" />
     <Compile Include="Services\SmsService.cs" />
@@ -279,6 +280,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="Views\Biometric\Index.cshtml" />
+    <Content Include="Views\AccessPoint\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">

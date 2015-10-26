@@ -34,7 +34,7 @@ namespace AccessControl.Service.LDAP.Consumers
         public Task Consume(ConsumeContext<IFindUsersByDepartment> context)
         {
             var entry = new DirectoryEntry(_config.CombinePath(context.Message.Site), _config.UserName, _config.Password);
-            var searcher = new DirectorySearcher(entry) { Filter = $"(department={context.Message.Department})" };
+            var searcher = new DirectorySearcher(entry) { Filter = $"(&(objectClass=user)(department={context.Message.Department}))" };
             var users = searcher.FindAll().Cast<SearchResult>().Select(ConvertUser).ToArray();
             return context.RespondAsync(new FindUsersByDepartmentResult(users));
         }

@@ -5,9 +5,12 @@
 <div class="jumbotron">
     <div class="row">
         <div class="col-md-4 text-center">
-            <p><img src="@Url.Content("~/Content/access-point.png")"/>
-            </p>
-            Manage access points
+            <a href="@Url.Action("Index", "AccessPoint")">
+                <p>
+                    <img src="@Url.Content("~/Content/access-point.png")" />
+                </p>
+                Manage access points
+            </a>
         </div>
         <div class="col-md-4 text-center">
             <p><img src="@Url.Content("~/Content/accept-access.png")"/>

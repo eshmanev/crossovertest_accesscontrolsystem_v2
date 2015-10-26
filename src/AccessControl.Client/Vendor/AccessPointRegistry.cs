@@ -18,7 +18,10 @@ namespace AccessControl.Client.Vendor
 
         public void RegisterAccessPoint(AccessPointDto dto)
         {
-            var message = new RegisterAccessPoint(dto.AccessPointId, dto.Name, dto.Description);
+            var message = new RegisterAccessPoint(new AccessPoint(dto.AccessPointId, dto.Site, dto.Department, dto.Name)
+            {
+                Description = dto.Description
+            });
             _bus.Publish(message);
         }
 

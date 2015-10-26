@@ -23,6 +23,7 @@ namespace AccessControl.Service.AccessPoint
                         cfg.AddExtension(new UnityDataExtension());
                         cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap);
                         cfg.RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap);
+                        cfg.RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>
@@ -32,7 +33,7 @@ namespace AccessControl.Service.AccessPoint
                             WellKnownQueues.AccessControl,
                             e =>
                             {
-                                e.Consumer(() => container.Resolve<RegisterAccessPointConsumer>());
+                                e.Consumer(() => container.Resolve<AccessPointConsumer>());
                                 e.Consumer(() => container.Resolve<ListBiometricInfoConsumer>());
                                 e.Consumer(() => container.Resolve<UpdateUserBiometricConsumer>());
                             });

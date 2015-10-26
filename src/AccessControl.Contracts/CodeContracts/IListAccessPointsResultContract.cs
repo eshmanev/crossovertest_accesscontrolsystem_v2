@@ -6,17 +6,17 @@ using AccessControl.Contracts.Dto;
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IRegisterAccessPoint" /> interface.
+    ///     Represents a contract class for the <see cref="IListAccessPointsResult" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IRegisterAccessPoint))]
+    [ContractClassFor(typeof(IListAccessPointsResult))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class RegisterAccessPointContract : IRegisterAccessPoint
+    internal abstract class IListAccessPointsResultContract : IListAccessPointsResult
     {
-        public IAccessPoint AccessPoint
+        public IAccessPoint[] AccessPoints
         {
             get
             {
-                Contract.Ensures(Contract.Result<IAccessPoint>() != null);
+                Contract.Ensures(Contract.Result<IAccessPoint[]>() != null);
                 return null;
             }
         }

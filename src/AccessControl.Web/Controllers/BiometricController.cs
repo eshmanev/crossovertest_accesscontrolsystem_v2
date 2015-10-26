@@ -9,6 +9,7 @@ using MassTransit;
 
 namespace AccessControl.Web.Controllers
 {
+    [Authorize]
     public class BiometricController : Controller
     {
         private readonly IRequestClient<IListUsersExtended, IListUsersExtendedResult> _listUsersRequest;

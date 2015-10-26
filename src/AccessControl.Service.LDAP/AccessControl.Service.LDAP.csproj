@@ -89,6 +89,7 @@
     <Compile Include="Configuration\ILdapConfig.cs" />
     <Compile Include="Configuration\LdapConfig.cs" />
     <Compile Include="Consumers\AuthenticationConsumer.cs" />
+    <Compile Include="Consumers\DepartmentConsumer.cs" />
     <Compile Include="Consumers\FindUserConsumer.cs" />
     <Compile Include="Consumers\SearchResultExtensions.cs" />
     <Compile Include="Program.cs" />

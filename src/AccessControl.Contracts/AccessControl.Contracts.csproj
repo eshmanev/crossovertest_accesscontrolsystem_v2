@@ -42,14 +42,25 @@
   <ItemGroup>
     <Compile Include="CodeContracts\FindUserByNameContract.cs" />
     <Compile Include="CodeContracts\FindUsersByDepartmentResultContract.cs" />
+    <Compile Include="CodeContracts\IAccessPointContract.cs" />
+    <Compile Include="CodeContracts\IListAccessPointsContract.cs" />
+    <Compile Include="CodeContracts\IListAccessPointsResultContract.cs" />
+    <Compile Include="CodeContracts\IValidateDepartmentContract.cs" />
     <Compile Include="CodeContracts\VoidResultContract.cs" />
     <Compile Include="CodeContracts\IValidationFaultContract.cs" />
     <Compile Include="CodeContracts\ValidationPropertyErrorContract.cs" />
     <Compile Include="CodeContracts\ListUsersExtendedResultContract.cs" />
+    <Compile Include="Commands\IListAccessPoints.cs" />
+    <Compile Include="Commands\IListAccessPointsResult.cs" />
+    <Compile Include="Commands\IValidateDepartment.cs" />
+    <Compile Include="Dto\IAccessPoint.cs" />
     <Compile Include="Dto\IVoidResult.cs" />
     <Compile Include="Dto\IValidationFault.cs" />
     <Compile Include="Dto\IValidationPropertyError.cs" />
+    <Compile Include="Helpers\AccessPoint.cs" />
     <Compile Include="Helpers\FindUsersByDepartmentResult.cs" />
+    <Compile Include="Helpers\ListAccessPoints.cs" />
+    <Compile Include="Helpers\ListAccessPointsResult.cs" />
     <Compile Include="Helpers\UpdateUserBiometric.cs" />
     <Compile Include="CodeContracts\UpdateUserBiometricContract.cs" />
     <Compile Include="CodeContracts\UserContract.cs" />
@@ -65,6 +76,7 @@
     <Compile Include="Helpers\FindUserByNameResult.cs" />
     <Compile Include="Helpers\ListUsersExtendedResult.cs" />
     <Compile Include="Helpers\UserExtended.cs" />
+    <Compile Include="Helpers\ValidateDepartment.cs" />
     <Compile Include="Helpers\ValidationFault.cs" />
     <Compile Include="Commands\IUpdateUserBiometric.cs" />
     <Compile Include="Dto\IUser.cs" />
@@ -82,7 +94,7 @@
     <Compile Include="Helpers\ListUsersExtended.cs" />
     <Compile Include="Helpers\RegisterAccessPoint.cs" />
     <Compile Include="Helpers\VoidResult.cs" />
-    <Compile Include="IRegisterAccessPoint.cs" />
+    <Compile Include="Commands\IRegisterAccessPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WellKnownQueues.cs" />
   </ItemGroup>

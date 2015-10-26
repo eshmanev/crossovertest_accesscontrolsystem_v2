@@ -29,6 +29,7 @@ namespace AccessControl.Service.LDAP
                                 // e.Durable = false;
                                 e.Consumer(() => container.Resolve<FindUserConsumer>());
                                 e.Consumer(() => container.Resolve<AuthenticationConsumer>());
+                                e.Consumer(() => container.Resolve<DepartmentConsumer>());
                             });
                     })
                 .Run(

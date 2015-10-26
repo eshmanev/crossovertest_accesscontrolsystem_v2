@@ -1,22 +1,17 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
+using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Helpers
 {
     public class RegisterAccessPoint : IRegisterAccessPoint
     {
-        public RegisterAccessPoint(Guid accessPointId, string name, string description)
+        public RegisterAccessPoint(IAccessPoint accessPoint)
         {
-            Contract.Requires(accessPointId != null);
-            Contract.Requires(!string.IsNullOrWhiteSpace(name));
-
-            AccessPointId = accessPointId;
-            Description = description;
-            Name = name;
+            Contract.Requires(accessPoint != null);
+            AccessPoint = accessPoint;
         }
 
-        public Guid AccessPointId { get; }
-        public string Description { get; }
-        public string Name { get; }
+        public IAccessPoint AccessPoint { get; }
     }
 }

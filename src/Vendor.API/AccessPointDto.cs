@@ -14,5 +14,11 @@ namespace Vendor.API
 
         [DataMember(IsRequired = true)]
         public string Name { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public string Site { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public string Department { get; set; }
     }
 }

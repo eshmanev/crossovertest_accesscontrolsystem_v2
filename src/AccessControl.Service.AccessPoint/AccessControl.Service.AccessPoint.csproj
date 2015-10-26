@@ -91,7 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consumers\ListBiometricInfoConsumer.cs" />
-    <Compile Include="Consumers\RegisterAccessPointConsumer.cs" />
+    <Compile Include="Consumers\AccessPointConsumer.cs" />
     <Compile Include="Consumers\UpdateUserBiometricConsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

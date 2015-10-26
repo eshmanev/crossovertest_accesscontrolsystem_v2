@@ -1,0 +1,35 @@
+﻿@model AccessControl.Contracts.Dto.IAccessPoint[]
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>Manage Access Points</h2>
+<p>
+    The application allows to manage a list of access points of your department.
+    It's also possible to manage a list of access points using the exposed 3rd-party Vendor API (see the Vendor.API.IAccessPointRegistry interface)
+</p>
+
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Site</th>
+            <th>Department</th>
+            <th>Access Point ID</th>
+            <td>Name</td>
+            <td>Description</td>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var accessPoint in Model)
+    {
+        <tr>
+            <td>@accessPoint.Site</td>
+            <td>@accessPoint.Department</td>
+            <td>@accessPoint.AccessPointId</td>
+            <td>@accessPoint.Name</td>
+            <td>@accessPoint.Description</td>
+        </tr>
+    }
+    </tbody>
+</table>
