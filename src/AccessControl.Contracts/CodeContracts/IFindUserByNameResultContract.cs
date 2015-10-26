@@ -18,6 +18,7 @@ namespace AccessControl.Contracts.CodeContracts
             }
         }
 
+        public string DisplayName => null;
         public string Email => null;
         public string PhoneNumber => null;
     }

@@ -9,6 +9,7 @@ namespace AccessControl.Contracts
     public interface IFindUserByNameResult
     {
         string UserName { get; }
+        string DisplayName { get; }
         string Email { get; }
         string PhoneNumber { get; }
     }

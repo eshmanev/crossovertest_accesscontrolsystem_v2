@@ -9,5 +9,7 @@ namespace AccessControl.LDAP.Service.Configuration
     public interface ILdapConfig
     {
         string LdapPath { get; } 
+        string UserName { get; }
+        string Password { get; }
     }
 }

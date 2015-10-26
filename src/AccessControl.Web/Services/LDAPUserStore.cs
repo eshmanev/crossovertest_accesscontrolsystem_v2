@@ -52,13 +52,21 @@ namespace AccessControl.Web.Models.Account
 
         public async Task<ApplicationUser> FindByNameAsync(string userName)
         {
-            var result = await _findUser.Request(new FindUserByName(userName));
-            return new ApplicationUser
+            try
             {
-                UserName = result.UserName,
-                Email = result.Email,
-                PhoneNumber = result.PhoneNumber
-            };
+                var result = await _findUser.Request(new FindUserByName(userName));
+                return new ApplicationUser
+                {
+                    UserName = result.UserName,
+                    Email = result.Email,
+                    PhoneNumber = result.PhoneNumber
+                };
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
 
         #endregion

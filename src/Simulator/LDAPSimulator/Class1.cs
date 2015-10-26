@@ -86,6 +86,21 @@ namespace LDAPSimulator
         public void AuthenticateTest()
         {
             Authenticate("evgeny", "Nata308son", "EVRIQUM");
+
+        }
+
+        [Test]
+        public void GetUser()
+        {
+            var entry = new DirectoryEntry("LDAP://192.168.1.201/DC=EVRIQUM,DC=ru", "evgeny", "Nata308son");
+            var searcher = new DirectorySearcher(entry);
+            searcher.Filter = "(sAMAccountName=Ivan1)";
+            var result = searcher.FindOne();
+            var displayName = result.Properties["displayname"].Count > 0 ? result.Properties["displayname"][0] : "Ivan";
+            var phone = result.Properties["telephonenumber"].Count > 0 ? result.Properties["telephonenumber"][0] : string.Empty;
+            var email = result.Properties["mail"].Count > 0 ? result.Properties["mail"][0] : string.Empty;
+
+            // name, email, login, phone
         }
 
         private bool Authenticate(string userName, string password, string domain)

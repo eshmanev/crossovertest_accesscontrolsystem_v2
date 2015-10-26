@@ -20,5 +20,9 @@ namespace AccessControl.LDAP.Service.CodeContracts
                 return null;
             }
         }
+
+        public string UserName => null;
+
+        public string Password => null;
     }
 }

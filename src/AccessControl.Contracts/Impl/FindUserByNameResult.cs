@@ -11,7 +11,8 @@ namespace AccessControl.Contracts.Impl
         }
 
         public string UserName { get; }
-        public string Email { get; }
-        public string PhoneNumber { get; }
+        public string DisplayName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }
