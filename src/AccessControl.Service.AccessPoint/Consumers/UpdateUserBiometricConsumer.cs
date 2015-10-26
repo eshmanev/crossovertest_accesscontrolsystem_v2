@@ -27,10 +27,10 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
         public async Task Consume(ConsumeContext<IUpdateUserBiometric> context)
         {
-            var user = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
-            if (user == null)
+            var response = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
+            if (response.User == null)
             {
-                context.Respond(new VoidResult("UserName", "User is not found"));
+                context.Respond(new VoidResult("User is not found"));
                 return;
             }
             

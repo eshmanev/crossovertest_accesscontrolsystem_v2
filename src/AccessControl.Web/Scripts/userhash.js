@@ -16,8 +16,11 @@
     });
 
     function submitEditor() {
-        var username = $("input[type=hidden]", activeEditor.closest("tr")).val();
+        var username = $("#userName", activeEditor.closest("tr")).html();
         var hash = activeEditor.val();
-        $.post("Biometric/UserHash?userName=" + username + "&hash=" + hash);
+        $.post("Biometric/UserHash?userName=" + username + "&hash=" + hash, function (response) {
+            if (response.Fault != null)
+                alert(response.Fault.Summary);
+        });
     }
 });

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Services;
 using MassTransit;
@@ -10,16 +11,16 @@ namespace AccessControl.Web.Controllers
 {
     public class BiometricController : Controller
     {
-        private readonly IBus _bus;
         private readonly IRequestClient<IListUsersExtended, IListUsersExtendedResult> _listUsersRequest;
+        private readonly IRequestClient<IUpdateUserBiometric, IVoidResult> _updateBiometricRequest;
 
-        public BiometricController(IRequestClient<IListUsersExtended, IListUsersExtendedResult> listUsersRequest, IBus bus)
+        public BiometricController(IRequestClient<IListUsersExtended, IListUsersExtendedResult> listUsersRequest, IRequestClient<IUpdateUserBiometric, IVoidResult> updateBiometricRequest)
         {
             Contract.Requires(listUsersRequest != null);
-            Contract.Requires(bus != null);
+            Contract.Requires(updateBiometricRequest != null);
 
             _listUsersRequest = listUsersRequest;
-            _bus = bus;
+            _updateBiometricRequest = updateBiometricRequest;
         }
 
         // GET: Biometric
@@ -31,9 +32,10 @@ namespace AccessControl.Web.Controllers
         }
 
         [HttpPost]
-        public async Task UserHash(string userName, string hash)
+        public async Task<JsonResult> UserHash(string userName, string hash)
         {
-            await _bus.Publish(new UpdateUserBiometric(userName, hash));
+            var result = await _updateBiometricRequest.Request(new UpdateUserBiometric(userName, hash));
+            return Json(result);
         }
     }
 }

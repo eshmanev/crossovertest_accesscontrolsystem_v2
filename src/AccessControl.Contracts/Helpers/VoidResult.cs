@@ -11,6 +11,12 @@ namespace AccessControl.Contracts.Helpers
             Succeded = true;
         }
 
+        public VoidResult(string errorSummary)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(errorSummary));
+            Fault = new ValidationFault(errorSummary);
+        }
+
         public VoidResult(string propertyName, string errorMessage)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(propertyName));
