@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.Practices.Unity;
 using Unity.Mvc3;
+using IUser = AccessControl.Contracts.IUser;
 
 namespace AccessControl.Web
 {
@@ -27,15 +28,14 @@ namespace AccessControl.Web
         private static IUnityContainer BuildUnityContainer()
         {
             var container = new UnityContainer();
-
-            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
             var rabbitMqConfig = (IRabbitMqConfig) WebConfigurationManager.GetSection("rabbitMq");
             container.RegisterInstance(rabbitMqConfig);
             container
                 .RegisterType<IUserStore<ApplicationUser>, LdapUserStore>()
                 .RegisterType<IAuthenticationManager>(new InjectionFactory(_ => HttpContext.Current.GetOwinContext().Authentication))
-                .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IFindUserByName, IUser>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IListBiometricInfo, IUserWithBiometric[]>(WellKnownQueues.AccessControl)
                 ;
 
             return container;
@@ -51,8 +51,8 @@ namespace AccessControl.Web
                         new InjectionFactory(
                             _ =>
                             {
-                                var bus = Container.Resolve<IBus>();
-                                var config = Container.Resolve<IRabbitMqConfig>();
+                                var bus = container.Resolve<IBus>();
+                                var config = container.Resolve<IRabbitMqConfig>();
                                 var url = config.Url.EndsWith("/") ? $"{config.Url}{queueName}" : $"{config.Url}/{queueName}";
                                 return new MessageRequestClient<TRequest, TResponse>(bus, new Uri(url), TimeSpan.FromSeconds(30));
                             }));

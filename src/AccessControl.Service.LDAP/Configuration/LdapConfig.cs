@@ -12,5 +12,13 @@ namespace AccessControl.Service.LDAP.Configuration
 
         [ConfigurationProperty("password", IsRequired = false)]
         public string Password => (string)base["password"];
+
+        public string CombinePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return LdapPath;
+
+            return LdapPath.EndsWith("/") ? LdapPath + path : $"{LdapPath}/{path}";
+        }
     }
 }

@@ -1,17 +1,14 @@
-﻿
-
+﻿using System.Diagnostics.Contracts;
 using AccessControl.Service.LDAP.CodeContracts;
 
 namespace AccessControl.Service.LDAP.Configuration
 {
-    using System.Diagnostics.Contracts;
-    using LDAP.CodeContracts;
-
     [ContractClass(typeof(ILdapConfigContract))]
     public interface ILdapConfig
     {
-        string LdapPath { get; } 
-        string UserName { get; }
+        string LdapPath { get; }
         string Password { get; }
+        string UserName { get; }
+        string CombinePath(string path);
     }
 }

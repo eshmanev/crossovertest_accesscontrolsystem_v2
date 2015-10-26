@@ -3,12 +3,21 @@
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IFindUserByNameResult" /> interface.
+    ///     Represents a contract class for the <see cref="IUser" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IFindUserByNameResult))]
+    [ContractClassFor(typeof(IUser))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IFindUserByNameResultContract : IFindUserByNameResult
+    internal abstract class UserContract : IUser
     {
+        public string Site
+        {
+            get
+            {
+                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+                return null;
+            }
+        }
+
         public string UserName
         {
             get
@@ -21,5 +30,6 @@ namespace AccessControl.Contracts.CodeContracts
         public string DisplayName => null;
         public string Email => null;
         public string PhoneNumber => null;
+        public string Department => null;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Configuration;
 using AccessControl.Service.Core.Configuration;
 using MassTransit;

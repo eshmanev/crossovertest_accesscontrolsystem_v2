@@ -41,22 +41,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeContracts\FindUserByNameContract.cs" />
-    <Compile Include="CodeContracts\IFindUserByNameResultContract.cs" />
+    <Compile Include="CodeContracts\UserContract.cs" />
     <Compile Include="CodeContracts\AuthenticateUserContract.cs" />
     <Compile Include="CodeContracts\AuthenticateUserResultContract.cs" />
+    <Compile Include="CodeContracts\FindUsersByDepartmentContract.cs" />
+    <Compile Include="CodeContracts\IListBiometricInfoContract.cs" />
+    <Compile Include="CodeContracts\UserWithBiometricContract.cs" />
     <Compile Include="IFindUserByName.cs" />
-    <Compile Include="IFindUserByNameResult.cs" />
+    <Compile Include="Impl\UserWithBiometric.cs" />
+    <Compile Include="IUser.cs" />
     <Compile Include="IAuthenticateUser.cs" />
     <Compile Include="IAuthenticateUserResult.cs" />
+    <Compile Include="IFindUsersByDepartment.cs" />
+    <Compile Include="IListBiometricInfo.cs" />
+    <Compile Include="IUserWithBiometric.cs" />
+    <Compile Include="Impl\FindUsersByDepartment.cs" />
     <Compile Include="Impl\FindUserByName.cs" />
-    <Compile Include="Impl\FindUserByNameResult.cs" />
-    <Compile Include="Impl\GetCompanySitesResult.cs" />
+    <Compile Include="Impl\User.cs" />
     <Compile Include="CodeContracts\RegisterAccessPointContract.cs" />
-    <Compile Include="IGetCompanySites.cs" />
-    <Compile Include="IGetCompanySitesResult.cs" />
-    <Compile Include="Impl\GetCompanySites.cs" />
     <Compile Include="Impl\AuthenticateUser.cs" />
     <Compile Include="Impl\AuthenticateUserResult.cs" />
+    <Compile Include="Impl\ListBiometricInfo.cs" />
     <Compile Include="Impl\RegisterAccessPoint.cs" />
     <Compile Include="IRegisterAccessPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

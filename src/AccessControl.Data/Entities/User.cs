@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a map between user name and user physical hash.
     /// </summary>
-    public class UserHashMap
+    public class User
     {
         /// <summary>
         /// Gets the identifier.
@@ -18,6 +18,6 @@
         /// <summary>
         /// Gets or sets the user hash.
         /// </summary>
-        public virtual string UserHash { get; set; }
+        public virtual string BiometricHash { get; set; }
     }
 }

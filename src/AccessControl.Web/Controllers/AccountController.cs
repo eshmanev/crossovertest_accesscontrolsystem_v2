@@ -34,7 +34,7 @@ namespace AccessControl.Web.Controllers
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+                return _signInManager ?? HttpContext.GetSignInManager();
             }
             private set 
             { 
@@ -46,7 +46,7 @@ namespace AccessControl.Web.Controllers
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return _userManager ?? HttpContext.GetUserManager();
             }
             private set
             {

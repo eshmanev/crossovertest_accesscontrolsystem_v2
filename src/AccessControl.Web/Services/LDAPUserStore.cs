@@ -4,16 +4,19 @@ using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Impl;
 using AccessControl.Web.Models.Account;
+using log4net;
 using MassTransit;
 using Microsoft.AspNet.Identity;
+using IUser = AccessControl.Contracts.IUser;
 
 namespace AccessControl.Web.Services
 {
     public class LdapUserStore : IUserStore<ApplicationUser>
     {
-        private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUser;
+        private readonly IRequestClient<IFindUserByName, IUser> _findUser;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(LdapUserStore));
 
-        public LdapUserStore(IRequestClient<IFindUserByName, IFindUserByNameResult> findUser)
+        public LdapUserStore(IRequestClient<IFindUserByName, IUser> findUser)
         {
             Contract.Requires(findUser != null);
             _findUser = findUser;
@@ -51,14 +54,17 @@ namespace AccessControl.Web.Services
                 var result = await _findUser.Request(new FindUserByName(userName));
                 return new ApplicationUser
                 {
-                    Id = result.UserName,
-                    UserName = result.DisplayName ?? result.UserName,
+                    UserName = result.UserName,
+                    DisplayName = result.DisplayName,
                     Email = result.Email,
-                    PhoneNumber = result.PhoneNumber
+                    PhoneNumber = result.PhoneNumber,
+                    Site = result.Site,
+                    Department = result.Department
                 };
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Log.Error("An error occurred while searching a user", e);
                 return null;
             }
             

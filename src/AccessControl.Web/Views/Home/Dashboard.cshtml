@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <p><img src="@Url.Content("~/Content/access-point.png")"/>
+            </p>
+            Manage access points
+        </div>
+        <div class="col-md-4 text-center">
+            <p><img src="@Url.Content("~/Content/accept-access.png")"/>
+            </p>
+            Allow or Deny access
+        </div>
+        <div class="col-md-4 text-center">
+            <a href="@Url.Action("Index", "Biometric")">
+                <p>
+                    <img src="@Url.Content("~/Content/users.png")" />
+                </p>
+                Manage biometric data
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <p>
+                <img src="@Url.Content("~/Content/log.png")" />
+            </p>
+            View logs
+        </div>
+        <div class="col-md-4 text-center">
+            <p>
+                <img src="@Url.Content("~/Content/managers.png")" />
+            </p>
+            Delegate your rights
+        </div>
+        <div class="col-md-4 text-center">
+            
+        </div>
+    </div>
+</div>

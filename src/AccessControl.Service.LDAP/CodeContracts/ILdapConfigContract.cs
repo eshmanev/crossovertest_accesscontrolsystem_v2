@@ -26,5 +26,10 @@ namespace AccessControl.Service.LDAP.CodeContracts
         public string UserName => null;
 
         public string Password => null;
+        public string CombinePath(string path)
+        {
+            Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+            return null;
+        }
     }
 }

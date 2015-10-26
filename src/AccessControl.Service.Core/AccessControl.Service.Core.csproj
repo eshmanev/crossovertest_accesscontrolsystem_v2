@@ -87,6 +87,7 @@
     <Compile Include="ServiceRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BusServiceControl.cs" />
+    <Compile Include="UnityExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

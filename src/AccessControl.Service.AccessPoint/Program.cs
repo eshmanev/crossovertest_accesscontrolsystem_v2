@@ -15,9 +15,24 @@ namespace AccessControl.Service.AccessPoint
         public static void Main()
         {
             new ServiceRunner()
-                .ConfigureContainer(cfg => cfg.AddExtension(new UnityDataExtension()))
+                .ConfigureContainer(
+                    cfg =>
+                    {
+                        cfg.AddExtension(new UnityDataExtension());
+                        cfg.RegisterRequestClient<IFindUsersByDepartment, IUser[]>(WellKnownQueues.Ldap);
+                    })
                 .ConfigureBus(
-                    (cfg, host, container) => { cfg.ReceiveEndpoint(host, WellKnownQueues.AccessPointManager, e => e.Consumer(() => container.Resolve<RegisterAccessPointConsumer>())); })
+                    (cfg, host, container) =>
+                    {
+                        cfg.ReceiveEndpoint(
+                            host,
+                            WellKnownQueues.AccessControl,
+                            e =>
+                            {
+                                e.Consumer(() => container.Resolve<RegisterAccessPointConsumer>());
+                                e.Consumer(() => container.Resolve<ListBiometricInfoConsumer>());
+                            });
+                    })
                 .Run(
                     cfg =>
                     {

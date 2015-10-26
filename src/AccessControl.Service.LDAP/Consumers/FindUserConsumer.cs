@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using System.DirectoryServices;
+using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Impl;
@@ -8,7 +9,7 @@ using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
 {
-    public class FindUserConsumer : IConsumer<IFindUserByName>
+    public class FindUserConsumer : IConsumer<IFindUserByName>, IConsumer<IFindUsersByDepartment>
     {
         private readonly ILdapConfig _config;
 
@@ -23,15 +24,30 @@ namespace AccessControl.Service.LDAP.Consumers
             var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
             var searcher = new DirectorySearcher(entry) {Filter = $"(sAMAccountName={context.Message.UserName})"};
             var result = searcher.FindOne();
+            
             return result == null
-                       ? context.RespondAsync<FindUserByNameResult>(null)
-                       : context.RespondAsync(
-                           new FindUserByNameResult(context.Message.UserName)
-                           {
-                               DisplayName = result.Properties["displayname"].Count > 0 ? (string) result.Properties["displayname"][0] : "Ivan",
-                               PhoneNumber = result.Properties["telephonenumber"].Count > 0 ? (string) result.Properties["telephonenumber"][0] : string.Empty,
-                               Email = result.Properties["mail"].Count > 0 ? (string) result.Properties["mail"][0] : string.Empty
-                           });
+                       ? context.RespondAsync<User>(null)
+                       : context.RespondAsync(ConvertUser(result));
+        }
+
+        public Task Consume(ConsumeContext<IFindUsersByDepartment> context)
+        {
+            var entry = new DirectoryEntry(_config.CombinePath(context.Message.Site), _config.UserName, _config.Password);
+            var searcher = new DirectorySearcher(entry) { Filter = $"(department={context.Message.Department})" };
+            var result = searcher.FindAll();
+            return context.RespondAsync(result.Cast<SearchResult>().Select(ConvertUser).ToArray());
+        }
+
+        private IUser ConvertUser(SearchResult result)
+        {
+            var userName = result.GetProperty("samaccountname");
+            return new User(result.GetDirectoryEntry().Parent.GetProperty("distinguishedName"), userName)
+            {
+                DisplayName = result.GetProperty("displayname") ?? userName,
+                PhoneNumber = result.GetProperty("telephonenumber"),
+                Email = result.GetProperty("mail"),
+                Department = result.GetProperty("department")
+            };
         }
     }
 }

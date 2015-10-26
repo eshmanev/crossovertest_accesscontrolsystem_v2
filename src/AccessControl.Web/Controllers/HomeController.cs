@@ -10,20 +10,16 @@ namespace AccessControl.Web.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return !User.Identity.IsAuthenticated ? View("Description") : View("Dashboard");
         }
 
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }
