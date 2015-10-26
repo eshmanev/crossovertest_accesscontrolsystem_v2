@@ -66,7 +66,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -83,8 +85,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeContracts\ILdapConfigContract.cs" />
     <Compile Include="CompositeMembershipProvider.cs" />
-    <Compile Include="Consumers\GetPasswordHashConsumer.cs" />
+    <Compile Include="Configuration\ILdapConfig.cs" />
+    <Compile Include="Configuration\LdapConfig.cs" />
+    <Compile Include="Consumers\AuthenticationConsumer.cs" />
     <Compile Include="Consumers\FindUserConsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

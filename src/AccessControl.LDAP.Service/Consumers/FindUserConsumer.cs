@@ -9,7 +9,7 @@ namespace AccessControl.LDAP.Service.Consumers
     {
         public Task Consume(ConsumeContext<IFindUserByName> context)
         {
-            return context.RespondAsync(new FindUserByNameResult("hello"));
+            return context.RespondAsync(new FindUserByNameResult(context.Message.UserName));
         }
     }
 }

@@ -82,6 +82,25 @@ namespace LDAPSimulator
             }
         }
 
+        [Test]
+        public void AuthenticateTest()
+        {
+            Authenticate("evgeny", "Nata308son", "EVRIQUM");
+        }
+
+        private bool Authenticate(string userName, string password, string domain)
+        {
+            bool authentic = false;
+            try
+            {
+                var entry = new DirectoryEntry("LDAP://192.168.1.201/DC=EVRIQUM,DC=ru" , userName, password);
+                object nativeObject = entry.NativeObject;
+                authentic = true;
+            }
+            catch (DirectoryServicesCOMException) { }
+            return authentic;
+        }
+
         private class OrgUnit
         {
             public OrgUnit()

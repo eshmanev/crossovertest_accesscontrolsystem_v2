@@ -8,13 +8,13 @@ using Microsoft.AspNet.Identity;
 
 namespace AccessControl.Web.Models.Account
 {
-    public class LdapUserStore : IUserStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>
+    public class LdapUserStore : IUserStore<ApplicationUser>
     {
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUser;
-        private readonly IRequestClient<IGetPasswordHash, IGetPasswordHashResult> _getPasswordHash;
+        private readonly IRequestClient<IAuthenticateUser, IAuthenticateUserResult> _getPasswordHash;
 
         public LdapUserStore(IRequestClient<IFindUserByName, IFindUserByNameResult> findUser,
-            IRequestClient<IGetPasswordHash, IGetPasswordHashResult> getPasswordHash)
+            IRequestClient<IAuthenticateUser, IAuthenticateUserResult> getPasswordHash)
         {
             Contract.Requires(findUser != null);
             Contract.Requires(getPasswordHash != null);
@@ -59,27 +59,6 @@ namespace AccessControl.Web.Models.Account
                 Email = result.Email,
                 PhoneNumber = result.PhoneNumber
             };
-        }
-
-        #endregion
-
-        #region IUserPasswordStore<ApplicationUser, string>
-
-        Task IUserPasswordStore<ApplicationUser, string>.SetPasswordHashAsync(ApplicationUser user, string passwordHash)
-        {
-            return Task.FromResult(false);
-        }
-
-        async Task<string> IUserPasswordStore<ApplicationUser, string>.GetPasswordHashAsync(ApplicationUser user)
-        {
-            var result = await _getPasswordHash.Request(new GetPasswordHash(user.UserName));
-            return result.PasswordHash;
-        }
-
-        async Task<bool> IUserPasswordStore<ApplicationUser, string>.HasPasswordAsync(ApplicationUser user)
-        {
-            var result = await _getPasswordHash.Request(new GetPasswordHash(user.UserName));
-            return !string.IsNullOrWhiteSpace(result.PasswordHash);
         }
 
         #endregion

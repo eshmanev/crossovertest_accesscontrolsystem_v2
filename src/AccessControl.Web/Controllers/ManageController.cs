@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using AccessControl.Web.Models;
+using AccessControl.Web.Services;
 
 namespace AccessControl.Web.Controllers
 {

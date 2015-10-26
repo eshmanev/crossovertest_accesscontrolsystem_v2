@@ -3,9 +3,11 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts
 {
-    [ContractClass(typeof(IGetPasswordHashContract))]
-    public interface IGetPasswordHash
+    [ContractClass(typeof(AuthenticateUserContract))]
+    public interface IAuthenticateUser
     {
         string UserName { get; }
+
+        string Password { get; }
     }
 }

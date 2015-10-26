@@ -35,7 +35,7 @@ namespace AccessControl.Web
                 .RegisterType<IUserStore<ApplicationUser>, LdapUserStore>()
                 .RegisterType<IAuthenticationManager>(new InjectionFactory(_ => HttpContext.Current.GetOwinContext().Authentication))
                 .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
-                .RegisterRequestClient<IGetPasswordHash, IGetPasswordHashResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
                 ;
 
             return container;

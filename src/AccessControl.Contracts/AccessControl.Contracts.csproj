@@ -42,12 +42,12 @@
   <ItemGroup>
     <Compile Include="CodeContracts\FindUserByNameContract.cs" />
     <Compile Include="CodeContracts\IFindUserByNameResultContract.cs" />
-    <Compile Include="CodeContracts\IGetPasswordHashContract.cs" />
-    <Compile Include="CodeContracts\IGetPasswordHashResultContract.cs" />
+    <Compile Include="CodeContracts\AuthenticateUserContract.cs" />
+    <Compile Include="CodeContracts\AuthenticateUserResultContract.cs" />
     <Compile Include="IFindUserByName.cs" />
     <Compile Include="IFindUserByNameResult.cs" />
-    <Compile Include="IGetPasswordHash.cs" />
-    <Compile Include="IGetPasswordHashResult.cs" />
+    <Compile Include="IAuthenticateUser.cs" />
+    <Compile Include="IAuthenticateUserResult.cs" />
     <Compile Include="Impl\FindUserByName.cs" />
     <Compile Include="Impl\FindUserByNameResult.cs" />
     <Compile Include="Impl\GetCompanySitesResult.cs" />
@@ -55,8 +55,8 @@
     <Compile Include="IGetCompanySites.cs" />
     <Compile Include="IGetCompanySitesResult.cs" />
     <Compile Include="Impl\GetCompanySites.cs" />
-    <Compile Include="Impl\GetPasswordHash.cs" />
-    <Compile Include="Impl\GetPasswordHashResult.cs" />
+    <Compile Include="Impl\AuthenticateUser.cs" />
+    <Compile Include="Impl\AuthenticateUserResult.cs" />
     <Compile Include="Impl\RegisterAccessPoint.cs" />
     <Compile Include="IRegisterAccessPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

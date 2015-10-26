@@ -1,4 +1,6 @@
-﻿using AccessControl.Contracts;
+﻿using System.Configuration;
+using AccessControl.Contracts;
+using AccessControl.LDAP.Service.Configuration;
 using AccessControl.LDAP.Service.Consumers;
 using AccessControl.Service.Core;
 using MassTransit;
@@ -11,6 +13,11 @@ namespace AccessControl.LDAP.Service
         static void Main(string[] args)
         {
             new ServiceRunner()
+                .ConfigureContainer(
+                    cfg =>
+                    {
+                        cfg.RegisterInstance((ILdapConfig) ConfigurationManager.GetSection("ldap"));
+                    })
                 .ConfigureBus(
                     (cfg, host, container) =>
                     {
@@ -20,7 +27,7 @@ namespace AccessControl.LDAP.Service
                             e =>
                             {
                                 e.Consumer(() => container.Resolve<FindUserConsumer>());
-                                e.Consumer(() => container.Resolve<GetPasswordHashConsumer>());
+                                e.Consumer(() => container.Resolve<AuthenticationConsumer>());
                             });
                     })
                 .Run(
