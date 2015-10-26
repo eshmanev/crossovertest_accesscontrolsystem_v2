@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Server", "AccessControl.Server\AccessControl.Server.csproj", "{23A53A15-C3FF-4CD0-820F-15337EFA2D4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Service.AccessPoint", "AccessControl.Service.AccessPoint\AccessControl.Service.AccessPoint.csproj", "{23A53A15-C3FF-4CD0-820F-15337EFA2D4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Contracts", "AccessControl.Contracts\AccessControl.Contracts.csproj", "{E8207E15-2A39-458B-A292-D9294E37F2FB}"
 EndProject
@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessPointSimulator", "Sim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Data", "AccessControl.Data\AccessControl.Data.csproj", "{4B62B8A1-B09A-45FC-B9BD-A08EB54405B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.LDAP.Service", "AccessControl.LDAP.Service\AccessControl.LDAP.Service.csproj", "{E63FC351-B5F8-41D3-B7B9-84EFC570DB51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Service.LDAP", "AccessControl.Service.LDAP\AccessControl.Service.LDAP.csproj", "{E63FC351-B5F8-41D3-B7B9-84EFC570DB51}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Web", "AccessControl.Web\AccessControl.Web.csproj", "{28CE0FE7-007D-4FA3-83DC-02E00CBE0CFD}"
 EndProject
