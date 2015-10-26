@@ -51,12 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AccessControl.LDAP.SDK\AccessControl.LDAP.SDK.csproj">
-      <Project>{a4c07d00-7f6a-4878-8c05-0fcf3e90f7d6}</Project>
-      <Name>AccessControl.LDAP.SDK</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

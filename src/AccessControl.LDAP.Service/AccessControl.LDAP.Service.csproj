@@ -86,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeContracts\ILdapConfigContract.cs" />
-    <Compile Include="CompositeMembershipProvider.cs" />
     <Compile Include="Configuration\ILdapConfig.cs" />
     <Compile Include="Configuration\LdapConfig.cs" />
     <Compile Include="Consumers\AuthenticationConsumer.cs" />
@@ -102,10 +101,6 @@
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">
       <Project>{E8207E15-2A39-458B-A292-D9294E37F2FB}</Project>
       <Name>AccessControl.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AccessControl.LDAP.SDK\AccessControl.LDAP.SDK.csproj">
-      <Project>{a4c07d00-7f6a-4878-8c05-0fcf3e90f7d6}</Project>
-      <Name>AccessControl.LDAP.SDK</Name>
     </ProjectReference>
     <ProjectReference Include="..\AccessControl.Service.Core\AccessControl.Service.Core.csproj">
       <Project>{f92ca63c-0a6e-413a-aa74-2e2c4f354309}</Project>
