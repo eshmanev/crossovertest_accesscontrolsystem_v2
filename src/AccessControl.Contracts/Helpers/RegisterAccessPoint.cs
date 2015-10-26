@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 
-namespace AccessControl.Contracts.Impl
+namespace AccessControl.Contracts.Helpers
 {
     public class RegisterAccessPoint : IRegisterAccessPoint
     {

@@ -1,25 +1,25 @@
 ﻿using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IAuthenticateUser" /> interface.
+    ///     Represents a contract class for the <see cref="IValidationFault" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IAuthenticateUser))]
+    [ContractClassFor(typeof(IValidationFault))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class AuthenticateUserContract : IAuthenticateUser
+    internal abstract class IValidationFaultContract : IValidationFault
     {
-        public string UserName
+        public IValidationPropertyError[] Details
         {
             get
             {
-                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+                Contract.Ensures(Contract.Result<IValidationPropertyError[]>() != null);
                 return null;
             }
         }
 
-        public string Password
+        public string Summary
         {
             get
             {

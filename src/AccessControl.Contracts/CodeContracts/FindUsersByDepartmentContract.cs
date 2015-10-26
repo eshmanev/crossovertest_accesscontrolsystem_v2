@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using AccessControl.Contracts.Commands;
 
 namespace AccessControl.Contracts.CodeContracts
 {

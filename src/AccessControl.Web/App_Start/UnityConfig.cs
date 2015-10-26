@@ -3,6 +3,8 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using AccessControl.Contracts;
+using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Dto;
 using AccessControl.Web.Configuration;
 using AccessControl.Web.Models.Account;
 using AccessControl.Web.Services;
@@ -11,7 +13,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.Practices.Unity;
 using Unity.Mvc3;
-using IUser = AccessControl.Contracts.IUser;
 
 namespace AccessControl.Web
 {
@@ -33,9 +34,9 @@ namespace AccessControl.Web
             container
                 .RegisterType<IUserStore<ApplicationUser>, LdapUserStore>()
                 .RegisterType<IAuthenticationManager>(new InjectionFactory(_ => HttpContext.Current.GetOwinContext().Authentication))
-                .RegisterRequestClient<IFindUserByName, IUser>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
-                .RegisterRequestClient<IListBiometricInfo, IUserWithBiometric[]>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IListUsersExtended, IListUsersExtendedResult>(WellKnownQueues.AccessControl)
                 ;
 
             return container;

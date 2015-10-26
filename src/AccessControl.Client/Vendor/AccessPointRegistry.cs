@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Impl;
+using AccessControl.Contracts.Helpers;
 using MassTransit;
 using Vendor.API;
 

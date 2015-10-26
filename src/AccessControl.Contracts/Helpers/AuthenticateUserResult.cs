@@ -1,4 +1,6 @@
-﻿namespace AccessControl.Contracts.Impl
+﻿using AccessControl.Contracts.Commands;
+
+namespace AccessControl.Contracts.Helpers
 {
     public class AuthenticateUserResult : IAuthenticateUserResult
     {

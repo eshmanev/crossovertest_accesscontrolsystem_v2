@@ -1,3 +1,45 @@
-﻿@{
+﻿@model AccessControl.Contracts.Dto.IUserExtended[]
+@{
     ViewBag.Title = "About";
+    
+}
+
+<h2>
+    User management
+</h2>
+<p>
+    Here you can manage biometric hash values for members of your department. Just click on Biometric hash cell and enter a new value.
+</p>
+
+<table id="userHashTable" class="table table-bordered table-responsive table-hover">
+    <thead>
+    <tr>
+        <th>Site</th>
+        <th>Department</th>
+        <th>Login</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Biometric hash</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Site</td>
+            <td>@user.Department</td>
+            <td>@user.UserName</td>
+            <td>@user.DisplayName</td>
+            <td>@user.Email</td>
+            <td>@user.PhoneNumber</td>
+            <td id="hash">@user.BiometricHash</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/Scripts/userhash.js"></script>
 }

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts
+namespace AccessControl.Contracts.Dto
 {
     [ContractClass(typeof(UserContract))]
     public interface IUser

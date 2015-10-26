@@ -3,9 +3,10 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts
 {
-    [ContractClass(typeof(FindUserByNameContract))]
-    public interface IFindUserByName
+    [ContractClass(typeof(UpdateUserBiometricContract))]
+    public interface IUpdateUserBiometric
     {
         string UserName { get; }
+        string BiometricHash { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
+using AccessControl.Contracts.Commands;
 
-namespace AccessControl.Contracts.Impl
+namespace AccessControl.Contracts.Helpers
 {
     public class FindUserByName : IFindUserByName
     {

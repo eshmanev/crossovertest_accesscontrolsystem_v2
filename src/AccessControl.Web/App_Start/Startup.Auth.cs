@@ -1,5 +1,6 @@
 ﻿using System;
 using AccessControl.Contracts;
+using AccessControl.Contracts.Commands;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;

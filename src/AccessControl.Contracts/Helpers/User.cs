@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
+using AccessControl.Contracts.Dto;
 
-namespace AccessControl.Contracts.Impl
+namespace AccessControl.Contracts.Helpers
 {
     public class User : IUser
     {

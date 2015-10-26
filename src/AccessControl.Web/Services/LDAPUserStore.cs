@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using AccessControl.Contracts;
-using AccessControl.Contracts.Impl;
+using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Models.Account;
 using log4net;
 using MassTransit;
 using Microsoft.AspNet.Identity;
-using IUser = AccessControl.Contracts.IUser;
 
 namespace AccessControl.Web.Services
 {
     public class LdapUserStore : IUserStore<ApplicationUser>
     {
-        private readonly IRequestClient<IFindUserByName, IUser> _findUser;
+        private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUser;
         private static readonly ILog Log = LogManager.GetLogger(typeof(LdapUserStore));
 
-        public LdapUserStore(IRequestClient<IFindUserByName, IUser> findUser)
+        public LdapUserStore(IRequestClient<IFindUserByName, IFindUserByNameResult> findUser)
         {
             Contract.Requires(findUser != null);
             _findUser = findUser;
@@ -52,22 +51,23 @@ namespace AccessControl.Web.Services
             try
             {
                 var result = await _findUser.Request(new FindUserByName(userName));
-                return new ApplicationUser
-                {
-                    UserName = result.UserName,
-                    DisplayName = result.DisplayName,
-                    Email = result.Email,
-                    PhoneNumber = result.PhoneNumber,
-                    Site = result.Site,
-                    Department = result.Department
-                };
+                return result.User == null
+                           ? null
+                           : new ApplicationUser
+                           {
+                               UserName = result.User.UserName,
+                               DisplayName = result.User.DisplayName,
+                               Email = result.User.Email,
+                               PhoneNumber = result.User.PhoneNumber,
+                               Site = result.User.Site,
+                               Department = result.User.Department
+                           };
             }
             catch (Exception e)
             {
                 Log.Error("An error occurred while searching a user", e);
                 return null;
             }
-            
         }
     }
 }

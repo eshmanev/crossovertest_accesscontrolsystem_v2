@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts
+namespace AccessControl.Contracts.Dto
 {
-    [ContractClass(typeof(UserWithBiometricContract))]
-    public interface IUserWithBiometric : IUser
+    [ContractClass(typeof(UserExtendedContract))]
+    public interface IUserExtended : IUser
     {
         string BiometricHash { get; }
     }

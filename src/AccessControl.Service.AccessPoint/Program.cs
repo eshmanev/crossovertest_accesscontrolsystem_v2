@@ -1,4 +1,6 @@
 ﻿using AccessControl.Contracts;
+using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Dto;
 using AccessControl.Data.Unity;
 using AccessControl.Service.AccessPoint.Consumers;
 using AccessControl.Service.Core;
@@ -19,7 +21,8 @@ namespace AccessControl.Service.AccessPoint
                     cfg =>
                     {
                         cfg.AddExtension(new UnityDataExtension());
-                        cfg.RegisterRequestClient<IFindUsersByDepartment, IUser[]>(WellKnownQueues.Ldap);
+                        cfg.RegisterRequestClient<IFindUserByName, IUser>(WellKnownQueues.Ldap);
+                        cfg.RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap);
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>
@@ -31,6 +34,7 @@ namespace AccessControl.Service.AccessPoint
                             {
                                 e.Consumer(() => container.Resolve<RegisterAccessPointConsumer>());
                                 e.Consumer(() => container.Resolve<ListBiometricInfoConsumer>());
+                                e.Consumer(() => container.Resolve<UpdateUserBiometricConsumer>());
                             });
                     })
                 .Run(

@@ -4,13 +4,13 @@ using AccessControl.Contracts.Commands;
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IAuthenticateUser" /> interface.
+    ///     Represents a contract class for the <see cref="IListUsersExtended" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IAuthenticateUser))]
+    [ContractClassFor(typeof(IListUsersExtended))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class AuthenticateUserContract : IAuthenticateUser
+    internal abstract class ListUsersExtendedContract : IListUsersExtended
     {
-        public string UserName
+        public string Site
         {
             get
             {
@@ -19,7 +19,7 @@ namespace AccessControl.Contracts.CodeContracts
             }
         }
 
-        public string Password
+        public string Department
         {
             get
             {

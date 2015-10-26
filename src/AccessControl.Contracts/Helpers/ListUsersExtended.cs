@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics.Contracts;
+using AccessControl.Contracts.Commands;
 
-namespace AccessControl.Contracts.Impl
+namespace AccessControl.Contracts.Helpers
 {
-    public class ListBiometricInfo : IListBiometricInfo
+    public class ListUsersExtended : IListUsersExtended
     {
-        public ListBiometricInfo(string site, string department)
+        public ListUsersExtended(string site, string department)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(site));
             Contract.Requires(!string.IsNullOrWhiteSpace(department));

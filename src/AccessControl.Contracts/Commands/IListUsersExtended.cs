@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts
+namespace AccessControl.Contracts.Commands
 {
-    [ContractClass(typeof(IListBiometricInfoContract))]
-    public interface IListBiometricInfo
+    [ContractClass(typeof(ListUsersExtendedContract))]
+    public interface IListUsersExtended
     {
         string Department { get; }
         string Site { get; }

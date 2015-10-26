@@ -23,7 +23,9 @@ namespace AccessControl.Web
                           h.Username(rabbitMqConfig.UserName);
                           h.Password(rabbitMqConfig.Password);
                       });
-               });
+
+                  cfg.ReceiveEndpoint(host, "AccessControl.Web", e => { });
+              });
 
             container.RegisterInstance<IBus>(busControl)
                      .RegisterInstance<IBusControl>(busControl);
