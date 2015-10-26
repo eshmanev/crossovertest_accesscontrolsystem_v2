@@ -1,9 +1,11 @@
 ﻿
 
-namespace AccessControl.LDAP.Service.Configuration
+using AccessControl.Service.LDAP.CodeContracts;
+
+namespace AccessControl.Service.LDAP.Configuration
 {
     using System.Diagnostics.Contracts;
-    using AccessControl.LDAP.Service.CodeContracts;
+    using LDAP.CodeContracts;
 
     [ContractClass(typeof(ILdapConfigContract))]
     public interface ILdapConfig

@@ -3,10 +3,10 @@ using System.DirectoryServices;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Impl;
-using AccessControl.LDAP.Service.Configuration;
+using AccessControl.Service.LDAP.Configuration;
 using MassTransit;
 
-namespace AccessControl.LDAP.Service.Consumers
+namespace AccessControl.Service.LDAP.Consumers
 {
     public class FindUserConsumer : IConsumer<IFindUserByName>
     {

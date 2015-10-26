@@ -1,9 +1,11 @@
 ﻿
 
-namespace AccessControl.LDAP.Service.CodeContracts
+using AccessControl.Service.LDAP.Configuration;
+
+namespace AccessControl.Service.LDAP.CodeContracts
 {
     using System.Diagnostics.Contracts;
-    using AccessControl.LDAP.Service.Configuration;
+    using LDAP.Configuration;
 
     /// <summary>
     /// Represents a contract class for the <see cref="ILdapConfig" /> interface.

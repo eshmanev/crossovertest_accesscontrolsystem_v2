@@ -7,8 +7,8 @@
     <ProjectGuid>{E63FC351-B5F8-41D3-B7B9-84EFC570DB51}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AccessControl.LDAP.Service</RootNamespace>
-    <AssemblyName>AccessControl.LDAP.Service</AssemblyName>
+    <RootNamespace>AccessControl.Service.LDAP</RootNamespace>
+    <AssemblyName>AccessControl.Service.LDAP</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

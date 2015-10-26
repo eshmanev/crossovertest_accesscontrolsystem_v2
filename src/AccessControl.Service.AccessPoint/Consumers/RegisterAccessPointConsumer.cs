@@ -5,13 +5,13 @@ using AccessControl.Data;
 using AccessControl.Data.Entities;
 using MassTransit;
 
-namespace AccessControl.Server.Consumers
+namespace AccessControl.Service.AccessPoint.Consumers
 {
     public class RegisterAccessPointConsumer : IConsumer<IRegisterAccessPoint>
     {
-        private readonly IRepository<AccessPoint> _accessPointRepository;
+        private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
 
-        public RegisterAccessPointConsumer(IRepository<AccessPoint> accessPointRepository)
+        public RegisterAccessPointConsumer(IRepository<Data.Entities.AccessPoint> accessPointRepository)
         {
             Contract.Requires(accessPointRepository != null);
             _accessPointRepository = accessPointRepository;
@@ -19,7 +19,7 @@ namespace AccessControl.Server.Consumers
 
         public Task Consume(ConsumeContext<IRegisterAccessPoint> context)
         {
-            var accessPoint = new AccessPoint
+            var accessPoint = new Data.Entities.AccessPoint
             {
                 AccessPointId = context.Message.AccessPointId,
                 Name = context.Message.Name,

@@ -1,12 +1,12 @@
 ﻿using System.Configuration;
 using AccessControl.Contracts;
-using AccessControl.LDAP.Service.Configuration;
-using AccessControl.LDAP.Service.Consumers;
 using AccessControl.Service.Core;
+using AccessControl.Service.LDAP.Configuration;
+using AccessControl.Service.LDAP.Consumers;
 using MassTransit;
 using Microsoft.Practices.Unity;
 
-namespace AccessControl.LDAP.Service
+namespace AccessControl.Service.LDAP
 {
     class Program
     {

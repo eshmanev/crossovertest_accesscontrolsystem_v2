@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace AccessControl.LDAP.Service.Configuration
+namespace AccessControl.Service.LDAP.Configuration
 {
     public class LdapConfig : ConfigurationSection, ILdapConfig
     {
