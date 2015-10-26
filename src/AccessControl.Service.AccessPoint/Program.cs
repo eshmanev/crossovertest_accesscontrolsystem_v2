@@ -21,7 +21,7 @@ namespace AccessControl.Service.AccessPoint
                     cfg =>
                     {
                         cfg.AddExtension(new UnityDataExtension());
-                        cfg.RegisterRequestClient<IFindUserByName, IUser>(WellKnownQueues.Ldap);
+                        cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap);
                         cfg.RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap);
                     })
                 .ConfigureBus(

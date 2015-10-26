@@ -20,6 +20,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         {
             Contract.Requires(findUserRequest != null);
             Contract.Requires(userRepository != null);
+
             _findUserRequest = findUserRequest;
             _userRepository = userRepository;
         }
@@ -28,8 +29,10 @@ namespace AccessControl.Service.AccessPoint.Consumers
         {
             var user = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
             if (user == null)
-                throw new Exception("The user is not found " + context.Message.UserName);
-
+            {
+                context.Respond(new VoidResult("UserName", "User is not found"));
+                return;
+            }
             
             var entity = _userRepository.Filter(x => x.UserName == context.Message.UserName).SingleOrDefault();
             if (entity != null)
@@ -42,6 +45,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 entity = new User {UserName = context.Message.UserName, BiometricHash = context.Message.BiometricHash};
                 _userRepository.Insert(entity);
             }
+
+            context.Respond(new VoidResult());
         }
     }
 }

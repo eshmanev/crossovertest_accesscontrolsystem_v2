@@ -1,11 +1,7 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using AccessControl.Contracts;
-using AccessControl.Contracts.CodeContracts;
 using AccessControl.Contracts.Commands;
-using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Services;
 using MassTransit;
@@ -14,8 +10,8 @@ namespace AccessControl.Web.Controllers
 {
     public class BiometricController : Controller
     {
-        private readonly IRequestClient<IListUsersExtended, IListUsersExtendedResult> _listUsersRequest;
         private readonly IBus _bus;
+        private readonly IRequestClient<IListUsersExtended, IListUsersExtendedResult> _listUsersRequest;
 
         public BiometricController(IRequestClient<IListUsersExtended, IListUsersExtendedResult> listUsersRequest, IBus bus)
         {
