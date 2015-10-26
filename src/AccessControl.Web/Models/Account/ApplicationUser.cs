@@ -6,7 +6,7 @@ namespace AccessControl.Web.Models.Account
 {
     public class ApplicationUser : IUser<string>
     {
-        public string Id { get { return UserName; } }
+        public string Id { get; set; }
 
         public string UserName { get; set; }
 

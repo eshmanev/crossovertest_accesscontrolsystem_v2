@@ -39,7 +39,7 @@ namespace AccessControl.Web.Services
             if (user == null)
                 return SignInStatus.Failure;
 
-            var message = new AuthenticateUser(user.UserName, password);
+            var message = new AuthenticateUser(user.Id, password);
             var result = await _authenticateRequest.Request(message);
             if (!result.Authenticated)
                 return SignInStatus.Failure;
