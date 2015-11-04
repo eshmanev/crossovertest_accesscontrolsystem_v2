@@ -26,7 +26,8 @@ namespace AccessControl.Service.LDAP
                             WellKnownQueues.Ldap,
                             e =>
                             {
-                                // e.Durable = false;
+                                //e.AutoDelete = true;
+                                //e.Durable = false;
                                 e.Consumer(() => container.Resolve<FindUserConsumer>());
                                 e.Consumer(() => container.Resolve<AuthenticationConsumer>());
                                 e.Consumer(() => container.Resolve<DepartmentConsumer>());

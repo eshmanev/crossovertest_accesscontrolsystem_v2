@@ -192,6 +192,10 @@
   <ItemGroup>
     <Compile Include="Controllers\AccessPointController.cs" />
     <Compile Include="Controllers\BiometricController.cs" />
+    <Compile Include="Models\AccessPoint\AccessPointIndexViewModel.cs" />
+    <Compile Include="Models\AccessPoint\EditAccessPointViewModel.cs" />
+    <Compile Include="Models\Validation\RequiredGuid.cs" />
+    <Compile Include="Models\Validation\RequiredSelect.cs" />
     <Compile Include="Services\HttpContextExtensions.cs" />
     <Compile Include="Services\SmsService.cs" />
     <Compile Include="Services\ApplicationUserManager.cs" />
@@ -233,6 +237,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\access-point-index.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -281,6 +286,7 @@
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="Views\Biometric\Index.cshtml" />
     <Content Include="Views\AccessPoint\Index.cshtml" />
+    <Content Include="Views\AccessPoint\EditorPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">

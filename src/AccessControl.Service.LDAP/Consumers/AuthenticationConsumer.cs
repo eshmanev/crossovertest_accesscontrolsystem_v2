@@ -1,6 +1,6 @@
-﻿using System.DirectoryServices;
+﻿using System.Diagnostics.Contracts;
+using System.DirectoryServices;
 using System.Threading.Tasks;
-using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Configuration;
@@ -14,6 +14,7 @@ namespace AccessControl.Service.LDAP.Consumers
 
         public AuthenticationConsumer(ILdapConfig config)
         {
+            Contract.Requires(config != null);
             _config = config;
         }
 
@@ -30,7 +31,6 @@ namespace AccessControl.Service.LDAP.Consumers
             {
                 return context.RespondAsync(new AuthenticateUserResult(false, e.Message));
             }
-            
         }
     }
 }

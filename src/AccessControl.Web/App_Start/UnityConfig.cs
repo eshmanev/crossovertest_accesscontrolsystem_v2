@@ -39,6 +39,8 @@ namespace AccessControl.Web
                 .RegisterRequestClient<IListUsersExtended, IListUsersExtendedResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IUpdateUserBiometric, IVoidResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IListDepartments, IListDepartmentsResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IRegisterAccessPoint, IVoidResult>(WellKnownQueues.AccessControl)
                 ;
 
             return container;

@@ -15,7 +15,6 @@ namespace AccessControl.Web
               cfg =>
               {
                   cfg.UseBsonSerializer();
-
                   var host = cfg.Host(
                       new Uri(rabbitMqConfig.Url),
                       h =>
@@ -24,7 +23,14 @@ namespace AccessControl.Web
                           h.Password(rabbitMqConfig.Password);
                       });
 
-                  cfg.ReceiveEndpoint(host, "AccessControl.Web", e => { });
+                  cfg.ReceiveEndpoint(
+                      host,
+                      "AccessControl.Web",
+                      e =>
+                      {
+                          //e.AutoDelete = true;
+                          //e.Durable = false;
+                      });
               });
 
             container.RegisterInstance<IBus>(busControl)

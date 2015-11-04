@@ -1,4 +1,4 @@
-﻿@model AccessControl.Contracts.Dto.IAccessPoint[]
+﻿@model AccessControl.Web.Models.AccessPoint.AccessPointIndexViewModel
 
 @{
     ViewBag.Title = "title";
@@ -12,16 +12,16 @@
 
 <table class="table table-hover table-bordered">
     <thead>
-        <tr>
-            <th>Site</th>
-            <th>Department</th>
-            <th>Access Point ID</th>
-            <td>Name</td>
-            <td>Description</td>
-        </tr>
+    <tr>
+        <th>Site</th>
+        <th>Department</th>
+        <th>Access Point ID</th>
+        <td>Name</td>
+        <td>Description</td>
+    </tr>
     </thead>
     <tbody>
-    @foreach (var accessPoint in Model)
+    @foreach (var accessPoint in Model.AccessPoints)
     {
         <tr>
             <td>@accessPoint.Site</td>
@@ -33,3 +33,11 @@
     }
     </tbody>
 </table>
+
+@Html.Partial("EditorPartial")
+
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/Scripts/access-point-index.js"></script>
+}
