@@ -1,7 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Configuration;
 using AccessControl.Service.Core.Configuration;
+using AccessControl.Service.Core.Middleware;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Practices.Unity;
@@ -11,9 +11,12 @@ using Topshelf.Unity;
 
 namespace AccessControl.Service.Core
 {
-    public class ServiceRunner : ServiceRunner<BusServiceControl> { }
+    public class ServiceRunner : ServiceRunner<BusServiceControl>
+    {
+    }
 
-    public class ServiceRunner<T> where T : class, ServiceControl
+    public class ServiceRunner<T>
+        where T : class, ServiceControl
     {
         private readonly UnityContainer _container;
         private IBusControl _busControl;
@@ -24,14 +27,20 @@ namespace AccessControl.Service.Core
             _container.RegisterInstance((IRabbitMqConfig) ConfigurationManager.GetSection("rabbitMq"));
         }
 
+        /// <summary>
+        ///     Configures the bus.
+        /// </summary>
+        /// <param name="config">The configurator.</param>
+        /// <returns>This instance.</returns>
         public ServiceRunner<T> ConfigureBus(Action<IRabbitMqBusFactoryConfigurator, IRabbitMqHost, IUnityContainer> config)
         {
             var rabbitMqConfig = _container.Resolve<IRabbitMqConfig>();
             _busControl = Bus.Factory.CreateUsingRabbitMq(
                 cfg =>
                 {
+                    cfg.UseExceptionLogger();
                     cfg.UseBsonSerializer();
-                    cfg.UseTransaction();
+                    // cfg.UseTransaction();
 
                     var host = cfg.Host(
                         new Uri(rabbitMqConfig.Url),
@@ -46,6 +55,11 @@ namespace AccessControl.Service.Core
             return this;
         }
 
+        /// <summary>
+        ///     Configures the container.
+        /// </summary>
+        /// <param name="config">The configurator.</param>
+        /// <returns>This instance.</returns>
         public ServiceRunner<T> ConfigureContainer(Action<IUnityContainer> config)
         {
             config(_container);
@@ -58,7 +72,9 @@ namespace AccessControl.Service.Core
         public void Run(Action<HostConfigurator> config)
         {
             if (_busControl == null)
+            {
                 ConfigureBus((cfg, host, container) => { });
+            }
 
             _container
                 .RegisterInstance<IBus>(_busControl)

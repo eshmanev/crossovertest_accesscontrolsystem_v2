@@ -9,5 +9,10 @@ namespace AccessControl.Data.Mappings
         {
             return generatedBy.HiLo("HiLo", "NextHi", "100", $"Entity = '{typeof(TEntity).Name}'");
         }
+
+        public static IdentityPart HiLo(this IdentityGenerationStrategyBuilder<IdentityPart> generatedBy, string entityName)
+        {
+            return generatedBy.HiLo("HiLo", "NextHi", "100", $"Entity = '{entityName}'");
+        }
     }
 }

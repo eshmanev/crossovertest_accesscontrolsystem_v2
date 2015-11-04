@@ -38,6 +38,10 @@
       <HintPath>..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
@@ -71,6 +75,8 @@
     <Compile Include="Entities\AccessPoint.cs" />
     <Compile Include="Entities\AccessRightsBase.cs" />
     <Compile Include="Entities\AccessRuleBase.cs" />
+    <Compile Include="Entities\IAccessRightsVisitor.cs" />
+    <Compile Include="Entities\IAccessRuleVisitor.cs" />
     <Compile Include="Entities\PermanentAccessRule.cs" />
     <Compile Include="Entities\ScheduledAccessRule.cs" />
     <Compile Include="Entities\User.cs" />
@@ -78,7 +84,13 @@
     <Compile Include="Entities\UserGroupAccessRights.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="Mappings\AccessPointMap.cs" />
+    <Compile Include="Mappings\AccessRightsBaseMap.cs" />
+    <Compile Include="Mappings\AccessRuleBaseMap.cs" />
     <Compile Include="Mappings\MappingExtensions.cs" />
+    <Compile Include="Mappings\PermanentAccessRuleMap.cs" />
+    <Compile Include="Mappings\ScheduledAccessRuleMap.cs" />
+    <Compile Include="Mappings\UserAccessRightsMap.cs" />
+    <Compile Include="Mappings\UserGroupAccessRightsMap.cs" />
     <Compile Include="Mappings\UserMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session\ISessionFactoryHolder.cs" />

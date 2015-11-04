@@ -3,6 +3,7 @@ using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Dto;
 using AccessControl.Data.Unity;
 using AccessControl.Service.AccessPoint.Consumers;
+using AccessControl.Service.AccessPoint.Middleware;
 using AccessControl.Service.Core;
 using MassTransit;
 using Microsoft.Practices.Unity;
@@ -28,6 +29,7 @@ namespace AccessControl.Service.AccessPoint
                 .ConfigureBus(
                     (cfg, host, container) =>
                     {
+                        cfg.UseSessionTransaction();
                         cfg.ReceiveEndpoint(
                             host,
                             WellKnownQueues.AccessControl,

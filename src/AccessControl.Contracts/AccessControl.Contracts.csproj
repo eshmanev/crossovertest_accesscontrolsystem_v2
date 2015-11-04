@@ -82,6 +82,8 @@
     <Compile Include="Dto\IValidationFault.cs" />
     <Compile Include="Dto\IValidationPropertyError.cs" />
     <Compile Include="Helpers\AccessPoint.cs" />
+    <Compile Include="Helpers\AllowDenyUserAccess.cs" />
+    <Compile Include="Helpers\AllowDenyUserGroupAccess.cs" />
     <Compile Include="Helpers\Department.cs" />
     <Compile Include="Helpers\FindUsersByDepartmentResult.cs" />
     <Compile Include="Helpers\ListAccessPoints.cs" />

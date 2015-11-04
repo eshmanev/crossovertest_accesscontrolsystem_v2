@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Expressions;
+using log4net;
 using NHibernate;
 using NHibernate.Linq;
 
@@ -15,6 +16,7 @@ namespace AccessControl.Data.Session
     internal class Repository<T> : IRepository<T>
         where T : class
     {
+        private static ILog Log = LogManager.GetLogger(typeof(Repository<T>));
         private readonly ISessionFactoryHolder _sessionFactoryHolder;
 
         /// <summary>
@@ -133,10 +135,11 @@ namespace AccessControl.Data.Session
                             if (transaction.IsActive)
                                 transaction.Commit();
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
+                            Log.Error("An error occurred while executing a transaction", e);
                             if (transaction.IsActive)
-                                transaction.Commit();
+                                transaction.Rollback();
                         }
                     }
                     return true;

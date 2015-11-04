@@ -94,6 +94,8 @@
     <Compile Include="Consumers\ListBiometricInfoConsumer.cs" />
     <Compile Include="Consumers\AccessPointConsumer.cs" />
     <Compile Include="Consumers\UpdateUserBiometricConsumer.cs" />
+    <Compile Include="Middleware\PipeConfiguratorExtensions.cs" />
+    <Compile Include="Middleware\SessionTransactionFilter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

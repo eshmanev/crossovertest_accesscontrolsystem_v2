@@ -9,5 +9,14 @@
         /// Gets or sets the user's name.
         /// </summary>
         public virtual string UserName { get; set; }
+
+        /// <summary>
+        /// Accepts the specified visitor.
+        /// </summary>
+        /// <param name="visitor">The visitor.</param>
+        public override void Accept(IAccessRightsVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
 }

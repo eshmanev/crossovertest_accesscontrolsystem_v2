@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MassTransit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
       <HintPath>..\packages\MassTransit.3.0.14\lib\net45\MassTransit.dll</HintPath>
       <Private>True</Private>
@@ -84,6 +88,9 @@
     <Compile Include="CodeContracts\IRabbitMqConfigContract.cs" />
     <Compile Include="Configuration\IRabbitMqConfig.cs" />
     <Compile Include="Configuration\RabbitMqConfig.cs" />
+    <Compile Include="Middleware\ExceptionLoggerFilter.cs" />
+    <Compile Include="Middleware\PipeConfiguratorExtensions.cs" />
+    <Compile Include="Middleware\GenericPipeSpecification.cs" />
     <Compile Include="ServiceRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BusServiceControl.cs" />
