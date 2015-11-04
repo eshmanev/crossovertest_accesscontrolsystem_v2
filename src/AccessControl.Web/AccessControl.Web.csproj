@@ -191,9 +191,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccessPointController.cs" />
+    <Compile Include="Controllers\AccessRightsController.cs" />
     <Compile Include="Controllers\BiometricController.cs" />
     <Compile Include="Models\AccessPoint\AccessPointIndexViewModel.cs" />
     <Compile Include="Models\AccessPoint\EditAccessPointViewModel.cs" />
+    <Compile Include="Models\AccessRights\AccessRightsIndexViewModel.cs" />
+    <Compile Include="Models\AccessRights\EditAccessRightsViewModel.cs" />
     <Compile Include="Models\Validation\RequiredGuid.cs" />
     <Compile Include="Models\Validation\RequiredSelect.cs" />
     <Compile Include="Services\HttpContextExtensions.cs" />
@@ -287,6 +290,8 @@
     <Content Include="Views\Biometric\Index.cshtml" />
     <Content Include="Views\AccessPoint\Index.cshtml" />
     <Content Include="Views\AccessPoint\EditorPartial.cshtml" />
+    <Content Include="Views\AccessRights\Index.cshtml" />
+    <Content Include="Views\AccessRights\EditorPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">

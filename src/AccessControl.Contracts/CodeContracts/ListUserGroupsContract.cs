@@ -1,24 +1,15 @@
 ﻿using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Dto;
+using AccessControl.Contracts.Commands;
 
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IDepartment" /> interface.
+    ///     Represents a contract class for the <see cref="IListUserGroups" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IDepartment))]
+    [ContractClassFor(typeof(IListUserGroups))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IDepartmentContract : IDepartment
+    internal abstract class ListUserGroupsContract : IListUserGroups
     {
-        public string SiteName
-        {
-            get
-            {
-                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
-                return null;
-            }
-        }
-
         public string Site
         {
             get
@@ -28,7 +19,7 @@ namespace AccessControl.Contracts.CodeContracts
             }
         }
 
-        public string DepartmentName
+        public string Department
         {
             get
             {

@@ -36,6 +36,7 @@ namespace AccessControl.Service.AccessPoint
                                 e.Consumer(() => container.Resolve<AccessPointConsumer>());
                                 e.Consumer(() => container.Resolve<ListBiometricInfoConsumer>());
                                 e.Consumer(() => container.Resolve<UpdateUserBiometricConsumer>());
+                                e.Consumer(() => container.Resolve<AccessRightsConsumer>());
                             });
                     })
                 .Run(

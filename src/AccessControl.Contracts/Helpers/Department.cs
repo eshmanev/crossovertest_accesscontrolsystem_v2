@@ -5,20 +5,20 @@ namespace AccessControl.Contracts.Helpers
 {
     public class Department : IDepartment
     {
-        public Department(string siteDistinguishedName, string site, string departmentName)
+        public Department(string site, string siteName, string departmentName)
         {
-            Contract.Requires(!string.IsNullOrWhiteSpace(siteDistinguishedName));
             Contract.Requires(!string.IsNullOrWhiteSpace(site));
+            Contract.Requires(!string.IsNullOrWhiteSpace(siteName));
             Contract.Requires(!string.IsNullOrWhiteSpace(departmentName));
 
-            Site = site;
+            SiteName = siteName;
             DepartmentName = departmentName;
-            SiteDistinguishedName = siteDistinguishedName;
+            Site = site;
         }
 
-        public string Site { get; }
+        public string SiteName { get; }
 
-        public string SiteDistinguishedName { get; }
+        public string Site { get; }
 
         public string DepartmentName { get; }
 
@@ -28,14 +28,14 @@ namespace AccessControl.Contracts.Helpers
             if (other == null)
                 return false;
 
-            return other.SiteDistinguishedName == SiteDistinguishedName &&
-                   other.Site == Site &&
+            return other.Site == Site &&
+                   other.SiteName == SiteName &&
                    other.DepartmentName == DepartmentName;
         }
 
         public override int GetHashCode()
         {
-            return SiteDistinguishedName.GetHashCode() ^ Site.GetHashCode() ^ DepartmentName.GetHashCode();
+            return Site.GetHashCode() ^ SiteName.GetHashCode() ^ DepartmentName.GetHashCode();
         }
     }
 }

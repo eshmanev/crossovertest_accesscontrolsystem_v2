@@ -72,7 +72,7 @@ namespace AccessControl.Web.Controllers
             model.Editor.SiteDepartments = departmentsTask
                 .Result
                 .Departments
-                .GroupBy(x => Tuple.Create(x.SiteDistinguishedName, x.Site))
+                .GroupBy(x => Tuple.Create(x.Site, x.SiteName))
                 .Select(x => Tuple.Create(x.Key.Item1, x.Key.Item2, x.Select(t => t.DepartmentName).ToArray()))
                 .ToList();
         }

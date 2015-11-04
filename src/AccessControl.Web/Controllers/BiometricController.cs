@@ -15,7 +15,8 @@ namespace AccessControl.Web.Controllers
         private readonly IRequestClient<IListUsersExtended, IListUsersExtendedResult> _listUsersRequest;
         private readonly IRequestClient<IUpdateUserBiometric, IVoidResult> _updateBiometricRequest;
 
-        public BiometricController(IRequestClient<IListUsersExtended, IListUsersExtendedResult> listUsersRequest, IRequestClient<IUpdateUserBiometric, IVoidResult> updateBiometricRequest)
+        public BiometricController(IRequestClient<IListUsersExtended, IListUsersExtendedResult> listUsersRequest,
+                                   IRequestClient<IUpdateUserBiometric, IVoidResult> updateBiometricRequest)
         {
             Contract.Requires(listUsersRequest != null);
             Contract.Requires(updateBiometricRequest != null);

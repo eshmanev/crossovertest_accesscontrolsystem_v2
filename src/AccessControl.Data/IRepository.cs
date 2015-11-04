@@ -21,7 +21,7 @@ namespace AccessControl.Data
         /// </summary>
         /// <param name="id">The entity's identifier.</param>
         /// <returns>An entity or null.</returns>
-        T GetById(long id);
+        T GetById(object id);
 
         /// <summary>
         /// Fetches all entities which match the given predicate.

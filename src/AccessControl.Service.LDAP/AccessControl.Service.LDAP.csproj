@@ -92,6 +92,7 @@
     <Compile Include="Consumers\DepartmentConsumer.cs" />
     <Compile Include="Consumers\FindUserConsumer.cs" />
     <Compile Include="Consumers\SearchResultExtensions.cs" />
+    <Compile Include="Consumers\UserGroupConsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

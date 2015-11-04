@@ -69,7 +69,13 @@
     <Compile Include="Configuration\IDataConfiguration.cs" />
     <Compile Include="Configuration\DataConfiguration.cs" />
     <Compile Include="Entities\AccessPoint.cs" />
+    <Compile Include="Entities\AccessRightsBase.cs" />
+    <Compile Include="Entities\AccessRuleBase.cs" />
+    <Compile Include="Entities\PermanentAccessRule.cs" />
+    <Compile Include="Entities\ScheduledAccessRule.cs" />
     <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserAccessRights.cs" />
+    <Compile Include="Entities\UserGroupAccessRights.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="Mappings\AccessPointMap.cs" />
     <Compile Include="Mappings\MappingExtensions.cs" />

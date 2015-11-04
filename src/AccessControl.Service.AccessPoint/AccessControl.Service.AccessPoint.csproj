@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Consumers\AccessRightsConsumer.cs" />
     <Compile Include="Consumers\ListBiometricInfoConsumer.cs" />
     <Compile Include="Consumers\AccessPointConsumer.cs" />
     <Compile Include="Consumers\UpdateUserBiometricConsumer.cs" />

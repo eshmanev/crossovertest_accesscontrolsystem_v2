@@ -34,13 +34,24 @@ namespace AccessControl.Web
             container
                 .RegisterType<IUserStore<ApplicationUser>, LdapUserStore>()
                 .RegisterType<IAuthenticationManager>(new InjectionFactory(_ => HttpContext.Current.GetOwinContext().Authentication))
+
+                // LDAP
                 .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IListUserGroups, IListUserGroupsResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IListDepartments, IListDepartmentsResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap)
+
+                // Access Control
                 .RegisterRequestClient<IListUsersExtended, IListUsersExtendedResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IUpdateUserBiometric, IVoidResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl)
-                .RegisterRequestClient<IListDepartments, IListDepartmentsResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IRegisterAccessPoint, IVoidResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IListAccessRights, IListAccessRightsResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IAllowUserAccess, IVoidResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IAllowUserGroupAccess, IVoidResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IDenyUserGroupAccess, IVoidResult>(WellKnownQueues.AccessControl)
                 ;
 
             return container;

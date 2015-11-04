@@ -9,12 +9,12 @@ namespace AccessControl.Contracts.Dto
         /// <summary>
         /// Gets the site.
         /// </summary>
-        string Site { get; }
+        string SiteName { get; }
 
         /// <summary>
         /// Gets the site distinguished name.
         /// </summary>
-        string SiteDistinguishedName { get; }
+        string Site { get; }
 
         /// <summary>
         /// Gets the department's name.

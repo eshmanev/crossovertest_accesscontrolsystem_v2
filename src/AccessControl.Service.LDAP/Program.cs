@@ -31,6 +31,7 @@ namespace AccessControl.Service.LDAP
                                 e.Consumer(() => container.Resolve<FindUserConsumer>());
                                 e.Consumer(() => container.Resolve<AuthenticationConsumer>());
                                 e.Consumer(() => container.Resolve<DepartmentConsumer>());
+                                e.Consumer(() => container.Resolve<UserGroupConsumer>());
                             });
                     })
                 .Run(

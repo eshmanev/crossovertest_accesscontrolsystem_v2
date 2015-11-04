@@ -40,7 +40,7 @@ namespace AccessControl.Data.Session
         /// </summary>
         /// <param name="id">The entity's identifier.</param>
         /// <returns>An entity or null.</returns>
-        public T GetById(long id)
+        public T GetById(object id)
         {
             return Session(x => x.Get<T>(id));
         }
