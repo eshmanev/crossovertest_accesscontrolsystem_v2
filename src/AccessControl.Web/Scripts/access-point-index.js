@@ -21,6 +21,15 @@
         });
     }
 
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+              .toString(16)
+              .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
     function onSiteChanged() {
         var site = $("#siteSelector option:selected").text();
         var departments = $("input[site=" + site + "]").val();
@@ -29,5 +38,10 @@
         fillDepartments(departments);
     }
 
+    function onNewGuidClick() {
+        $("#Editor_AccessPointId").val(guid());
+    }
+
     $("#siteSelector").change(onSiteChanged);
+    $("#newGuid").click(onNewGuidClick);
 })
