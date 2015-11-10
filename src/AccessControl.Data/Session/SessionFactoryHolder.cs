@@ -15,7 +15,7 @@ namespace AccessControl.Data.Session
     /// <summary>
     ///     Represents an implementation of session factory holder.
     /// </summary>
-    internal class SessionFactoryHolder : ISessionFactoryHolder
+    public class SessionFactoryHolder : ISessionFactoryHolder
     {
         private readonly IDataConfiguration _configuration;
         private readonly object _syncRoot = new object();

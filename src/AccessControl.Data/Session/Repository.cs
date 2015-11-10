@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Expressions;
-using log4net;
-using NHibernate;
 using NHibernate.Linq;
 
 namespace AccessControl.Data.Session
@@ -13,19 +11,18 @@ namespace AccessControl.Data.Session
     ///     Represents a generic repository.
     /// </summary>
     /// <typeparam name="T">The type of entities in repository.</typeparam>
-    internal class Repository<T> : IRepository<T>
+    public class Repository<T> : IRepository<T>
         where T : class
     {
-        private static ILog Log = LogManager.GetLogger(typeof(Repository<T>));
-        private readonly ISessionFactoryHolder _sessionFactoryHolder;
+        private readonly ISessionHolder _sessionHolder;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Repository{T}" /> class.
         /// </summary>
-        public Repository(ISessionFactoryHolder sessionFactoryHolder)
+        public Repository(ISessionHolder sessionHolder)
         {
-            Contract.Requires(sessionFactoryHolder != null);
-            _sessionFactoryHolder = sessionFactoryHolder;
+            Contract.Requires(sessionHolder != null);
+            _sessionHolder = sessionHolder;
         }
 
         /// <summary>
@@ -44,7 +41,7 @@ namespace AccessControl.Data.Session
         /// <returns>An entity or null.</returns>
         public T GetById(object id)
         {
-            return Session(x => x.Get<T>(id));
+            return _sessionHolder.GetSession().Get<T>(id);
         }
 
         /// <summary>
@@ -82,7 +79,8 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Insert(T entity)
         {
-            Transaction(x => x.SaveOrUpdate(entity));
+            _sessionHolder.DemandTransaction();
+            _sessionHolder.GetSession().SaveOrUpdate(entity);
         }
 
         /// <summary>
@@ -91,7 +89,8 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Update(T entity)
         {
-            Transaction(x => x.Update(entity));
+            _sessionHolder.DemandTransaction();
+            _sessionHolder.GetSession().Update(entity);
         }
 
         /// <summary>
@@ -100,55 +99,14 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Delete(T entity)
         {
-            Transaction(x => x.Delete(entity));
-        }
-
-        private TResult Session<TResult>(Func<ISession, TResult> action)
-        {
-            using (var session = OpenSession())
-            {
-                return action(session);
-            }
+            _sessionHolder.DemandTransaction();
+            _sessionHolder.GetSession().Delete(entity);
         }
 
         private TResult Query<TResult>(Func<IQueryable<T>, TResult> action)
         {
-            return Session(
-                x =>
-                {
-                    var query = x.Query<T>().Cacheable();
-                    return action(query);
-                });
-        }
-
-        private void Transaction(Action<ISession> action)
-        {
-            Session(
-                x =>
-                {
-                    using (var transaction = x.BeginTransaction())
-                    {
-                        try
-                        {
-                            action(x);
-
-                            if (transaction.IsActive)
-                                transaction.Commit();
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Error("An error occurred while executing a transaction", e);
-                            if (transaction.IsActive)
-                                transaction.Rollback();
-                        }
-                    }
-                    return true;
-                });
-        }
-
-        private ISession OpenSession()
-        {
-            return _sessionFactoryHolder.SessionFactory.OpenSession();
+            var query = _sessionHolder.GetSession().Query<T>().Cacheable();
+            return action(query);
         }
     }
 }

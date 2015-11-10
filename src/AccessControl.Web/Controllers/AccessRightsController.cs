@@ -68,7 +68,7 @@ namespace AccessControl.Web.Controllers
 
             IVoidResult result = !string.IsNullOrWhiteSpace(model.Editor.UserName)
                          ? await _allowUserRequest.Request(new AllowDenyUserAccess(model.Editor.AccessPointId, model.Editor.UserName))
-                         : await _allowUserGroupRequest.Request(new AllowDenyUserGroupAccess(model.Editor.AccessPointId, model.Editor.UserName));
+                         : await _allowUserGroupRequest.Request(new AllowDenyUserGroupAccess(model.Editor.AccessPointId, model.Editor.UserGroupName));
 
             if (!result.Succeded)
             {

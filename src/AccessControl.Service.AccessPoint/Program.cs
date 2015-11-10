@@ -1,16 +1,20 @@
-﻿using AccessControl.Contracts;
+﻿using System;
+using System.Configuration;
+using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Dto;
-using AccessControl.Data.Unity;
+using AccessControl.Data;
+using AccessControl.Data.Configuration;
+using AccessControl.Data.Session;
 using AccessControl.Service.AccessPoint.Consumers;
-using AccessControl.Service.AccessPoint.Middleware;
 using AccessControl.Service.Core;
 using MassTransit;
+using MassTransit.ConsumeConfigurators;
 using Microsoft.Practices.Unity;
 
 namespace AccessControl.Service.AccessPoint
 {
-    public class Program
+    public static class Program
     {
         /// <summary>
         ///     The main entry point for the application.
@@ -21,24 +25,29 @@ namespace AccessControl.Service.AccessPoint
                 .ConfigureContainer(
                     cfg =>
                     {
-                        cfg.AddExtension(new UnityDataExtension());
-                        cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap);
-                        cfg.RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap);
-                        cfg.RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
+                        cfg.RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
+                           .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
+                           .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
+                           .RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap)
+                           .RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>
                     {
-                        cfg.UseSessionTransaction();
                         cfg.ReceiveEndpoint(
                             host,
                             WellKnownQueues.AccessControl,
                             e =>
                             {
-                                e.Consumer(() => container.Resolve<AccessPointConsumer>());
-                                e.Consumer(() => container.Resolve<ListBiometricInfoConsumer>());
-                                e.Consumer(() => container.Resolve<UpdateUserBiometricConsumer>());
-                                e.Consumer(() => container.Resolve<AccessRightsConsumer>());
+                                e.Consumer<AccessPointConsumer>(container);
+                                e.Consumer<ListBiometricInfoConsumer>(container);
+                                e.Consumer<UpdateUserBiometricConsumer>(container);
+                                e.Consumer<AccessRightsConsumer>(container);
+
+                                //e.Consumer(() => new UnityConsumerFactory<AccessPointConsumer>(container));
+                                //e.Consumer(() => container.Resolve<ListBiometricInfoConsumer>());
+                                //e.Consumer(() => container.Resolve<UpdateUserBiometricConsumer>());
+                                //e.Consumer(() => container.Resolve<AccessRightsConsumer>());
                             });
                     })
                 .Run(
@@ -48,6 +57,13 @@ namespace AccessControl.Service.AccessPoint
                         cfg.SetDisplayName("Access Point Manager");
                         cfg.SetDescription("This service is responsible for access points management");
                     });
+        }
+
+        public static void Consumer<T>(this IReceiveEndpointConfigurator configurator, IUnityContainer container, Action<IConsumerConfigurator<T>> configure = null)
+            where T : class, IConsumer
+        {
+            var consumerFactory = new UnityConsumerFactory<T>(container);
+            configurator.Consumer(consumerFactory, configure);
         }
     }
 }
