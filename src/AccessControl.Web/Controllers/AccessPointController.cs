@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Models;
@@ -63,8 +64,8 @@ namespace AccessControl.Web.Controllers
         private async Task Initialize(AccessPointIndexViewModel model)
         {
             var appUser = HttpContext.GetApplicationUser();
-            var accessPointsTask = _listAccessPointsRequest.Request(new ListAccessPoints(appUser.Site, appUser.Department));
-            var departmentsTask = _listDepartmentsRequest.Request(new ListDepartments());
+            var accessPointsTask = _listAccessPointsRequest.Request(ListCommand.Default);
+            var departmentsTask = _listDepartmentsRequest.Request(ListCommand.Default);
 
             await Task.WhenAll(accessPointsTask, departmentsTask);
 

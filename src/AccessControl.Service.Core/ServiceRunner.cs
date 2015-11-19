@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using AccessControl.Service.Core.Configuration;
-using AccessControl.Service.Core.Middleware;
+using AccessControl.Service.Configuration;
+using AccessControl.Service;
+using AccessControl.Service.Middleware;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Practices.Unity;
@@ -9,18 +10,28 @@ using Topshelf;
 using Topshelf.HostConfigurators;
 using Topshelf.Unity;
 
-namespace AccessControl.Service.Core
+namespace AccessControl.Service
 {
+    /// <summary>
+    ///     Represents a service runner.
+    /// </summary>
     public class ServiceRunner : ServiceRunner<BusServiceControl>
     {
     }
 
+    /// <summary>
+    ///     Represents a generic service runner.
+    /// </summary>
+    /// <typeparam name="T">The type of service control.</typeparam>
     public class ServiceRunner<T>
         where T : class, ServiceControl
     {
         private readonly UnityContainer _container;
         private IBusControl _busControl;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ServiceRunner{T}" /> class.
+        /// </summary>
         public ServiceRunner()
         {
             _container = new UnityContainer();
@@ -40,7 +51,7 @@ namespace AccessControl.Service.Core
                 {
                     cfg.UseExceptionLogger();
                     cfg.UseBsonSerializer();
-                    // cfg.UseTransaction();
+                    cfg.UseIdentity();
 
                     var host = cfg.Host(
                         new Uri(rabbitMqConfig.Url),
@@ -52,6 +63,7 @@ namespace AccessControl.Service.Core
 
                     config(cfg, host, _container);
                 });
+            _busControl.ConnectSendObserver(new SendObserver());
             return this;
         }
 

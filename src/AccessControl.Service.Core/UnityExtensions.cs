@@ -1,9 +1,9 @@
 using System;
-using AccessControl.Service.Core.Configuration;
+using AccessControl.Service.Configuration;
 using MassTransit;
 using Microsoft.Practices.Unity;
 
-namespace AccessControl.Service.Core
+namespace AccessControl.Service
 {
     public static class UnityExtensions
     {
@@ -19,7 +19,7 @@ namespace AccessControl.Service.Core
                             {
                                 var bus = container.Resolve<IBus>();
                                 var config = container.Resolve<IRabbitMqConfig>();
-                                var url = config.Url.EndsWith("/") ? $"{config.Url}{queueName}" : $"{config.Url}/{queueName}";
+                                var url = config.GetQueueUrl(queueName);
                                 return new MessageRequestClient<TRequest, TResponse>(bus, new Uri(url), TimeSpan.FromSeconds(30));
                             }));
         }

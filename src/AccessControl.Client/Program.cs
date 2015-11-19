@@ -1,5 +1,5 @@
 ﻿using AccessControl.Client.Vendor;
-using AccessControl.Service.Core;
+using AccessControl.Service;
 using Microsoft.Practices.Unity;
 using Vendor.API;
 
@@ -23,7 +23,6 @@ namespace AccessControl.Client
         private static void ContainerConfig(IUnityContainer container)
         {
             container
-                //.RegisterInstance(container)
                 .RegisterType<IAccessPointRegistry, AccessPointRegistry>()
                 .RegisterType<IAccessCheckService, AccessCheckService>();
         }

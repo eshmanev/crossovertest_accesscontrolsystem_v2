@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Web;
+using AccessControl.Contracts;
+using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Configuration;
+using AccessControl.Web.Services;
 using MassTransit;
+using MassTransit.Pipeline;
 using Microsoft.Practices.Unity;
 
 namespace AccessControl.Web
@@ -15,28 +21,41 @@ namespace AccessControl.Web
               cfg =>
               {
                   cfg.UseBsonSerializer();
-                  var host = cfg.Host(
+                  cfg.Host(
                       new Uri(rabbitMqConfig.Url),
                       h =>
                       {
                           h.Username(rabbitMqConfig.UserName);
                           h.Password(rabbitMqConfig.Password);
                       });
-
-                  cfg.ReceiveEndpoint(
-                      host,
-                      "AccessControl.Web",
-                      e =>
-                      {
-                          //e.AutoDelete = true;
-                          //e.Durable = false;
-                      });
               });
+
+            busControl.ConnectSendObserver(new MessageSendObserver());
 
             container.RegisterInstance<IBus>(busControl)
                      .RegisterInstance<IBusControl>(busControl);
 
             return busControl;
+        }
+
+        private class MessageSendObserver : ISendObserver
+        {
+            public Task PreSend<T>(SendContext<T> context) where T : class
+            {
+                var user = HttpContext.Current.GetApplicationUser();
+                context.Headers.Set(WellKnownHeaders.Identity, new Identity(user.Site, user.Department, user.UserName));
+                return Task.FromResult(true);
+            }
+
+            public Task PostSend<T>(SendContext<T> context) where T : class
+            {
+                return Task.FromResult(true);
+            }
+
+            public Task SendFault<T>(SendContext<T> context, Exception exception) where T : class
+            {
+                return Task.FromResult(true);
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ namespace AccessControl.Web.Models.Account
             if (claimIdentity == null)
                 return;
 
+            UserName = claimIdentity.FindFirstValue("UserName");
             DisplayName = claimIdentity.FindFirstValue("DisplayName");
             Department = claimIdentity.FindFirstValue("Department");
             Site = claimIdentity.FindFirstValue("Site");
@@ -42,7 +43,8 @@ namespace AccessControl.Web.Models.Account
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-
+            
+            userIdentity.AddClaim(new Claim("UserName", UserName));
             userIdentity.AddClaim(new Claim("DisplayName", DisplayName));
             userIdentity.AddClaim(new Claim("Department", Department));
             userIdentity.AddClaim(new Claim("Site", Site));

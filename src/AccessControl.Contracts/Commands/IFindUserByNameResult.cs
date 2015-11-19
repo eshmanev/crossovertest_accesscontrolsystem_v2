@@ -2,8 +2,17 @@
 
 namespace AccessControl.Contracts.Commands
 {
+    /// <summary>
+    ///     Represents a result of the <see cref="IFindUserByName" /> command.
+    /// </summary>
     public interface IFindUserByNameResult
     {
-        IUser User { get; } 
+        /// <summary>
+        ///     Gets the user.
+        /// </summary>
+        /// <value>
+        ///     The user.
+        /// </value>
+        IUser User { get; }
     }
 }

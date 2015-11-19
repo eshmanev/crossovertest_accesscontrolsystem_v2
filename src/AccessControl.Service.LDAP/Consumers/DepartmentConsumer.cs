@@ -3,6 +3,7 @@ using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Configuration;
@@ -34,7 +35,7 @@ namespace AccessControl.Service.LDAP.Consumers
                 where !string.IsNullOrWhiteSpace(siteDistinguished) && !string.IsNullOrWhiteSpace(site) && !string.IsNullOrWhiteSpace(department)
                 select new Department(siteDistinguished, site, department);
 
-            return context.RespondAsync(new ListDepartmentsResult(departments.Cast<IDepartment>().Distinct().ToArray()));
+            return context.RespondAsync(ListCommand.Result(departments.Cast<IDepartment>().Distinct().ToArray()));
         }
 
         public Task Consume(ConsumeContext<IValidateDepartment> context)

@@ -2,7 +2,7 @@
 using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
-using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Configuration;
@@ -22,7 +22,7 @@ namespace AccessControl.Service.LDAP.Consumers
 
         public Task Consume(ConsumeContext<IListUserGroups> context)
         {
-            var path = _config.CombinePath(context.Message.Site);
+            var path = _config.CombinePath(context.Site());
             var entry = new DirectoryEntry(path, _config.UserName, _config.Password);
 
             var searcher = new DirectorySearcher(entry)
@@ -36,7 +36,7 @@ namespace AccessControl.Service.LDAP.Consumers
                                  .Cast<IUserGroup>()
                                  .ToArray();
 
-            return context.RespondAsync(new ListUserGroupsResult(groups));
+            return context.RespondAsync(ListCommand.Result(groups));
         }
     }
 }

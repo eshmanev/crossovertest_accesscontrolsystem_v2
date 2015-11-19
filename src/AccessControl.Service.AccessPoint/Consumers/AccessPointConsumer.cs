@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Data;
+using AccessControl.Service;
 using MassTransit;
 
 namespace AccessControl.Service.AccessPoint.Consumers
@@ -21,6 +23,17 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
             _accessPointRepository = accessPointRepository;
             _validateDepartmentRequest = validateDepartmentRequest;
+        }
+
+        public Task Consume(ConsumeContext<IListAccessPoints> context)
+        {
+            var entities = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
+            var accessPoints =
+                entities.Select(x => new Contracts.Helpers.AccessPoint(x.AccessPointId, x.Site, x.Department, x.Name) {Description = x.Description})
+                        .Cast<IAccessPoint>()
+                        .ToArray();
+
+            return context.RespondAsync(ListCommand.Result(accessPoints));
         }
 
         public async Task Consume(ConsumeContext<IRegisterAccessPoint> context)
@@ -42,17 +55,6 @@ namespace AccessControl.Service.AccessPoint.Consumers
             };
             _accessPointRepository.Insert(accessPoint);
             context.Respond(new VoidResult());
-        }
-
-        public Task Consume(ConsumeContext<IListAccessPoints> context)
-        {
-            var entities = _accessPointRepository.Filter(x => x.Site == context.Message.Site && x.Department == context.Message.Department);
-            var accessPoints =
-                entities.Select(x => new Contracts.Helpers.AccessPoint(x.AccessPointId, x.Site, x.Department, x.Name) {Description = x.Description})
-                        .Cast<IAccessPoint>()
-                        .ToArray();
-
-            return context.RespondAsync(new ListAccessPointsResult(accessPoints));
         }
     }
 }

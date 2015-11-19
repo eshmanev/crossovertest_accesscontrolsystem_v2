@@ -3,7 +3,7 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts.Dto
 {
-    [ContractClass(typeof(UserContract))]
+    [ContractClass(typeof(IUserContract))]
     public interface IUser
     {
         string Site { get; }

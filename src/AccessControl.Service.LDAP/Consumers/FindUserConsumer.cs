@@ -2,8 +2,8 @@
 using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
-using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Configuration;
@@ -11,7 +11,7 @@ using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
 {
-    public class FindUserConsumer : IConsumer<IFindUserByName>, IConsumer<IFindUsersByDepartment>
+    public class FindUserConsumer : IConsumer<IFindUserByName>, IConsumer<IListUsers>
     {
         private readonly ILdapConfig _config;
 
@@ -31,12 +31,12 @@ namespace AccessControl.Service.LDAP.Consumers
             return context.RespondAsync<IFindUserByNameResult>(new FindUserByNameResult(user));
         }
 
-        public Task Consume(ConsumeContext<IFindUsersByDepartment> context)
+        public Task Consume(ConsumeContext<IListUsers> context)
         {
-            var entry = new DirectoryEntry(_config.CombinePath(context.Message.Site), _config.UserName, _config.Password);
-            var searcher = new DirectorySearcher(entry) { Filter = $"(&(objectClass=user)(department={context.Message.Department}))" };
+            var entry = new DirectoryEntry(_config.CombinePath(context.Site()), _config.UserName, _config.Password);
+            var searcher = new DirectorySearcher(entry) {Filter = $"(&(objectClass=user)(department={context.Department()}))"};
             var users = searcher.FindAll().Cast<SearchResult>().Select(ConvertUser).ToArray();
-            return context.RespondAsync(new FindUsersByDepartmentResult(users));
+            return context.RespondAsync(ListCommand.Result(users));
         }
 
         private IUser ConvertUser(SearchResult result)

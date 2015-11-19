@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using MassTransit;
 using MassTransit.Pipeline;
 
-namespace AccessControl.Service.Core.Middleware
+namespace AccessControl.Service.Middleware
 {
     /// <summary>
     /// Logs pipe exceptions.

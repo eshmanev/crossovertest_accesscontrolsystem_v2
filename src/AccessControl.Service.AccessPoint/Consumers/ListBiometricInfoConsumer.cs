@@ -1,41 +1,46 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
-using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Data;
+using AccessControl.Service.Configuration;
 using MassTransit;
 using User = AccessControl.Data.Entities.User;
 
 namespace AccessControl.Service.AccessPoint.Consumers
 {
-    public class ListBiometricInfoConsumer : IConsumer<IListUsersExtended>
+    public class ListBiometricInfoConsumer : IConsumer<IListUsersBiometric>
     {
-        private readonly IRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult> _findUsersRequest;
+        private readonly IRabbitMqConfig _config;
+        private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
         private readonly IRepository<User> _userRepository;
 
-        public ListBiometricInfoConsumer(IRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult> findUsersRequest, IRepository<User> userRepository)
+        public ListBiometricInfoConsumer(IRabbitMqConfig config, IRequestClient<IListUsers, IListUsersResult> listUsersRequest, IRepository<User> userRepository)
         {
-            Contract.Requires(findUsersRequest != null);
+            Contract.Requires(config != null);
+            Contract.Requires(listUsersRequest != null);
             Contract.Requires(userRepository != null);
 
-            _findUsersRequest = findUsersRequest;
+            _config = config;
+            _listUsersRequest = listUsersRequest;
             _userRepository = userRepository;
         }
 
-        public async Task Consume(ConsumeContext<IListUsersExtended> context)
+        public async Task Consume(ConsumeContext<IListUsersBiometric> context)
         {
-            var requestResult = await _findUsersRequest.Request(new FindUsersByDepartment(context.Message.Site, context.Message.Department));
+            var requestResult = await _listUsersRequest.Request(ListCommand.Default);
             var users = requestResult.Users.ToList();
             var userNames = users.Select(x => x.UserName).ToList();
             var entities = _userRepository.Filter(x => userNames.Contains(x.UserName)).ToDictionary(x => x.UserName);
-            var usersExtended = users
+            var userBiometrics = users
                 .Select(
                     x =>
                     {
                         User userEntity;
-                        return new UserExtended(x.Site, x.UserName)
+                        return new UserBiometric(x.Site, x.UserName)
                         {
                             Department = x.Department,
                             PhoneNumber = x.PhoneNumber,
@@ -44,9 +49,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
                             BiometricHash = entities.TryGetValue(x.UserName, out userEntity) ? userEntity.BiometricHash : null
                         };
                     })
-                .Cast<IUserExtended>()
+                .Cast<IUserBiometric>()
                 .ToArray();
-            await context.RespondAsync(new ListUsersExtendedResult(usersExtended));
+            await context.RespondAsync(ListCommand.Result(userBiometrics));
         }
     }
 }

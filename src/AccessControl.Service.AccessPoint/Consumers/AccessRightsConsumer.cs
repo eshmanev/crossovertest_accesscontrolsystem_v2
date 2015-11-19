@@ -2,7 +2,9 @@
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
+using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Data;
 using AccessControl.Data.Entities;
@@ -31,7 +33,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
         public Task Consume(ConsumeContext<IListAccessRights> context)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task Consume(ConsumeContext<IAllowUserAccess> context)

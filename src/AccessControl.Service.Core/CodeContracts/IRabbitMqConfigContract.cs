@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
-using AccessControl.Service.Core.Configuration;
+using AccessControl.Service.Configuration;
 
-namespace AccessControl.Service.Core.CodeContracts
+namespace AccessControl.Service.CodeContracts
 {
     /// <summary>
     ///     Represents a contract class for the <see cref="IRabbitMqConfig" /> interface.
@@ -26,6 +26,13 @@ namespace AccessControl.Service.Core.CodeContracts
                 Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
                 return null;
             }
+        }
+
+        public string GetQueueUrl(string queueName)
+        {
+            Contract.Requires(!string.IsNullOrWhiteSpace(queueName));
+            Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+            return null;
         }
 
         public string Password

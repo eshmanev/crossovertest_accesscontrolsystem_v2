@@ -4,6 +4,7 @@ using System.Web.Configuration;
 using System.Web.Mvc;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Web.Configuration;
 using AccessControl.Web.Models.Account;
@@ -40,10 +41,10 @@ namespace AccessControl.Web
                 .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IListUserGroups, IListUserGroupsResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IListDepartments, IListDepartmentsResult>(WellKnownQueues.Ldap)
-                .RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap)
+                .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
 
                 // Access Control
-                .RegisterRequestClient<IListUsersExtended, IListUsersExtendedResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IUpdateUserBiometric, IVoidResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IRegisterAccessPoint, IVoidResult>(WellKnownQueues.AccessControl)

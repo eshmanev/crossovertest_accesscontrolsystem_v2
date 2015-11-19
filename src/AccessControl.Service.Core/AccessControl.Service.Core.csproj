@@ -7,7 +7,7 @@
     <ProjectGuid>{F92CA63C-0A6E-413A-AA74-2E2C4F354309}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AccessControl.Service.Core</RootNamespace>
+    <RootNamespace>AccessControl.Service</RootNamespace>
     <AssemblyName>AccessControl.Service.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,11 +35,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="MassTransit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
-      <HintPath>..\packages\MassTransit.3.0.14\lib\net45\MassTransit.dll</HintPath>
+      <HintPath>..\packages\MassTransit.3.0.15\lib\net45\MassTransit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MassTransit.RabbitMqTransport, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
-      <HintPath>..\packages\MassTransit.RabbitMQ.3.0.14\lib\net45\MassTransit.RabbitMqTransport.dll</HintPath>
+      <HintPath>..\packages\MassTransit.RabbitMQ.3.0.15\lib\net45\MassTransit.RabbitMqTransport.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -62,8 +62,8 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RabbitMQ.Client, Version=3.5.4.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
-      <HintPath>..\packages\RabbitMQ.Client.3.5.4\lib\net40\RabbitMQ.Client.dll</HintPath>
+    <Reference Include="RabbitMQ.Client, Version=3.5.6.0, Culture=neutral, PublicKeyToken=89e7d7c5feba84ce, processorArchitecture=MSIL">
+      <HintPath>..\packages\RabbitMQ.Client.3.5.6\lib\net40\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -88,9 +88,14 @@
     <Compile Include="CodeContracts\IRabbitMqConfigContract.cs" />
     <Compile Include="Configuration\IRabbitMqConfig.cs" />
     <Compile Include="Configuration\RabbitMqConfig.cs" />
+    <Compile Include="ConsumeContextExtensions.cs" />
+    <Compile Include="Middleware\SendObserver.cs" />
     <Compile Include="Middleware\ExceptionLoggerFilter.cs" />
+    <Compile Include="Middleware\IdentityFilter.cs" />
     <Compile Include="Middleware\PipeConfiguratorExtensions.cs" />
     <Compile Include="Middleware\GenericPipeSpecification.cs" />
+    <Compile Include="Security\ServicePrincipal.cs" />
+    <Compile Include="Security\ServiceIdentity.cs" />
     <Compile Include="ServiceRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BusServiceControl.cs" />
@@ -99,6 +104,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">
+      <Project>{E8207E15-2A39-458B-A292-D9294E37F2FB}</Project>
+      <Name>AccessControl.Contracts</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

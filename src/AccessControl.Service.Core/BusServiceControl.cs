@@ -2,7 +2,7 @@
 using MassTransit;
 using Topshelf;
 
-namespace AccessControl.Service.Core
+namespace AccessControl.Service
 {
     public class BusServiceControl : ServiceControl
     {

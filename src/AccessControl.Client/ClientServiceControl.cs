@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using AccessControl.Client.Vendor;
-using AccessControl.Service.Core;
+using AccessControl.Service;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;

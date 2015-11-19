@@ -3,7 +3,7 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts.Dto
 {
-    [ContractClass(typeof(VoidResultContract))]
+    [ContractClass(typeof(IVoidResultContract))]
     public interface IVoidResult
     {
         bool Succeded { get; }

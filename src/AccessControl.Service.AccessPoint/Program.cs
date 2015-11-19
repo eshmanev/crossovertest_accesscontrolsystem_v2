@@ -2,12 +2,12 @@
 using System.Configuration;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Data;
 using AccessControl.Data.Configuration;
 using AccessControl.Data.Session;
 using AccessControl.Service.AccessPoint.Consumers;
-using AccessControl.Service.Core;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using Microsoft.Practices.Unity;
@@ -16,6 +16,13 @@ namespace AccessControl.Service.AccessPoint
 {
     public static class Program
     {
+        public static void Consumer<T>(this IReceiveEndpointConfigurator configurator, IUnityContainer container, Action<IConsumerConfigurator<T>> configure = null)
+            where T : class, IConsumer
+        {
+            var consumerFactory = new UnityConsumerFactory<T>(container);
+            configurator.Consumer(consumerFactory, configure);
+        }
+
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -28,7 +35,7 @@ namespace AccessControl.Service.AccessPoint
                         cfg.RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
                            .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
                            .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
-                           .RegisterRequestClient<IFindUsersByDepartment, IFindUsersByDepartmentResult>(WellKnownQueues.Ldap)
+                           .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
                            .RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
                     })
                 .ConfigureBus(
@@ -57,13 +64,6 @@ namespace AccessControl.Service.AccessPoint
                         cfg.SetDisplayName("Access Point Manager");
                         cfg.SetDescription("This service is responsible for access points management");
                     });
-        }
-
-        public static void Consumer<T>(this IReceiveEndpointConfigurator configurator, IUnityContainer container, Action<IConsumerConfigurator<T>> configure = null)
-            where T : class, IConsumer
-        {
-            var consumerFactory = new UnityConsumerFactory<T>(container);
-            configurator.Consumer(consumerFactory, configure);
         }
     }
 }

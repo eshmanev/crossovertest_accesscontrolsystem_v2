@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 using AccessControl.Contracts;
-using AccessControl.Service.Core;
+using AccessControl.Service;
 using AccessControl.Service.LDAP.Configuration;
 using AccessControl.Service.LDAP.Consumers;
 using MassTransit;

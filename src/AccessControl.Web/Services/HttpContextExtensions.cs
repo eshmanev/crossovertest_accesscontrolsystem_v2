@@ -7,9 +7,14 @@ namespace AccessControl.Web.Services
 {
     public static class HttpContextExtensions
     {
+        public static ApplicationUser GetApplicationUser(this HttpContext context)
+        {
+            return context != null ? GetApplicationUser(new HttpContextWrapper(context)) : new ApplicationUser();
+        }
+
         public static ApplicationUser GetApplicationUser(this HttpContextBase context)
         {
-            return !context.User.Identity.IsAuthenticated ? new ApplicationUser() : new ApplicationUser(context.User.Identity);
+            return context.User != null && context.User.Identity.IsAuthenticated ? new ApplicationUser(context.User.Identity) : new ApplicationUser();
         }
 
         public static ApplicationSignInManager GetSignInManager(this HttpContextBase context)

@@ -7,7 +7,7 @@ using MassTransit.PipeBuilders;
 using MassTransit.PipeConfigurators;
 using MassTransit.Pipeline;
 
-namespace AccessControl.Service.Core.Middleware
+namespace AccessControl.Service.Middleware
 {
     /// <summary>
     ///     Represents a generic specification for a single filter.

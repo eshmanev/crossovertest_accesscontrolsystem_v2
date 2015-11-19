@@ -3,7 +3,7 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts.Dto
 {
-    [ContractClass(typeof(ValidationPropertyErrorContract))]
+    [ContractClass(typeof(IValidationPropertyErrorContract))]
     public interface IValidationPropertyError
     {
         string Message { get; }
