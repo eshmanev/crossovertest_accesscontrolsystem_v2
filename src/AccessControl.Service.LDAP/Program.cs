@@ -28,7 +28,7 @@ namespace AccessControl.Service.LDAP
                             {
                                 //e.AutoDelete = true;
                                 //e.Durable = false;
-                                e.Consumer(() => container.Resolve<FindUserConsumer>());
+                                e.Consumer(() => container.Resolve<UserConsumer>());
                                 e.Consumer(() => container.Resolve<AuthenticationConsumer>());
                                 e.Consumer(() => container.Resolve<DepartmentConsumer>());
                                 e.Consumer(() => container.Resolve<UserGroupConsumer>());

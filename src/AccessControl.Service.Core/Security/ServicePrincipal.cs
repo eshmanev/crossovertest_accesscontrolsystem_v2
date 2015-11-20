@@ -14,6 +14,6 @@ namespace AccessControl.Service.Security
             return false;
         }
 
-        public System.Security.Principal.IIdentity Identity { get; }
+        public IIdentity Identity { get; }
     }
 }

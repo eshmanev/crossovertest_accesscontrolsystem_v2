@@ -11,16 +11,28 @@ using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
 {
-    public class FindUserConsumer : IConsumer<IFindUserByName>, IConsumer<IListUsers>
+    /// <summary>
+    ///     Represents a consumer of LDAP users.
+    /// </summary>
+    public class UserConsumer : IConsumer<IFindUserByName>, IConsumer<IListUsers>
     {
         private readonly ILdapConfig _config;
 
-        public FindUserConsumer(ILdapConfig config)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="UserConsumer" /> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        public UserConsumer(ILdapConfig config)
         {
             Contract.Requires(config != null);
             _config = config;
         }
 
+        /// <summary>
+        ///     Searches for a user by name.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public Task Consume(ConsumeContext<IFindUserByName> context)
         {
             var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
@@ -31,6 +43,11 @@ namespace AccessControl.Service.LDAP.Consumers
             return context.RespondAsync<IFindUserByNameResult>(new FindUserByNameResult(user));
         }
 
+        /// <summary>
+        ///     Returns a list of users.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public Task Consume(ConsumeContext<IListUsers> context)
         {
             var entry = new DirectoryEntry(_config.CombinePath(context.Site()), _config.UserName, _config.Password);
