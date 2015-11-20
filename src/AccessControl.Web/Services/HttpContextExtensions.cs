@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Web;
+﻿using System.Web;
 using AccessControl.Web.Models.Account;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -7,11 +6,6 @@ namespace AccessControl.Web.Services
 {
     public static class HttpContextExtensions
     {
-        public static ApplicationUser GetApplicationUser(this HttpContext context)
-        {
-            return context != null ? GetApplicationUser(new HttpContextWrapper(context)) : new ApplicationUser();
-        }
-
         public static ApplicationUser GetApplicationUser(this HttpContextBase context)
         {
             return context.User != null && context.User.Identity.IsAuthenticated ? new ApplicationUser(context.User.Identity) : new ApplicationUser();

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AccessControl.Contracts.Commands.Lists;
@@ -6,7 +7,6 @@ using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Models.AccessRights;
-using AccessControl.Web.Services;
 using MassTransit;
 
 namespace AccessControl.Web.Controllers
@@ -53,15 +53,13 @@ namespace AccessControl.Web.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var user = HttpContext.GetApplicationUser();
-
             var model = new AccessRightsIndexViewModel {Editor = new EditAccessRightsViewModel()};
             await Initialize(model);
             return View(model);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Index(AccessRightsIndexViewModel model)
+        [HttpPost, ActionName("Index")]
+        public async Task<ActionResult> Allow(AccessRightsIndexViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -78,6 +76,21 @@ namespace AccessControl.Web.Controllers
                 ModelState.AddModelError(string.Empty, result.Fault.Summary);
                 await Initialize(model);
                 return View(model);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Deny(bool group, string userOrGroupName, Guid accessPointId)
+        {
+            var result = !group
+                             ? await _denyUserRequest.Request(new AllowDenyUserAccess(accessPointId, userOrGroupName))
+                             : await _denyUserGroupRequest.Request(new AllowDenyUserGroupAccess(accessPointId, userOrGroupName));
+
+            if (!result.Succeded)
+            {
+                ModelState.AddModelError(string.Empty, result.Fault.Summary);
+                return await Index();
             }
 
             return RedirectToAction("Index");

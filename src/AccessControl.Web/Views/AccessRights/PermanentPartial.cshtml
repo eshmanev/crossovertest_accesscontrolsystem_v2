@@ -1,8 +1,5 @@
 ﻿@using AccessControl.Web.Models.AccessRights
 @model dynamic
-@{
-    var owner = (AccessRightsIndexViewModel)ViewData["Owner"];
-}
 
 @if (Model.Rules.Length > 0)
 {
@@ -13,7 +10,7 @@
             <td>@Model.Owner.GetSite(item.AccessPointId)</td>
             <td>@Model.Owner.GetDepartment(item.AccessPointId)</td>
             <td>@Model.Owner.GetName(item.AccessPointId)</td>
-            <td>deny</td>
+            <td>@Html.ActionLink("deny", "Deny", new { userOrGroupName = Model.Identity, accessPointId = item.AccessPointId, group = Model.IsGroup })</td>
         </tr>
     }
 }

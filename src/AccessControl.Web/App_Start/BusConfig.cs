@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Configuration;
+using AccessControl.Web.Models.Account;
 using AccessControl.Web.Services;
 using MassTransit;
 using MassTransit.Pipeline;
@@ -42,7 +44,10 @@ namespace AccessControl.Web
         {
             public Task PreSend<T>(SendContext<T> context) where T : class
             {
-                var user = HttpContext.Current.GetApplicationUser();
+                var user = Thread.CurrentPrincipal != null && Thread.CurrentPrincipal.Identity.IsAuthenticated
+                               ? new ApplicationUser(Thread.CurrentPrincipal.Identity)
+                               : new ApplicationUser();
+
                 context.Headers.Set(WellKnownHeaders.Identity, new Identity(user.Site, user.Department, user.UserName));
                 return Task.FromResult(true);
             }
