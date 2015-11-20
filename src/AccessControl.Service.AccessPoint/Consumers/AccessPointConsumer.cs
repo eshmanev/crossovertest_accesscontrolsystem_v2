@@ -7,16 +7,23 @@ using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Data;
-using AccessControl.Service;
 using MassTransit;
 
 namespace AccessControl.Service.AccessPoint.Consumers
 {
+    /// <summary>
+    ///     Represents a consumer of access points.
+    /// </summary>
     public class AccessPointConsumer : IConsumer<IRegisterAccessPoint>, IConsumer<IListAccessPoints>
     {
         private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
         private readonly IRequestClient<IValidateDepartment, IVoidResult> _validateDepartmentRequest;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AccessPointConsumer" /> class.
+        /// </summary>
+        /// <param name="accessPointRepository">The access point repository.</param>
+        /// <param name="validateDepartmentRequest">The validate department request.</param>
         public AccessPointConsumer(IRepository<Data.Entities.AccessPoint> accessPointRepository, IRequestClient<IValidateDepartment, IVoidResult> validateDepartmentRequest)
         {
             Contract.Requires(accessPointRepository != null);
@@ -27,7 +34,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         }
 
         /// <summary>
-        /// Returns a list of access points.
+        ///     Returns a list of access points.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
@@ -43,7 +50,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         }
 
         /// <summary>
-        /// Registers a new access point.
+        ///     Registers a new access point.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>

@@ -12,12 +12,21 @@ using User = AccessControl.Data.Entities.User;
 
 namespace AccessControl.Service.AccessPoint.Consumers
 {
+    /// <summary>
+    ///     Represents a consumer of users' biometric information.
+    /// </summary>
     public class BiometricInfoConsumer : IConsumer<IListUsersBiometric>, IConsumer<IUpdateUserBiometric>
     {
-        private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
+        private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
         private readonly IRepository<User> _userRepository;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="BiometricInfoConsumer" /> class.
+        /// </summary>
+        /// <param name="listUsersRequest">The list users request.</param>
+        /// <param name="findUserRequest">The find user request.</param>
+        /// <param name="userRepository">The user repository.</param>
         public BiometricInfoConsumer(IRequestClient<IListUsers, IListUsersResult> listUsersRequest,
                                      IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest,
                                      IRepository<User> userRepository)
@@ -32,7 +41,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         }
 
         /// <summary>
-        /// Returns a list of users with biometric information.
+        ///     Returns a list of users with biometric information.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
@@ -62,7 +71,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         }
 
         /// <summary>
-        /// Updates biometric information for the specified user.
+        ///     Updates biometric information for the specified user.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>

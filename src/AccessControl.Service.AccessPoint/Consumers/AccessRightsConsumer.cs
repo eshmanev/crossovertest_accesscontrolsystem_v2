@@ -12,6 +12,9 @@ using MassTransit;
 
 namespace AccessControl.Service.AccessPoint.Consumers
 {
+    /// <summary>
+    ///     Represents a consumer of access rights.
+    /// </summary>
     public class AccessRightsConsumer : IConsumer<IListAccessRights>,
                                         IConsumer<IAllowUserAccess>,
                                         IConsumer<IAllowUserGroupAccess>,
@@ -21,6 +24,11 @@ namespace AccessControl.Service.AccessPoint.Consumers
         private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
         private readonly IRepository<AccessRightsBase> _accessRightsRepository;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="AccessRightsConsumer" /> class.
+        /// </summary>
+        /// <param name="accessPointRepository">The access point repository.</param>
+        /// <param name="accessRightsRepository">The access rights repository.</param>
         public AccessRightsConsumer(IRepository<Data.Entities.AccessPoint> accessPointRepository,
                                     IRepository<AccessRightsBase> accessRightsRepository)
         {
@@ -38,10 +46,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IAllowUserAccess> context)
         {
-            var accessRights = _accessRightsRepository.Filter(x => x is UserAccessRights && ((UserAccessRights) x).UserName == context.Message.UserName)
-                                                      .Cast<UserAccessRights>()
-                                                      .FirstOrDefault();
-            return AllowPermanentAccess(
+            var accessRights = GetUserAccessRights(context.Message.UserName);
+            return TryAllowPermanentAccess(
                 context,
                 context.Message.AccessPointId,
                 accessRights ?? new UserAccessRights {UserName = context.Message.UserName});
@@ -54,10 +60,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IAllowUserGroupAccess> context)
         {
-            var accessRights = _accessRightsRepository.Filter(x => x is UserGroupAccessRights && ((UserGroupAccessRights) x).UserGroupName == context.Message.UserGroupName)
-                                                      .Cast<UserGroupAccessRights>()
-                                                      .FirstOrDefault();
-            return AllowPermanentAccess(
+            var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
+            return TryAllowPermanentAccess(
                 context,
                 context.Message.AccessPointId,
                 accessRights ?? new UserGroupAccessRights {UserGroupName = context.Message.UserGroupName});
@@ -70,7 +74,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IDenyUserAccess> context)
         {
-            throw new NotImplementedException();
+            var accessRights = GetUserAccessRights(context.Message.UserName);
+            return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
         }
 
         /// <summary>
@@ -80,9 +85,15 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IDenyUserGroupAccess> context)
         {
-            throw new NotImplementedException();
+            var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
+            return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
         }
 
+        /// <summary>
+        ///     Lists access rights.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public Task Consume(ConsumeContext<IListAccessRights> context)
         {
             var accessPoints = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
@@ -98,8 +109,57 @@ namespace AccessControl.Service.AccessPoint.Consumers
             return context.RespondAsync(ListCommand.Result(visitor.UserAccessRightsDto.ToArray(), visitor.UserGroupAccessRightsDto.ToArray()));
         }
 
-        private Task AllowPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights)
+        private Task DenyPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights)
         {
+            if (accessRights == null)
+            {
+                return context.RespondAsync(new VoidResult());
+            }
+
+            var accessRule = accessRights.AccessRules
+                                         .OfType<PermanentAccessRule>()
+                                         .FirstOrDefault(x => x.AccessPoint.AccessPointId == accessPointId);
+
+            if (accessRule == null)
+            {
+                return context.RespondAsync(new VoidResult());
+            }
+
+            accessRights.RemoveAccessRule(accessRule);
+            if (accessRights.AccessRules.Any())
+            {
+                _accessRightsRepository.Update(accessRights);
+            }
+
+            else
+            {
+                _accessRightsRepository.Delete(accessRights);
+            }
+
+            return context.RespondAsync(new VoidResult());
+        }
+
+        private UserAccessRights GetUserAccessRights(string userName)
+        {
+            return _accessRightsRepository.Filter(x => x is UserAccessRights && ((UserAccessRights) x).UserName == userName)
+                                          .Cast<UserAccessRights>()
+                                          .FirstOrDefault();
+        }
+
+        private UserGroupAccessRights GetUserGroupAccessRights(string userGroupName)
+        {
+            return _accessRightsRepository.Filter(x => x is UserGroupAccessRights && ((UserGroupAccessRights) x).UserGroupName == userGroupName)
+                                          .Cast<UserGroupAccessRights>()
+                                          .FirstOrDefault();
+        }
+
+        private Task TryAllowPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights)
+        {
+            if (accessRights.AccessRules.Any(x => x.AccessPoint.AccessPointId == accessPointId))
+            {
+                return context.RespondAsync(new VoidResult());
+            }
+
             var accessPoint = _accessPointRepository.GetById(accessPointId);
             if (accessPoint == null)
             {
