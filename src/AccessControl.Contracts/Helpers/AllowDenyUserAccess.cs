@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Management;
 
 namespace AccessControl.Contracts.Helpers
 {

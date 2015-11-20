@@ -2,7 +2,7 @@
 using AccessControl.Contracts.CodeContracts;
 using AccessControl.Contracts.Dto;
 
-namespace AccessControl.Contracts.Commands
+namespace AccessControl.Contracts.Commands.Management
 {
     /// <summary>
     ///     Registers the given access point.

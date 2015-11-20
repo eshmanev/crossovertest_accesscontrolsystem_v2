@@ -51,6 +51,17 @@ namespace AccessControl.Contracts.Helpers
             return new ListUsersBiometricResult {Users = users};
         }
 
+        public static IListAccessRightsResult Result(IUserAccessRights[] userAccessRights, IUserGroupAccessRights[] userGroupAccessRights)
+        {
+            Contract.Requires(userAccessRights != null);
+            Contract.Requires(userGroupAccessRights != null);
+            return new ListAccessRightsResult {UserAccessRights = userAccessRights, UserGroupAccessRights = userGroupAccessRights};
+        }
+
+        #endregion
+
+        #region Nested classes
+
         private class ListAccessPointsResult : IListAccessPointsResult
         {
             public IAccessPoint[] AccessPoints { get; set; }
@@ -74,6 +85,12 @@ namespace AccessControl.Contracts.Helpers
         private class ListUsersBiometricResult : IListUsersBiometricResult
         {
             public IUserBiometric[] Users { get; set; }
+        }
+
+        private class ListAccessRightsResult : IListAccessRightsResult
+        {
+            public IUserAccessRights[] UserAccessRights { get; set; }
+            public IUserGroupAccessRights[] UserGroupAccessRights { get; set; }
         }
 
         #endregion

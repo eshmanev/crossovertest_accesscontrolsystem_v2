@@ -2,6 +2,7 @@
 using System.DirectoryServices;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Configuration;
 using MassTransit;

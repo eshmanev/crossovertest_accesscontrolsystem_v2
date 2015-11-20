@@ -16,13 +16,6 @@ namespace AccessControl.Service.AccessPoint
 {
     public static class Program
     {
-        public static void Consumer<T>(this IReceiveEndpointConfigurator configurator, IUnityContainer container, Action<IConsumerConfigurator<T>> configure = null)
-            where T : class, IConsumer
-        {
-            var consumerFactory = new UnityConsumerFactory<T>(container);
-            configurator.Consumer(consumerFactory, configure);
-        }
-
         /// <summary>
         ///     The main entry point for the application.
         /// </summary>
@@ -47,14 +40,8 @@ namespace AccessControl.Service.AccessPoint
                             e =>
                             {
                                 e.Consumer<AccessPointConsumer>(container);
-                                e.Consumer<ListBiometricInfoConsumer>(container);
-                                e.Consumer<UpdateUserBiometricConsumer>(container);
+                                e.Consumer<BiometricInfoConsumer>(container);
                                 e.Consumer<AccessRightsConsumer>(container);
-
-                                //e.Consumer(() => new UnityConsumerFactory<AccessPointConsumer>(container));
-                                //e.Consumer(() => container.Resolve<ListBiometricInfoConsumer>());
-                                //e.Consumer(() => container.Resolve<UpdateUserBiometricConsumer>());
-                                //e.Consumer(() => container.Resolve<AccessRightsConsumer>());
                             });
                     })
                 .Run(
@@ -64,6 +51,20 @@ namespace AccessControl.Service.AccessPoint
                         cfg.SetDisplayName("Access Point Manager");
                         cfg.SetDescription("This service is responsible for access points management");
                     });
+        }
+
+        /// <summary>
+        /// Configures a consumer to be created withing a unit of work.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="configurator">The configurator.</param>
+        /// <param name="container">The container.</param>
+        /// <param name="configure">The configure.</param>
+        private static void Consumer<T>(this IReceiveEndpointConfigurator configurator, IUnityContainer container, Action<IConsumerConfigurator<T>> configure = null)
+           where T : class, IConsumer
+        {
+            var consumerFactory = new UnitOfWorkConsumerFactory<T>(container);
+            configurator.Consumer(consumerFactory, configure);
         }
     }
 }

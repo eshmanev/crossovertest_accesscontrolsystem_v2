@@ -1,4 +1,5 @@
 ﻿using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Security;
 
 namespace AccessControl.Contracts.Helpers
 {

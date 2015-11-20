@@ -1,17 +1,16 @@
 ﻿using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Commands;
-using AccessControl.Contracts.Commands.Security;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IAuthenticateUser" /> interface.
+    ///     Represents a contract class for the <see cref="IUserGroupAccessRights" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IAuthenticateUser))]
+    [ContractClassFor(typeof(IUserGroupAccessRights))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IAuthenticateUserContract : IAuthenticateUser
+    internal abstract class IUserGroupAccessRightsContract : IUserGroupAccessRights
     {
-        public string UserName
+        public string UserGroupName
         {
             get
             {
@@ -20,11 +19,11 @@ namespace AccessControl.Contracts.CodeContracts
             }
         }
 
-        public string Password
+        public IPermanentAccessRule[] PermanentAccessRules
         {
             get
             {
-                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+                Contract.Ensures(Contract.Result<IPermanentAccessRule[]>() != null);
                 return null;
             }
         }

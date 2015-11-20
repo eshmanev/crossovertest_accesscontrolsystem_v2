@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Helpers

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Data;
@@ -25,6 +26,11 @@ namespace AccessControl.Service.AccessPoint.Consumers
             _validateDepartmentRequest = validateDepartmentRequest;
         }
 
+        /// <summary>
+        /// Returns a list of access points.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public Task Consume(ConsumeContext<IListAccessPoints> context)
         {
             var entities = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
@@ -36,6 +42,11 @@ namespace AccessControl.Service.AccessPoint.Consumers
             return context.RespondAsync(ListCommand.Result(accessPoints));
         }
 
+        /// <summary>
+        /// Registers a new access point.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public async Task Consume(ConsumeContext<IRegisterAccessPoint> context)
         {
             var result = await _validateDepartmentRequest.Request(new ValidateDepartment(context.Message.AccessPoint.Site, context.Message.AccessPoint.Department));

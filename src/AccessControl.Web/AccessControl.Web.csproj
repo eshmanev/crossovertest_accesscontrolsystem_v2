@@ -293,6 +293,8 @@
     <Content Include="Views\AccessPoint\EditorPartial.cshtml" />
     <Content Include="Views\AccessRights\Index.cshtml" />
     <Content Include="Views\AccessRights\EditorPartial.cshtml" />
+    <Content Include="Views\AccessRights\PermanentPartial.cshtml" />
+    <Content Include="Views\AccessRights\ScheduledPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">

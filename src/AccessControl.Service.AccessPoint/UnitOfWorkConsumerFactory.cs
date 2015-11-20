@@ -8,11 +8,11 @@ using Microsoft.Practices.Unity;
 
 namespace AccessControl.Service.AccessPoint
 {
-    public class UnityConsumerFactory<TConsumer> : IConsumerFactory<TConsumer> where TConsumer : class
+    public class UnitOfWorkConsumerFactory<TConsumer> : IConsumerFactory<TConsumer> where TConsumer : class
     {
         private readonly IUnityContainer _container;
 
-        public UnityConsumerFactory(IUnityContainer container)
+        public UnitOfWorkConsumerFactory(IUnityContainer container)
         {
             _container = container;
         }

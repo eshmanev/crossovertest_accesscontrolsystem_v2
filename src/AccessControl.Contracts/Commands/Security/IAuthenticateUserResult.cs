@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts.Commands
+namespace AccessControl.Contracts.Commands.Security
 {
     /// <summary>
     ///     Represents a result of the <see cref="IAuthenticateUser" /> command.

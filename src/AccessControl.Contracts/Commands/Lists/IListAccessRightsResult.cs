@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Commands.Lists
 {
@@ -9,5 +10,20 @@ namespace AccessControl.Contracts.Commands.Lists
     [ContractClass(typeof(IListAccessRightsResultContract))]
     public interface IListAccessRightsResult
     {
+        /// <summary>
+        /// Gets the user-specific access rights.
+        /// </summary>
+        /// <value>
+        /// The user-specific access rights.
+        /// </value>
+        IUserAccessRights[] UserAccessRights { get; }
+
+        /// <summary>
+        /// Gets the user group-specific access rights.
+        /// </summary>
+        /// <value>
+        /// The user group-specific access rights.
+        /// </value>
+        IUserGroupAccessRights[] UserGroupAccessRights { get; }
     }
 }

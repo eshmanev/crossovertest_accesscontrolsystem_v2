@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Models.AccessRights;
@@ -54,7 +54,6 @@ namespace AccessControl.Web.Controllers
         public async Task<ActionResult> Index()
         {
             var user = HttpContext.GetApplicationUser();
-            // _listAccessRightsRequest.Request(new ListAccessRights(user.Site, user.Department));
 
             var model = new AccessRightsIndexViewModel {Editor = new EditAccessRightsViewModel()};
             await Initialize(model);
@@ -86,12 +85,15 @@ namespace AccessControl.Web.Controllers
 
         private async Task Initialize(AccessRightsIndexViewModel model)
         {
+            var accessRightsTask = _listAccessRightsRequest.Request(ListCommand.Default);
             var usersTask = _listUsersRequest.Request(ListCommand.Default);
             var accessPointsTask = _listAccessPointsRequest.Request(ListCommand.Default);
             var userGroupsTask = _listUserGroupsRequest.Request(ListCommand.Default);
 
-            await Task.WhenAll(usersTask, accessPointsTask, userGroupsTask);
+            await Task.WhenAll(accessRightsTask, usersTask, accessPointsTask, userGroupsTask);
 
+            model.UserAccessRights = accessRightsTask.Result.UserAccessRights;
+            model.UserGroupAccessRights = accessRightsTask.Result.UserGroupAccessRights;
             model.Editor.AccessPoints = accessPointsTask.Result.AccessPoints;
             model.Editor.Users = usersTask.Result.Users;
             model.Editor.UserGroups = userGroupsTask.Result.Groups;

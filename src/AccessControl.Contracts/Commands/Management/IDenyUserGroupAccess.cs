@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts.Commands
+namespace AccessControl.Contracts.Commands.Management
 {
     /// <summary>
     ///     Denies access to an access point for a specific user group.
