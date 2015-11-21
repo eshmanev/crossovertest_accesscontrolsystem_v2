@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AccessControl.Data.Entities
 {
     /// <summary>
     ///     Represents a base class for access rights.
     /// </summary>
-    public abstract class AccessRightsBase
+    public abstract class AccessRightsBase : IVersioned
     {
         private IList<AccessRuleBase> _accessRules = new List<AccessRuleBase>();
 
@@ -21,7 +22,12 @@ namespace AccessControl.Data.Entities
         /// <summary>
         ///     Gets the identifier.
         /// </summary>
-        public virtual int Id { get; protected set; }
+        public virtual Guid Id { get; protected set; }
+
+        /// <summary>
+        ///     Gets or sets the version.
+        /// </summary>
+        public virtual ulong Version { get; set; }
 
         /// <summary>
         ///     Accepts the specified visitor.

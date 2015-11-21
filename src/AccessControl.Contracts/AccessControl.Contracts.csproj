@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,7 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeContracts\IBeginSessionContract.cs" />
+    <Compile Include="CodeContracts\IEndSessionContract.cs" />
     <Compile Include="CodeContracts\IFindUserByNameContract.cs" />
+    <Compile Include="CodeContracts\IGetChangeBatchContract.cs" />
+    <Compile Include="CodeContracts\IGetChangeBatchResultContract.cs" />
+    <Compile Include="CodeContracts\IGetFullEnumerationChangeBatchContract.cs" />
+    <Compile Include="CodeContracts\IGetFullEnumerationChangeBatchResultContract.cs" />
+    <Compile Include="CodeContracts\IGetSyncBatchParametersContract.cs" />
+    <Compile Include="CodeContracts\IGetSyncBatchParametersResultContract.cs" />
     <Compile Include="CodeContracts\IIdentityContract.cs" />
     <Compile Include="CodeContracts\IListUsersResultContract.cs" />
     <Compile Include="CodeContracts\IAccessPointContract.cs" />
@@ -76,6 +85,14 @@
     <Compile Include="Commands\Lists\IListUserGroups.cs" />
     <Compile Include="Commands\Lists\IListUserGroupsResult.cs" />
     <Compile Include="Commands\IValidateDepartment.cs" />
+    <Compile Include="Commands\Synchronization\IBeginSession.cs" />
+    <Compile Include="Commands\Synchronization\IEndSession.cs" />
+    <Compile Include="Commands\Synchronization\IGetChangeBatch.cs" />
+    <Compile Include="Commands\Synchronization\IGetChangeBatchResult.cs" />
+    <Compile Include="Commands\Synchronization\IGetFullEnumerationChangeBatch.cs" />
+    <Compile Include="Commands\Synchronization\IGetFullEnumerationChangeBatchResult.cs" />
+    <Compile Include="Commands\Synchronization\IGetSyncBatchParameters.cs" />
+    <Compile Include="Commands\Synchronization\IGetSyncBatchParametersResult.cs" />
     <Compile Include="Dto\IAccessPoint.cs" />
     <Compile Include="Dto\IDepartment.cs" />
     <Compile Include="Dto\IIdentity.cs" />
@@ -94,6 +111,7 @@
     <Compile Include="Helpers\AllowDenyUserGroupAccess.cs" />
     <Compile Include="Helpers\Department.cs" />
     <Compile Include="Helpers\Identity.cs" />
+    <Compile Include="Helpers\SyncCommand.cs" />
     <Compile Include="Helpers\UpdateUserBiometric.cs" />
     <Compile Include="CodeContracts\IUpdateUserBiometricContract.cs" />
     <Compile Include="CodeContracts\IUserContract.cs" />
@@ -129,7 +147,9 @@
     <Compile Include="WellKnownHeaders.cs" />
     <Compile Include="WellKnownQueues.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,6 +4,8 @@ using AccessControl.Client.Vendor;
 using AccessControl.Data;
 using AccessControl.Data.Configuration;
 using AccessControl.Data.Session;
+using AccessControl.Data.Sync;
+using AccessControl.Data.Sync.Impl;
 using AccessControl.Service;
 using Microsoft.Practices.Unity;
 using Vendor.API;
@@ -16,6 +18,11 @@ namespace AccessControl.Client
         {
             new ServiceRunner<ClientServiceControl>()
                 .ConfigureContainer(ContainerConfig)
+                .ConfigureBus(
+                    (cfg, host, container) =>
+                    {
+
+                    })
                 .Run(
                     cfg =>
                     {
@@ -27,14 +34,22 @@ namespace AccessControl.Client
 
         private static void ContainerConfig(IUnityContainer container)
         {
+            // sync
+            container
+                .RegisterType<IReplicaIdHolder, ReplicaIdHolder>(new ContainerControlledLifetimeManager())
+                .RegisterType<IMetadataService, MetadataService>()
+                .RegisterType<IDataSync, DataSync>();
+
+            // data access
             container
                 .RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
-                .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager());
+                .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
+                .RegisterInstance<ISessionScopeFactory>(container.Resolve<SessionFactoryHolder>());
 
+            // vendor
             container
                 .RegisterType<IAccessPointRegistry, AccessPointRegistry>()
-                .RegisterType<IAccessCheckService, AccessCheckService>()
-                .RegisterType<IDataSync, DataSync>();
+                .RegisterType<IAccessCheckService, AccessCheckService>();
         }
     }
 }

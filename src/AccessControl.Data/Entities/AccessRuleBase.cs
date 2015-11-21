@@ -1,3 +1,5 @@
+using System;
+
 namespace AccessControl.Data.Entities
 {
     /// <summary>
@@ -13,7 +15,7 @@ namespace AccessControl.Data.Entities
         /// <summary>
         ///     Gets the identifier.
         /// </summary>
-        public virtual int Id { get; protected set; }
+        public virtual Guid Id { get; protected set; }
 
         /// <summary>
         /// Gets the referenced access rights.

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Configuration;
 using AccessControl.Web.Models.Account;
-using AccessControl.Web.Services;
 using MassTransit;
 using MassTransit.Pipeline;
 using Microsoft.Practices.Unity;
@@ -20,17 +18,17 @@ namespace AccessControl.Web
             var rabbitMqConfig = UnityConfig.Container.Resolve<IRabbitMqConfig>();
 
             var busControl = Bus.Factory.CreateUsingRabbitMq(
-              cfg =>
-              {
-                  cfg.UseBsonSerializer();
-                  cfg.Host(
-                      new Uri(rabbitMqConfig.Url),
-                      h =>
-                      {
-                          h.Username(rabbitMqConfig.UserName);
-                          h.Password(rabbitMqConfig.Password);
-                      });
-              });
+                cfg =>
+                {
+                    cfg.UseBsonSerializer();
+                    cfg.Host(
+                        new Uri(rabbitMqConfig.Url),
+                        h =>
+                        {
+                            h.Username(rabbitMqConfig.UserName);
+                            h.Password(rabbitMqConfig.Password);
+                        });
+                });
 
             busControl.ConnectSendObserver(new MessageSendObserver());
 

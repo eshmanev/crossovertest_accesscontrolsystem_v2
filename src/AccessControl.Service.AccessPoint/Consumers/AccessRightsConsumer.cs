@@ -167,7 +167,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
 
             accessRights.AddAccessRule(new PermanentAccessRule {AccessPoint = accessPoint});
-            if (accessRights.Id == 0)
+            if (accessRights.Id == Guid.Empty)
             {
                 _accessRightsRepository.Insert(accessRights);
             }

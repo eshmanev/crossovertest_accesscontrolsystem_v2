@@ -8,7 +8,7 @@ namespace AccessControl.Data.Mappings
         public AccessRightsBaseMap()
         {
             Table("AccessRights");
-            Id(x => x.Id).GeneratedBy.HiLo("AccessRights");
+            Id(x => x.Id).GeneratedBy.Guid();
             HasMany(x => x.AccessRules).Inverse().KeyColumn("AccessRightsId").Cascade.AllDeleteOrphan();
             DiscriminateSubClassesOnColumn("AccessRightsType");
         }

@@ -27,6 +27,8 @@ namespace AccessControl.Client
 
         public override bool Start(HostControl hostControl)
         {
+            var result = base.Start(hostControl);
+
             _wcfHosts = new[]
             {
                 new UnityServiceHost(_container, typeof(AccessCheckService)),
@@ -35,13 +37,15 @@ namespace AccessControl.Client
             
             _wcfHosts.ForEach(x => x.Open());
             _dataSync.Synchronize();
-            return base.Start(hostControl);
+
+            return result;
         }
 
         public override bool Stop(HostControl hostControl)
         {
+            var result = base.Stop(hostControl);
             _wcfHosts?.ForEach(x => x.Close());
-            return base.Stop(hostControl);
+            return result;
         }
     }
 }

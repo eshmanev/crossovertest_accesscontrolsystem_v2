@@ -21,28 +21,26 @@ namespace AccessControl.Service.AccessPoint
             where T : class
         {
             using (var childContainer = _container.CreateChildContainer())
+            using (var sessionScope = _container.Resolve<ISessionScopeFactory>().Create())
             {
-                using (var unitOfWork = new SessionHolder(childContainer.Resolve<ISessionFactoryHolder>()))
+                childContainer.RegisterInstance(sessionScope);
+                childContainer.RegisterType(typeof(IRepository<>), typeof(Repository<>));
+
+                var consumer = childContainer.Resolve<TConsumer>();
+                if (consumer == null)
                 {
-                    childContainer.RegisterInstance<ISessionHolder>(unitOfWork);
-                    childContainer.RegisterType(typeof(IRepository<>), typeof(Repository<>));
+                    throw new ConsumerException($"Unable to resolve consumer type '{TypeMetadataCache<TConsumer>.ShortName}'.");
+                }
 
-                    var consumer = childContainer.Resolve<TConsumer>();
-                    if (consumer == null)
-                    {
-                        throw new ConsumerException($"Unable to resolve consumer type '{TypeMetadataCache<TConsumer>.ShortName}'.");
-                    }
-
-                    try
-                    {
-                        await next.Send(context.PushConsumer(consumer));
-                        unitOfWork.Commit();
-                    }
-                    catch
-                    {
-                        unitOfWork.Rollback();
-                        throw;
-                    }
+                try
+                {
+                    await next.Send(context.PushConsumer(consumer));
+                    sessionScope.Commit();
+                }
+                catch
+                {
+                    sessionScope.Rollback();
+                    throw;
                 }
             }
         }

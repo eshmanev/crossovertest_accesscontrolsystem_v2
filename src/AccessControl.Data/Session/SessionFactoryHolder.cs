@@ -13,7 +13,7 @@ namespace AccessControl.Data.Session
     /// <summary>
     ///     Represents an implementation of session factory holder.
     /// </summary>
-    public class SessionFactoryHolder : ISessionFactoryHolder
+    public class SessionFactoryHolder : ISessionFactoryHolder, ISessionScopeFactory
     {
         private readonly IDataConfiguration _configuration;
         private readonly object _syncRoot = new object();
@@ -51,34 +51,39 @@ namespace AccessControl.Data.Session
             }
         }
 
-        private void ConfigureHiLoTable(NHibernate.Cfg.Configuration configuration)
+        public ISessionScope Create()
         {
-            var script = new StringBuilder();
-
-            script.AppendLine("ALTER TABLE HiLo ADD [Entity] VARCHAR(128) NULL");
-            script.AppendLine("GO");
-
-            script.AppendLine("CREATE NONCLUSTERED INDEX IX_HiLo_Entity ON HiLo (Entity ASC);");
-            script.AppendLine("GO");
-
-            foreach (var tableName in configuration.ClassMappings.Select(m => m.Table.Name).Distinct())
-            {
-                script.AppendLine($"INSERT INTO [HiLo] (Entity, NextHi) VALUES ('{tableName}',1);");
-            }
-
-            configuration.AddAuxiliaryDatabaseObject(
-                new SimpleAuxiliaryDatabaseObject(
-                    script.ToString(),
-                    null,
-                    new HashSet<string>(_configuration.DialectScopes.Select(x => x.FullName))));
+            return new SessionScope(this);
         }
+
+        //private void ConfigureHiLoTable(NHibernate.Cfg.Configuration configuration)
+        //{
+        //    var script = new StringBuilder();
+
+        //    script.AppendLine("ALTER TABLE HiLo ADD [Entity] VARCHAR(128) NULL");
+        //    script.AppendLine("GO");
+
+        //    script.AppendLine("CREATE NONCLUSTERED INDEX IX_HiLo_Entity ON HiLo (Entity ASC);");
+        //    script.AppendLine("GO");
+
+        //    foreach (var tableName in configuration.ClassMappings.Select(m => m.Table.Name).Distinct())
+        //    {
+        //        script.AppendLine($"INSERT INTO [HiLo] (Entity, NextHi) VALUES ('{tableName}',1);");
+        //    }
+
+        //    configuration.AddAuxiliaryDatabaseObject(
+        //        new SimpleAuxiliaryDatabaseObject(
+        //            script.ToString(),
+        //            null,
+        //            new HashSet<string>(_configuration.DialectScopes.Select(x => x.FullName))));
+        //}
 
         private ISessionFactory CreateSessionFactory()
         {
             var configuration = Fluently.Configure()
                                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<SessionFactoryHolder>())
                                         .Database(_configuration.PersistenceConfigurer)
-                                        .ExposeConfiguration(ConfigureHiLoTable)
+                                        // .ExposeConfiguration(ConfigureHiLoTable)
                                         .BuildConfiguration();
 
             if (_configuration.RecreateDatabaseSchema)
@@ -101,7 +106,7 @@ namespace AccessControl.Data.Session
             }
             catch (HibernateException)
             {
-               GenerateSchema(configuration);
+                GenerateSchema(configuration);
             }
         }
 

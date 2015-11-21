@@ -69,6 +69,9 @@
     <Reference Include="Microsoft.Synchronization.Data.Server, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Files, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.MetadataStorage, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.SimpleProviders, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="NewId, Version=2.1.3.0, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
       <HintPath>..\packages\NewId.2.1.3\lib\net45\NewId.dll</HintPath>
       <Private>True</Private>
@@ -117,7 +120,6 @@
     <Compile Include="ClientServiceControl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Synchronization\AccessControlSyncAgent.cs" />
     <Compile Include="Synchronization\IDataSync.cs" />
     <Compile Include="Synchronization\DataSync.cs" />
     <Compile Include="Vendor\AccessPointRegistry.cs" />
@@ -127,6 +129,10 @@
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">
       <Project>{E8207E15-2A39-458B-A292-D9294E37F2FB}</Project>
       <Name>AccessControl.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AccessControl.Data.Sync\AccessControl.Data.Sync.csproj">
+      <Project>{33436fcb-2972-43ec-a66f-f17adb4902d8}</Project>
+      <Name>AccessControl.Data.Sync</Name>
     </ProjectReference>
     <ProjectReference Include="..\AccessControl.Data\AccessControl.Data.csproj">
       <Project>{4b62b8a1-b09a-45fc-b9bd-a08eb54405b7}</Project>

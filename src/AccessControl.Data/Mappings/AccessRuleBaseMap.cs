@@ -8,7 +8,7 @@ namespace AccessControl.Data.Mappings
         public AccessRuleBaseMap()
         {
             Table("AccessRule");
-            Id(x => x.Id).GeneratedBy.HiLo("AccessRule");
+            Id(x => x.Id).GeneratedBy.Guid();
             References(x => x.AccessPoint).Column("AccessPointId").Not.Nullable();
             References(x => x.AccessRights).Column("AccessRightsId").Not.Nullable();
             DiscriminateSubClassesOnColumn("RuleType");

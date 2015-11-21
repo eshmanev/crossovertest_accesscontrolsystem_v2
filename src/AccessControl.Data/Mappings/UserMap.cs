@@ -7,7 +7,7 @@ namespace AccessControl.Data.Mappings
     {
         public UserMap()
         {
-            Id(x => x.Id).GeneratedBy.HiLo<User>();
+            Id(x => x.Id).GeneratedBy.Guid();
             Map(x => x.UserName).Unique();
             Map(x => x.BiometricHash).Unique();
         }

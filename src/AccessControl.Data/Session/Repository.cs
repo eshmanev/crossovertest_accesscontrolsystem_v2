@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Expressions;
+using AccessControl.Data.Entities;
 using NHibernate.Linq;
 
 namespace AccessControl.Data.Session
@@ -14,15 +15,15 @@ namespace AccessControl.Data.Session
     public class Repository<T> : IRepository<T>
         where T : class
     {
-        private readonly ISessionHolder _sessionHolder;
+        private readonly ISessionScope _sessionScope;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Repository{T}" /> class.
         /// </summary>
-        public Repository(ISessionHolder sessionHolder)
+        public Repository(ISessionScope sessionScope)
         {
-            Contract.Requires(sessionHolder != null);
-            _sessionHolder = sessionHolder;
+            Contract.Requires(sessionScope != null);
+            _sessionScope = sessionScope;
         }
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace AccessControl.Data.Session
         /// <returns>An entity or null.</returns>
         public T GetById(object id)
         {
-            return _sessionHolder.GetSession().Get<T>(id);
+            return _sessionScope.GetSession().Get<T>(id);
         }
 
         /// <summary>
@@ -79,8 +80,9 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Insert(T entity)
         {
-            _sessionHolder.DemandTransaction();
-            _sessionHolder.GetSession().SaveOrUpdate(entity);
+            TryUpdateVersion(entity);
+            _sessionScope.DemandTransaction();
+            _sessionScope.GetSession().SaveOrUpdate(entity);
         }
 
         /// <summary>
@@ -89,8 +91,9 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Update(T entity)
         {
-            _sessionHolder.DemandTransaction();
-            _sessionHolder.GetSession().Update(entity);
+            TryUpdateVersion(entity);
+            _sessionScope.DemandTransaction();
+            _sessionScope.GetSession().Update(entity);
         }
 
         /// <summary>
@@ -99,14 +102,21 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Delete(T entity)
         {
-            _sessionHolder.DemandTransaction();
-            _sessionHolder.GetSession().Delete(entity);
+            _sessionScope.DemandTransaction();
+            _sessionScope.GetSession().Delete(entity);
         }
 
         private TResult Query<TResult>(Func<IQueryable<T>, TResult> action)
         {
-            var query = _sessionHolder.GetSession().Query<T>().Cacheable();
+            var query = _sessionScope.GetSession().Query<T>().Cacheable();
             return action(query);
+        }
+
+        private void TryUpdateVersion(T entity)
+        {
+            var versioned = entity as IVersioned;
+            if (versioned != null)
+                versioned.Version = (ulong)DateTime.UtcNow.Ticks;
         }
     }
 }

@@ -1,15 +1,22 @@
-﻿namespace AccessControl.Data.Entities
+﻿using System;
+
+namespace AccessControl.Data.Entities
 {
     /// <summary>
     /// Defines a map between user name and user physical hash.
     /// </summary>
-    public class User
+    public class User : IVersioned
     {
         /// <summary>
         /// Gets the identifier.
         /// </summary>
-        public virtual int Id { get; protected set; }
-        
+        public virtual Guid Id { get; protected set; }
+
+        /// <summary>
+        ///     Gets or sets the version.
+        /// </summary>
+        public virtual ulong Version { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the user.
         /// </summary>

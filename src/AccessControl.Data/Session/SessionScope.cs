@@ -2,22 +2,32 @@
 
 namespace AccessControl.Data.Session
 {
-    public class SessionHolder : ISessionHolder
+    internal class SessionScope : ISessionScope
     {
         private readonly ISessionFactoryHolder _sessionFactoryHolder;
         private ISession _session;
         private ITransaction _transaction;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SessionHolder" /> class.
+        ///     Initializes a new instance of the <see cref="SessionScope" /> class.
         /// </summary>
         /// <param name="sessionFactoryHolder">The session factory holder.</param>
-        public SessionHolder(ISessionFactoryHolder sessionFactoryHolder)
+        public SessionScope(ISessionFactoryHolder sessionFactoryHolder)
         {
             _sessionFactoryHolder = sessionFactoryHolder;
         }
 
         private bool IsInTransaction => _transaction != null && _transaction.IsActive;
+
+        /// <summary>
+        ///     Gets the repository for the specified entity type.
+        /// </summary>
+        /// <typeparam name="T">The type of entities in the repository.</typeparam>
+        /// <returns>The repository.</returns>
+        public IRepository<T> GetRepository<T>() where T : class
+        {
+            return new Repository<T>(this);
+        }
 
         /// <summary>
         ///     Demands the transaction.
@@ -81,7 +91,7 @@ namespace AccessControl.Data.Session
 
         private void DisposeTransaction()
         {
-            if (IsInTransaction)
+            if (!IsInTransaction)
             {
                 return;
             }

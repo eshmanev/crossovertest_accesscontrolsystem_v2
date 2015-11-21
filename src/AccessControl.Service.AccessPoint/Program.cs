@@ -7,7 +7,10 @@ using AccessControl.Contracts.Dto;
 using AccessControl.Data;
 using AccessControl.Data.Configuration;
 using AccessControl.Data.Session;
+using AccessControl.Data.Sync;
+using AccessControl.Data.Sync.Impl;
 using AccessControl.Service.AccessPoint.Consumers;
+using AccessControl.Service.AccessPoint.Synchronization;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using Microsoft.Practices.Unity;
@@ -25,9 +28,18 @@ namespace AccessControl.Service.AccessPoint
                 .ConfigureContainer(
                     cfg =>
                     {
+                        // synchronization consumer is statefull
+                        cfg.RegisterType<SyncProviderConsumer>(new ContainerControlledLifetimeManager());
+                        cfg.RegisterType<IReplicaIdHolder, ReplicaIdHolder>(new ContainerControlledLifetimeManager());
+                        cfg.RegisterType<IMetadataService, MetadataService>();
+
+                        // data access
                         cfg.RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
                            .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
-                           .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
+                           .RegisterInstance<ISessionScopeFactory>(cfg.Resolve<SessionFactoryHolder>());
+
+                        // request clients
+                        cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
                            .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
                            .RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
                     })
@@ -42,6 +54,7 @@ namespace AccessControl.Service.AccessPoint
                                 e.Consumer<AccessPointConsumer>(container);
                                 e.Consumer<BiometricInfoConsumer>(container);
                                 e.Consumer<AccessRightsConsumer>(container);
+                                e.Consumer<SyncProviderConsumer>(container);
                             });
                     })
                 .Run(
