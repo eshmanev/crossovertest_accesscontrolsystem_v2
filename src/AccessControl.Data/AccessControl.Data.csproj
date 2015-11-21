@@ -72,6 +72,7 @@
     <Compile Include="CodeContracts\IDataConfigurationContract.cs" />
     <Compile Include="Configuration\IDataConfiguration.cs" />
     <Compile Include="Configuration\DataConfiguration.cs" />
+    <Compile Include="Configuration\SqlDialect.cs" />
     <Compile Include="Entities\AccessPoint.cs" />
     <Compile Include="Entities\AccessRightsBase.cs" />
     <Compile Include="Entities\AccessRuleBase.cs" />

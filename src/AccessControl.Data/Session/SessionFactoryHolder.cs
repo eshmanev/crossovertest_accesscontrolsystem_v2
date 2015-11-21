@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using AccessControl.Data.Configuration;
 using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
 using NHibernate;
-using NHibernate.Dialect;
 using NHibernate.Mapping;
 using NHibernate.Tool.hbm2ddl;
 
@@ -53,7 +51,7 @@ namespace AccessControl.Data.Session
             }
         }
 
-        private static void ConfigureHiLoTable(NHibernate.Cfg.Configuration configuration)
+        private void ConfigureHiLoTable(NHibernate.Cfg.Configuration configuration)
         {
             var script = new StringBuilder();
 
@@ -72,21 +70,14 @@ namespace AccessControl.Data.Session
                 new SimpleAuxiliaryDatabaseObject(
                     script.ToString(),
                     null,
-                    new HashSet<string>
-                    {
-                        typeof(MsSql2000Dialect).FullName,
-                        typeof(MsSql2005Dialect).FullName,
-                        typeof(MsSql2008Dialect).FullName,
-                        typeof(MsSql2012Dialect).FullName,
-                        typeof(MsSqlAzure2008Dialect).FullName
-                    }));
+                    new HashSet<string>(_configuration.DialectScopes.Select(x => x.FullName))));
         }
 
         private ISessionFactory CreateSessionFactory()
         {
             var configuration = Fluently.Configure()
                                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<SessionFactoryHolder>())
-                                        .Database(MsSqlConfiguration.MsSql2012.ConnectionString(c => c.FromConnectionStringWithKey("AccessControlSystem")))
+                                        .Database(_configuration.PersistenceConfigurer)
                                         .ExposeConfiguration(ConfigureHiLoTable)
                                         .BuildConfiguration();
 
