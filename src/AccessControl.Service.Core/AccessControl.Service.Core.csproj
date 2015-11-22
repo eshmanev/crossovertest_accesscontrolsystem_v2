@@ -85,15 +85,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeContracts\IEncryptorContract.cs" />
     <Compile Include="CodeContracts\IRabbitMqConfigContract.cs" />
+    <Compile Include="CodeContracts\ISecurityConfigContract.cs" />
+    <Compile Include="Configuration\IServiceConfig.cs" />
+    <Compile Include="Configuration\SecurityElement.cs" />
+    <Compile Include="Configuration\ServiceConfiguration.cs" />
     <Compile Include="Configuration\IRabbitMqConfig.cs" />
-    <Compile Include="Configuration\RabbitMqConfig.cs" />
+    <Compile Include="Configuration\ISecurityConfig.cs" />
+    <Compile Include="Configuration\RabbitMqElement.cs" />
     <Compile Include="ConsumeContextExtensions.cs" />
     <Compile Include="Middleware\SendObserver.cs" />
     <Compile Include="Middleware\ExceptionLoggerFilter.cs" />
-    <Compile Include="Middleware\IdentityFilter.cs" />
+    <Compile Include="Middleware\TicketFilter.cs" />
     <Compile Include="Middleware\PipeConfiguratorExtensions.cs" />
     <Compile Include="Middleware\GenericPipeSpecification.cs" />
+    <Compile Include="Security\Encyptor.cs" />
+    <Compile Include="Security\IEncryptor.cs" />
     <Compile Include="Security\ServicePrincipal.cs" />
     <Compile Include="Security\ServiceIdentity.cs" />
     <Compile Include="ServiceRunner.cs" />

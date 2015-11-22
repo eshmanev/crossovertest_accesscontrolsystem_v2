@@ -8,6 +8,8 @@ using AccessControl.Data;
 using AccessControl.Data.Configuration;
 using AccessControl.Data.Session;
 using AccessControl.Service.AccessPoint.Consumers;
+using AccessControl.Service.Middleware;
+using AccessControl.Service.Security;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using Microsoft.Practices.Unity;
@@ -34,6 +36,7 @@ namespace AccessControl.Service.AccessPoint
                 .ConfigureBus(
                     (cfg, host, container) =>
                     {
+                        cfg.UseTickets(container.Resolve<Encryptor>());
                         cfg.ReceiveEndpoint(
                             host,
                             WellKnownQueues.AccessControl,

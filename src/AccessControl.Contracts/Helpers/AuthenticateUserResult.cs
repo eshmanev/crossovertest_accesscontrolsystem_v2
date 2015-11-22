@@ -1,33 +1,26 @@
-﻿using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Commands.Security;
-using AccessControl.Contracts.Dto;
+﻿using AccessControl.Contracts.Commands.Security;
 
 namespace AccessControl.Contracts.Helpers
 {
     public class AuthenticateUserResult : IAuthenticateUserResult
     {
-        public AuthenticateUserResult(string errorMessage)
+        public AuthenticateUserResult(bool authenticated, string ticket)
         {
-            Contract.Requires(!string.IsNullOrWhiteSpace(errorMessage));
-            Authenticated = false;
-            Roles = new string[0];
-            Message = errorMessage;
-        }
-
-        public AuthenticateUserResult(IUser user, string[] roles)
-        {
-            Contract.Requires(user != null);
-            Contract.Requires(roles != null);
-
-            Authenticated = true;
-            Message = null;
-            User = user;
-            Roles = roles;
+            Authenticated = authenticated;
+            Ticket = ticket;
         }
 
         public bool Authenticated { get; }
-        public string Message { get; }
-        public string[] Roles { get; }
-        public IUser User { get; }
+        public string Ticket { get; }
+
+        public static IAuthenticateUserResult Failed()
+        {
+            return new AuthenticateUserResult(false, null);
+        }
+
+        public static IAuthenticateUserResult Success(string ticket)
+        {
+            return new AuthenticateUserResult(true, ticket);
+        }
     }
 }

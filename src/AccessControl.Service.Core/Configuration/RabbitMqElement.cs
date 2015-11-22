@@ -5,7 +5,7 @@ namespace AccessControl.Service.Configuration
     /// <summary>
     ///     Represents a RabbitMQ configuration section.
     /// </summary>
-    public class RabbitMqConfig : ConfigurationSection, IRabbitMqConfig
+    public class RabbitMqElement : ConfigurationElement, IRabbitMqConfig
     {
         /// <summary>
         ///     The URL

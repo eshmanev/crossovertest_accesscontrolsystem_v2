@@ -1,3 +1,4 @@
+using AccessControl.Service.Security;
 using MassTransit;
 
 namespace AccessControl.Service.Middleware
@@ -18,10 +19,10 @@ namespace AccessControl.Service.Middleware
             configurator.AddPipeSpecification(new GenericPipeSpecification<T>(new ExceptionLoggerFilter<T>()));
         }
 
-        public static void UseIdentity<T>(this IPipeConfigurator<T> configurator)
+        public static void UseTickets<T>(this IPipeConfigurator<T> configurator, IEncryptor encryptor)
             where T : class, PipeContext
         {
-            configurator.AddPipeSpecification(new GenericPipeSpecification<T>(new IdentityFilter<T>()));
+            configurator.AddPipeSpecification(new GenericPipeSpecification<T>(new TicketFilter<T>(encryptor)));
         }
     }
 }

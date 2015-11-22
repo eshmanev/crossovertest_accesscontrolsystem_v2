@@ -35,7 +35,7 @@ namespace AccessControl.Service
         public ServiceRunner()
         {
             _container = new UnityContainer();
-            _container.RegisterInstance((IRabbitMqConfig) ConfigurationManager.GetSection("rabbitMq"));
+            _container.RegisterInstance((IServiceConfig) ConfigurationManager.GetSection("service"));
         }
 
         /// <summary>
@@ -45,20 +45,19 @@ namespace AccessControl.Service
         /// <returns>This instance.</returns>
         public ServiceRunner<T> ConfigureBus(Action<IRabbitMqBusFactoryConfigurator, IRabbitMqHost, IUnityContainer> config)
         {
-            var rabbitMqConfig = _container.Resolve<IRabbitMqConfig>();
+            var configuration = _container.Resolve<IServiceConfig>();
             _busControl = Bus.Factory.CreateUsingRabbitMq(
                 cfg =>
                 {
                     cfg.UseExceptionLogger();
                     cfg.UseBsonSerializer();
-                    cfg.UseIdentity();
 
                     var host = cfg.Host(
-                        new Uri(rabbitMqConfig.Url),
+                        new Uri(configuration.RabbitMq.Url),
                         h =>
                         {
-                            h.Username(rabbitMqConfig.UserName);
-                            h.Password(rabbitMqConfig.Password);
+                            h.Username(configuration.RabbitMq.UserName);
+                            h.Password(configuration.RabbitMq.Password);
                         });
 
                     config(cfg, host, _container);

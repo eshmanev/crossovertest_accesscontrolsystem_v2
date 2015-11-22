@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
-using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Commands.Security
 {
@@ -19,27 +18,11 @@ namespace AccessControl.Contracts.Commands.Security
         bool Authenticated { get; }
 
         /// <summary>
-        ///     Gets the status message.
+        ///     Gets the ticket used to access services.
         /// </summary>
         /// <value>
-        ///     The message.
+        ///     The ticket.
         /// </value>
-        string Message { get; }
-
-        /// <summary>
-        ///     Gets the roles of the authenticated user.
-        /// </summary>
-        /// <value>
-        ///     The roles.
-        /// </value>
-        string[] Roles { get; }
-
-        /// <summary>
-        ///     Gets the user.
-        /// </summary>
-        /// <value>
-        ///     The user.
-        /// </value>
-        IUser User { get; }
+        string Ticket { get; }
     }
 }

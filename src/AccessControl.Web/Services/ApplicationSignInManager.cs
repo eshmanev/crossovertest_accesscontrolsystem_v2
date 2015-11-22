@@ -38,29 +38,28 @@ namespace AccessControl.Web.Services
         public override async Task<SignInStatus> PasswordSignInAsync(string userName, string password, bool isPersistent, bool shouldLockout)
         {
             if (UserManager == null)
-            {
                 return SignInStatus.Failure;
-            }
 
+            var user = await UserManager.FindByNameAsync(userName);
+            if (user == null)
+                return SignInStatus.Failure;
 
             var message = new AuthenticateUser(userName, password);
-            IAuthenticateUserResult result;
             try
             {
-                result = await _authenticateRequest.Request(message);
+                var result = await _authenticateRequest.Request(message);
                 if (!result.Authenticated)
-                {
                     return SignInStatus.Failure;
-                }
+
+                user.ServiceTicket = result.Ticket;
             }
             catch (Exception e)
             {
                 Log.Error("An error occurred while authentication", e);
                 return SignInStatus.Failure;
             }
-
-            var applicationUser = new ApplicationUser(result.User, result.Roles);
-            await SignInAsync(applicationUser, isPersistent, false);
+            
+            await SignInAsync(user, isPersistent, false);
             return SignInStatus.Success;
         }
     }

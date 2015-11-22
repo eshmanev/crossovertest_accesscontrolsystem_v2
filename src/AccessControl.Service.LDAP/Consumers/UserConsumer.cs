@@ -7,6 +7,7 @@ using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Services;
+using AccessControl.Service.Security;
 using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
@@ -17,15 +18,19 @@ namespace AccessControl.Service.LDAP.Consumers
     internal class UserConsumer : IConsumer<IAuthenticateUser>, IConsumer<IFindUserByName>, IConsumer<IListUsers>
     {
         private readonly ILdapService _ldapService;
+        private readonly IEncryptor _encryptor;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UserConsumer" /> class.
         /// </summary>
         /// <param name="ldapService">The LDAP service.</param>
-        public UserConsumer(ILdapService ldapService)
+        /// <param name="encryptor">The encryptor.</param>
+        public UserConsumer(ILdapService ldapService, IEncryptor encryptor)
         {
             Contract.Requires(ldapService != null);
+            Contract.Requires(encryptor != null);
             _ldapService = ldapService;
+            _encryptor = encryptor;
         }
 
         /// <summary>
@@ -37,12 +42,17 @@ namespace AccessControl.Service.LDAP.Consumers
         {
             var result = _ldapService.Authenticate(context.Message.UserName, context.Message.Password);
             if (!result)
-                return context.RespondAsync(new AuthenticateUserResult("Invalid user name or password"));
+            {
+                return context.RespondAsync(AuthenticateUserResult.Failed());
+            }
 
             var user = _ldapService.FindUserByName(context.Message.UserName);
             var hasEmployees = _ldapService.FindUsersByManager(context.Message.UserName).Any();
             var roles = hasEmployees ? new[] {WellKnownRoles.Manager} : new string[0];
-            return context.RespondAsync(new AuthenticateUserResult(user, roles));
+
+            var ticket = new Ticket(user, roles);
+            var encryptedTicket = _encryptor.Encrypt(ticket);
+            return context.RespondAsync(new AuthenticateUserResult(true, encryptedTicket));
         }
 
         /// <summary>

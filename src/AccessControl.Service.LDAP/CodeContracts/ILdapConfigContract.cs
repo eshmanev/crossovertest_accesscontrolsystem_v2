@@ -1,14 +1,10 @@
-﻿
-
+﻿using System.Diagnostics.Contracts;
 using AccessControl.Service.LDAP.Configuration;
 
 namespace AccessControl.Service.LDAP.CodeContracts
 {
-    using System.Diagnostics.Contracts;
-    using LDAP.Configuration;
-
     /// <summary>
-    /// Represents a contract class for the <see cref="ILdapConfig" /> interface.
+    ///     Represents a contract class for the <see cref="ILdapConfig" /> interface.
     /// </summary>
     [ContractClassFor(typeof(ILdapConfig))]
     // ReSharper disable once InconsistentNaming
@@ -24,8 +20,8 @@ namespace AccessControl.Service.LDAP.CodeContracts
         }
 
         public string UserName => null;
-
         public string Password => null;
+
         public string CombinePath(string path)
         {
             Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));

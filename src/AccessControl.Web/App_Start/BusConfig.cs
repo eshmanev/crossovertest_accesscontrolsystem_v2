@@ -43,12 +43,11 @@ namespace AccessControl.Web
         {
             public Task PreSend<T>(SendContext<T> context) where T : class
             {
-                var user = Thread.CurrentPrincipal != null && Thread.CurrentPrincipal.Identity.IsAuthenticated
-                               ? new ApplicationUser(Thread.CurrentPrincipal.Identity)
-                               : new ApplicationUser();
-
-                var identity = new Identity(user.Site, user.Department, user.UserName);
-                context.Headers.Set(WellKnownHeaders.Identity, identity);
+                if (Thread.CurrentPrincipal.Identity.IsAuthenticated)
+                {
+                    var user = new ApplicationUser(Thread.CurrentPrincipal.Identity);
+                    context.Headers.Set(WellKnownHeaders.Ticket, user.ServiceTicket);
+                }
                 return Task.FromResult(true);
             }
 

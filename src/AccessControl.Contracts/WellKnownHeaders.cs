@@ -2,6 +2,6 @@
 {
     public class WellKnownHeaders
     {
-        public const string Identity = "Identity";
+        public const string Ticket = ".AUTH_TICKET";
     }
 }

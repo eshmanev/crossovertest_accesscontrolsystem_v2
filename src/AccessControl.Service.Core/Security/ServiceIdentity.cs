@@ -1,20 +1,20 @@
-﻿using System.Security.Principal;
+﻿using System.Diagnostics.Contracts;
+using System.Security.Principal;
 
 namespace AccessControl.Service.Security
 {
     internal class ServiceIdentity : IIdentity
     {
-        public ServiceIdentity(Contracts.Dto.IIdentity wrappedIdentity)
+        public ServiceIdentity(string userName)
         {
-            WrappedIdentity = wrappedIdentity;
+            Contract.Requires(!string.IsNullOrWhiteSpace(userName));
+            Name = userName;
         }
 
-        public string Name => WrappedIdentity.UserName;
+        public string Name { get; }
 
-        public string AuthenticationType => "CrossContextAuth";
+        public string AuthenticationType => "AUTH";
 
-        public bool IsAuthenticated => WrappedIdentity.IsAuthenticated;
-
-        public Contracts.Dto.IIdentity WrappedIdentity { get; }
+        public bool IsAuthenticated => true;
     }
 }

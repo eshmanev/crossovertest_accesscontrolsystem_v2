@@ -1,19 +1,33 @@
-﻿using System.Security.Principal;
+﻿using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Security.Principal;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Service.Security
 {
     internal class ServicePrincipal : IPrincipal
     {
-        public ServicePrincipal(Contracts.Dto.IIdentity identity)
+        private readonly string[] _roles;
+
+        public ServicePrincipal(ITicket decryptedTicket, string encryptedTicket)
         {
-            Identity = new ServiceIdentity(identity);
+            Contract.Requires(decryptedTicket != null);
+
+            DecryptedTicket = decryptedTicket;
+            EncryptedTicket = encryptedTicket;
+            Identity = new ServiceIdentity(decryptedTicket.User.UserName);
+            _roles = decryptedTicket.Roles;
         }
 
         public bool IsInRole(string role)
         {
-            return false;
+            return _roles.Contains(role);
         }
 
         public IIdentity Identity { get; }
+
+        public string EncryptedTicket { get; }
+
+        public ITicket DecryptedTicket { get; }
     }
 }

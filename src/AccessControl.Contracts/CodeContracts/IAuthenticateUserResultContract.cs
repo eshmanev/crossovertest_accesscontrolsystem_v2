@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Commands.Security;
-using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.CodeContracts
 {
@@ -12,18 +11,6 @@ namespace AccessControl.Contracts.CodeContracts
     internal abstract class IAuthenticateUserResultContract : IAuthenticateUserResult
     {
         public bool Authenticated => false;
-
-        public string Message => null;
-
-        public string[] Roles
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<string[]>() != null);
-                return null;
-            }
-        }
-
-        public IUser User => null;
+        public string Ticket => null;
     }
 }

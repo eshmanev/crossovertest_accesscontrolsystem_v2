@@ -15,10 +15,11 @@ namespace AccessControl.Service.Middleware
         {
             if (Thread.CurrentPrincipal.Identity.IsAuthenticated)
             {
-                Debug.Assert(Thread.CurrentPrincipal.Identity is ServiceIdentity);
+                Debug.Assert(Thread.CurrentPrincipal is ServicePrincipal);
 
-                var serviceIdentity = (ServiceIdentity) Thread.CurrentPrincipal.Identity;
-                context.Headers.Set(WellKnownHeaders.Identity, serviceIdentity.WrappedIdentity);
+                // Single sign-on. Pass the encrypted ticket to the remote service.
+                var principal = (ServicePrincipal) Thread.CurrentPrincipal;
+                context.Headers.Set(WellKnownHeaders.Ticket, principal.EncryptedTicket);
             }
             
             return Task.FromResult(true);

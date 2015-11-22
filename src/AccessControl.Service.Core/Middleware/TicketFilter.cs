@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System.Security.Principal;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Helpers;
@@ -9,9 +10,17 @@ using System.Threading.Tasks;
 
 namespace AccessControl.Service.Middleware
 {
-    internal class IdentityFilter<T> : IFilter<T>
+    internal class TicketFilter<T> : IFilter<T>
         where T : class, PipeContext
     {
+        private readonly IEncryptor _encryptor;
+
+        public TicketFilter(IEncryptor encryptor)
+        {
+            Contract.Requires(encryptor != null);
+            _encryptor = encryptor;
+        }
+
         public void Probe(ProbeContext context)
         {
             context.CreateFilterScope("exceptionLogger");
@@ -38,11 +47,12 @@ namespace AccessControl.Service.Middleware
             if (messageContext == null)
                 return null;
 
-            var identity = messageContext.Headers.Get(WellKnownHeaders.Identity, Identity.Empty);
-            if (!identity.IsAuthenticated)
-                return null;
+            var encryptedTicket = messageContext.Headers.Get<string>(WellKnownHeaders.Ticket);
+            if (string.IsNullOrWhiteSpace(encryptedTicket))
+                return Thread.CurrentPrincipal;
 
-            return new ServicePrincipal(identity);
+            var ticket = _encryptor.Decrypt<Ticket>(encryptedTicket);
+            return new ServicePrincipal(ticket, encryptedTicket);
         }
     }
 }

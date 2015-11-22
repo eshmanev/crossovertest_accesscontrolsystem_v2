@@ -1,5 +1,5 @@
-﻿using AccessControl.Contracts;
-using AccessControl.Contracts.Dto;
+﻿using System.Threading;
+using AccessControl.Service.Security;
 using MassTransit;
 
 namespace AccessControl.Service
@@ -9,19 +9,21 @@ namespace AccessControl.Service
     /// </summary>
     public static class ConsumeContextExtensions
     {
+        private static ServicePrincipal Principal => Thread.CurrentPrincipal as ServicePrincipal;
+
         public static string Department(this ConsumeContext context)
         {
-            return context.Headers.Get<IIdentity>(WellKnownHeaders.Identity)?.Department;
+            return Principal?.DecryptedTicket.User.Department;
         }
 
         public static string Site(this ConsumeContext context)
         {
-            return context.Headers.Get<IIdentity>(WellKnownHeaders.Identity)?.Site;
+            return Principal?.DecryptedTicket.User.Site;
         }
 
         public static string UserName(this ConsumeContext context)
         {
-            return context.Headers.Get<IIdentity>(WellKnownHeaders.Identity)?.UserName;
+            return Principal?.DecryptedTicket.User.UserName;
         }
     }
 }

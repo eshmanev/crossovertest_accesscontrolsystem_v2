@@ -18,8 +18,8 @@ namespace AccessControl.Service
                             _ =>
                             {
                                 var bus = container.Resolve<IBus>();
-                                var config = container.Resolve<IRabbitMqConfig>();
-                                var url = config.GetQueueUrl(queueName);
+                                var config = container.Resolve<IServiceConfig>();
+                                var url = config.RabbitMq.GetQueueUrl(queueName);
                                 return new MessageRequestClient<TRequest, TResponse>(bus, new Uri(url), TimeSpan.FromSeconds(30));
                             }));
         }
