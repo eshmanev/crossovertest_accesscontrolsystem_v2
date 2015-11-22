@@ -62,7 +62,7 @@ namespace AccessControl.Service.AccessPoint.Visitors
 
             public void Visit(ScheduledAccessRule rule)
             {
-                var dto = AccessRule.Scheduled(rule.AccessPoint.AccessPointId);
+                var dto = AccessRule.Scheduled(rule.AccessPoint.AccessPointId, rule.FromTimeUtc, rule.ToTimeUtc);
                 Scheduled.Add(dto);
             }
         }

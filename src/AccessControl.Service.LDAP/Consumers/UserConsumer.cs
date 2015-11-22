@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics.Contracts;
-using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
+using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Dto;
+using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Helpers;
-using AccessControl.Service.LDAP.Configuration;
+using AccessControl.Service.LDAP.Services;
 using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
@@ -14,18 +14,35 @@ namespace AccessControl.Service.LDAP.Consumers
     /// <summary>
     ///     Represents a consumer of LDAP users.
     /// </summary>
-    public class UserConsumer : IConsumer<IFindUserByName>, IConsumer<IListUsers>
+    internal class UserConsumer : IConsumer<IAuthenticateUser>, IConsumer<IFindUserByName>, IConsumer<IListUsers>
     {
-        private readonly ILdapConfig _config;
+        private readonly ILdapService _ldapService;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UserConsumer" /> class.
         /// </summary>
-        /// <param name="config">The configuration.</param>
-        public UserConsumer(ILdapConfig config)
+        /// <param name="ldapService">The LDAP service.</param>
+        public UserConsumer(ILdapService ldapService)
         {
-            Contract.Requires(config != null);
-            _config = config;
+            Contract.Requires(ldapService != null);
+            _ldapService = ldapService;
+        }
+
+        /// <summary>
+        ///     Consumes the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public Task Consume(ConsumeContext<IAuthenticateUser> context)
+        {
+            var result = _ldapService.Authenticate(context.Message.UserName, context.Message.Password);
+            if (!result)
+                return context.RespondAsync(new AuthenticateUserResult("Invalid user name or password"));
+
+            var user = _ldapService.FindUserByName(context.Message.UserName);
+            var hasEmployees = _ldapService.FindUsersByManager(context.Message.UserName).Any();
+            var roles = hasEmployees ? new[] {WellKnownRoles.Manager} : new string[0];
+            return context.RespondAsync(new AuthenticateUserResult(user, roles));
         }
 
         /// <summary>
@@ -35,37 +52,19 @@ namespace AccessControl.Service.LDAP.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IFindUserByName> context)
         {
-            var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
-            var searcher = new DirectorySearcher(entry) {Filter = $"(sAMAccountName={context.Message.UserName})"};
-            var result = searcher.FindOne();
-
-            var user = result == null ? null : ConvertUser(result);
+            var user = _ldapService.FindUserByName(context.Message.UserName);
             return context.RespondAsync<IFindUserByNameResult>(new FindUserByNameResult(user));
         }
 
         /// <summary>
-        ///     Returns a list of users.
+        ///     Returns a list of users managed by the logged in user.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
         public Task Consume(ConsumeContext<IListUsers> context)
         {
-            var entry = new DirectoryEntry(_config.CombinePath(context.Site()), _config.UserName, _config.Password);
-            var searcher = new DirectorySearcher(entry) {Filter = $"(&(objectClass=user)(department={context.Department()}))"};
-            var users = searcher.FindAll().Cast<SearchResult>().Select(ConvertUser).ToArray();
-            return context.RespondAsync(ListCommand.Result(users));
-        }
-
-        private IUser ConvertUser(SearchResult result)
-        {
-            var userName = result.GetProperty("samaccountname");
-            return new User(result.GetDirectoryEntry().Parent.GetProperty("distinguishedName"), userName)
-            {
-                DisplayName = result.GetProperty("displayname") ?? userName,
-                PhoneNumber = result.GetProperty("telephonenumber"),
-                Email = result.GetProperty("mail"),
-                Department = result.GetProperty("department")
-            };
+            var users = _ldapService.FindUsersByManager(context.UserName());
+            return context.RespondAsync(ListCommand.Result(users.ToArray()));
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Configuration;
 using AccessControl.Contracts;
-using AccessControl.Service;
 using AccessControl.Service.LDAP.Configuration;
 using AccessControl.Service.LDAP.Consumers;
+using AccessControl.Service.LDAP.Services;
 using MassTransit;
 using Microsoft.Practices.Unity;
 
@@ -17,6 +17,7 @@ namespace AccessControl.Service.LDAP
                     cfg =>
                     {
                         cfg.RegisterInstance((ILdapConfig) ConfigurationManager.GetSection("ldap"));
+                        cfg.RegisterType<ILdapService, LdapService>();
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>
@@ -29,9 +30,8 @@ namespace AccessControl.Service.LDAP
                                 //e.AutoDelete = true;
                                 //e.Durable = false;
                                 e.Consumer(() => container.Resolve<UserConsumer>());
-                                e.Consumer(() => container.Resolve<AuthenticationConsumer>());
-                                e.Consumer(() => container.Resolve<DepartmentConsumer>());
                                 e.Consumer(() => container.Resolve<UserGroupConsumer>());
+                                e.Consumer(() => container.Resolve<DepartmentConsumer>());
                             });
                     })
                 .Run(

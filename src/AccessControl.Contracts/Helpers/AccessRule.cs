@@ -12,10 +12,10 @@ namespace AccessControl.Contracts.Helpers
             return new PermanentAccessRule(accessPointId);
         }
 
-        public static IScheduledAccessRule Scheduled(Guid accessPointId)
+        public static IScheduledAccessRule Scheduled(Guid accessPointId, TimeSpan fromTimeUtc, TimeSpan toTimeUtc)
         {
             Contract.Requires(accessPointId != Guid.Empty);
-            return new ScheduledAccessRule(accessPointId);
+            return new ScheduledAccessRule(accessPointId, fromTimeUtc, toTimeUtc);
         }
 
         private class PermanentAccessRule : AccessRule, IPermanentAccessRule
@@ -31,13 +31,17 @@ namespace AccessControl.Contracts.Helpers
 
         private class ScheduledAccessRule : AccessRule, IScheduledAccessRule
         {
-            public ScheduledAccessRule(Guid accessPointId)
+            public ScheduledAccessRule(Guid accessPointId, TimeSpan fromTimeUtc, TimeSpan toTimeUtc)
             {
                 Contract.Requires(accessPointId != Guid.Empty);
                 AccessPointId = accessPointId;
+                FromTimeUtc = fromTimeUtc;
+                ToTimeUtc = toTimeUtc;
             }
 
             public Guid AccessPointId { get; }
+            public TimeSpan FromTimeUtc { get; }
+            public TimeSpan ToTimeUtc { get; }
         }
     }
 }

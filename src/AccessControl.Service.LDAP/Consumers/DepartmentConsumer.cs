@@ -1,50 +1,47 @@
 ﻿using System.Diagnostics.Contracts;
-using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
-using AccessControl.Service.LDAP.Configuration;
+using AccessControl.Service.LDAP.Services;
 using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
 {
-    public class DepartmentConsumer : IConsumer<IValidateDepartment>, IConsumer<IListDepartments>
+    internal class DepartmentConsumer : IConsumer<IValidateDepartment>, IConsumer<IListDepartments>
     {
-        private readonly ILdapConfig _config;
+        private readonly ILdapService _ldapService;
 
-        public DepartmentConsumer(ILdapConfig config)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="DepartmentConsumer" /> class.
+        /// </summary>
+        /// <param name="ldapService">The LDAP service.</param>
+        public DepartmentConsumer(ILdapService ldapService)
         {
-            Contract.Requires(config != null);
-            _config = config;
+            Contract.Requires(ldapService != null);
+            _ldapService = ldapService;
         }
 
+        /// <summary>
+        ///     Returns a list of departments managed by the logged in user.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public Task Consume(ConsumeContext<IListDepartments> context)
         {
-            var directoryEntiry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
-            var searcher = new DirectorySearcher(directoryEntiry) {Filter = "(objectClass=user)"};
-            searcher.PropertiesToLoad.Add("department");
-
-            var departments =
-                from result in searcher.FindAll().Cast<SearchResult>()
-                let siteDistinguished = result.GetDirectoryEntry().Parent.GetProperty("distinguishedName")
-                let site = result.GetDirectoryEntry().Parent.GetProperty("name")
-                let department = result.GetProperty("department")
-                where !string.IsNullOrWhiteSpace(siteDistinguished) && !string.IsNullOrWhiteSpace(site) && !string.IsNullOrWhiteSpace(department)
-                select new Department(siteDistinguished, site, department);
-
-            return context.RespondAsync(ListCommand.Result(departments.Cast<IDepartment>().Distinct().ToArray()));
+            var departments = _ldapService.FindDepartmentsByManager(context.UserName());
+            return context.RespondAsync(ListCommand.Result(departments.ToArray()));
         }
 
+        /// <summary>
+        ///     Validates the specified department.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public Task Consume(ConsumeContext<IValidateDepartment> context)
         {
-            var path = _config.CombinePath(context.Message.Site);
-            var directoryEntiry = new DirectoryEntry(path, _config.UserName, _config.Password);
-            var searcher = new DirectorySearcher(directoryEntiry) {Filter = "(objectClass=user)"};
-            searcher.PropertiesToLoad.Add("department");
-            var departmentExists = searcher.FindAll().Cast<SearchResult>().Any(x => x.GetProperty("department") == context.Message.Department);
+            var departmentExists = _ldapService.ValidateDepartment(context.Message.Site, context.Message.Department);
             return context.RespondAsync(departmentExists ? new VoidResult() : new VoidResult("Invalid site or department specified"));
         }
     }

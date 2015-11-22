@@ -86,15 +86,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeContracts\ILdapConfigContract.cs" />
+    <Compile Include="CodeContracts\ILdapServiceContract.cs" />
     <Compile Include="Configuration\ILdapConfig.cs" />
     <Compile Include="Configuration\LdapConfig.cs" />
-    <Compile Include="Consumers\AuthenticationConsumer.cs" />
     <Compile Include="Consumers\DepartmentConsumer.cs" />
     <Compile Include="Consumers\UserConsumer.cs" />
     <Compile Include="Consumers\SearchResultExtensions.cs" />
     <Compile Include="Consumers\UserGroupConsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ILdapService.cs" />
+    <Compile Include="Services\LdapService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

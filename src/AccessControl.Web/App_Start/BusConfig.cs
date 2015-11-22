@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Configuration;
 using AccessControl.Web.Models.Account;
-using AccessControl.Web.Services;
 using MassTransit;
 using MassTransit.Pipeline;
 using Microsoft.Practices.Unity;
@@ -48,7 +47,8 @@ namespace AccessControl.Web
                                ? new ApplicationUser(Thread.CurrentPrincipal.Identity)
                                : new ApplicationUser();
 
-                context.Headers.Set(WellKnownHeaders.Identity, new Identity(user.Site, user.Department, user.UserName));
+                var identity = new Identity(user.Site, user.Department, user.UserName);
+                context.Headers.Set(WellKnownHeaders.Identity, identity);
                 return Task.FromResult(true);
             }
 

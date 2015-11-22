@@ -1,42 +1,31 @@
 ﻿using System.Diagnostics.Contracts;
-using System.DirectoryServices;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
-using AccessControl.Service.LDAP.Configuration;
+using AccessControl.Service.LDAP.Services;
 using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
 {
-    public class UserGroupConsumer : IConsumer<IListUserGroups>, IConsumer<IListUsersInGroup>
+    internal class UserGroupConsumer : IConsumer<IListUserGroups>, IConsumer<IListUsersInGroup>
     {
-        private readonly ILdapConfig _config;
+        private readonly ILdapService _ldapService;
 
-        public UserGroupConsumer(ILdapConfig config)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="UserGroupConsumer" /> class.
+        /// </summary>
+        /// <param name="ldapService">The LDAP service.</param>
+        public UserGroupConsumer(ILdapService ldapService)
         {
-            Contract.Requires(config != null);
-            _config = config;
+            Contract.Requires(ldapService != null);
+            _ldapService = ldapService;
         }
 
         public Task Consume(ConsumeContext<IListUserGroups> context)
         {
-            var path = _config.CombinePath(context.Site());
-            var entry = new DirectoryEntry(path, _config.UserName, _config.Password);
-
-            var searcher = new DirectorySearcher(entry)
-            {
-                Filter = "(&(objectClass=group))",
-                SearchScope = SearchScope.Subtree
-            };
-
-            var groups = searcher.FindAll().Cast<SearchResult>()
-                                 .Select(x => new UserGroup(x.GetProperty("name")))
-                                 .Cast<IUserGroup>()
-                                 .ToArray();
-
-            return context.RespondAsync(ListCommand.Result(groups));
+            var groups = _ldapService.FindUserGroupsByManager(context.UserName());
+            return context.RespondAsync(ListCommand.Result(groups.ToArray()));
         }
 
         public Task Consume(ConsumeContext<IListUsersInGroup> context)

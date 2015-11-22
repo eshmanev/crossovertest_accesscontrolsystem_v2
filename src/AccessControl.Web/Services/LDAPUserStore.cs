@@ -51,17 +51,7 @@ namespace AccessControl.Web.Services
             try
             {
                 var result = await _findUser.Request(new FindUserByName(userName));
-                return result.User == null
-                           ? null
-                           : new ApplicationUser
-                           {
-                               UserName = result.User.UserName,
-                               DisplayName = result.User.DisplayName,
-                               Email = result.User.Email,
-                               PhoneNumber = result.User.PhoneNumber,
-                               Site = result.User.Site,
-                               Department = result.User.Department
-                           };
+                return result.User == null ? null : new ApplicationUser(result.User, new string[0]);
             }
             catch (Exception e)
             {
