@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Web.Configuration;
 using AccessControl.Web.Models.Account;
 using MassTransit;
@@ -19,17 +17,17 @@ namespace AccessControl.Web
             var rabbitMqConfig = UnityConfig.Container.Resolve<IRabbitMqConfig>();
 
             var busControl = Bus.Factory.CreateUsingRabbitMq(
-              cfg =>
-              {
-                  cfg.UseBsonSerializer();
-                  cfg.Host(
-                      new Uri(rabbitMqConfig.Url),
-                      h =>
-                      {
-                          h.Username(rabbitMqConfig.UserName);
-                          h.Password(rabbitMqConfig.Password);
-                      });
-              });
+                cfg =>
+                {
+                    cfg.UseBsonSerializer();
+                    cfg.Host(
+                        new Uri(rabbitMqConfig.Url),
+                        h =>
+                        {
+                            h.Username(rabbitMqConfig.UserName);
+                            h.Password(rabbitMqConfig.Password);
+                        });
+                });
 
             busControl.ConnectSendObserver(new MessageSendObserver());
 

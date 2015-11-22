@@ -3,6 +3,7 @@ using System.Configuration;
 using AccessControl.Service.Configuration;
 using AccessControl.Service;
 using AccessControl.Service.Middleware;
+using AccessControl.Service.Security;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Practices.Unity;
@@ -41,9 +42,10 @@ namespace AccessControl.Service
         /// <summary>
         ///     Configures the bus.
         /// </summary>
-        /// <param name="config">The configurator.</param>
+        /// <param name="preConfig">The configurator called before the bus is created.</param>
+        /// <param name="postConfig">The configurator called after the bus is created.</param>
         /// <returns>This instance.</returns>
-        public ServiceRunner<T> ConfigureBus(Action<IRabbitMqBusFactoryConfigurator, IRabbitMqHost, IUnityContainer> config)
+        public ServiceRunner<T> ConfigureBus(Action<IRabbitMqBusFactoryConfigurator, IRabbitMqHost, IUnityContainer> preConfig, Action<IBusControl> postConfig = null)
         {
             var configuration = _container.Resolve<IServiceConfig>();
             _busControl = Bus.Factory.CreateUsingRabbitMq(
@@ -60,9 +62,11 @@ namespace AccessControl.Service
                             h.Password(configuration.RabbitMq.Password);
                         });
 
-                    config(cfg, host, _container);
+                    preConfig(cfg, host, _container);
                 });
-            _busControl.ConnectSendObserver(new SendObserver());
+
+            postConfig?.Invoke(_busControl);
+
             return this;
         }
 

@@ -31,6 +31,13 @@ namespace AccessControl.Service.LDAP.Services
         IUser FindUserByName(string userName);
 
         /// <summary>
+        /// Gets the user groups in which the specified user is member of.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <returns></returns>
+        IEnumerable<IUserGroup> GetUserGroups(string userName);
+
+        /// <summary>
         /// Finds the users managed by the given manager.
         /// </summary>
         /// <param name="managerName">Name of the manager.</param>
@@ -51,5 +58,7 @@ namespace AccessControl.Service.LDAP.Services
         /// <param name="managerName">Name of the manager.</param>
         /// <returns></returns>
         IEnumerable<IUserGroup> FindUserGroupsByManager(string managerName);
+
+        
     }
 }

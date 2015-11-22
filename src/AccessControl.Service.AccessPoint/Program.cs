@@ -46,6 +46,11 @@ namespace AccessControl.Service.AccessPoint
                                 e.Consumer<BiometricInfoConsumer>(container);
                                 e.Consumer<AccessRightsConsumer>(container);
                             });
+                    },
+                    bus =>
+                    {
+                        // Cross-services SSO
+                        bus.ConnectSendObserver(new PrincipalTicketPropagator());
                     })
                 .Run(
                     cfg =>

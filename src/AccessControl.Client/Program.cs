@@ -4,6 +4,7 @@ using AccessControl.Client.Services;
 using AccessControl.Client.Vendor;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Commands.Security;
 using AccessControl.Service;
 using MassTransit;
 using Microsoft.Practices.Unity;
@@ -21,12 +22,14 @@ namespace AccessControl.Client
                     {
                         // bus
                         cfg
+                            .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IListUsersInGroup, IListUsersInGroupResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IListAccessRights, IListAccessRightsResult>(WellKnownQueues.AccessControl)
                             .RegisterRequestClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl);
 
-                        // this assembly
+                        // this app
                         cfg
+                            .RegisterType<IClientCredentials, ClientCredentials>()
                             .RegisterType<IAccessPermissionCollection, AccessPermissionCollection>(new ContainerControlledLifetimeManager())
                             .RegisterType<IAccessPermissionService, AccessPermissionService>();
 

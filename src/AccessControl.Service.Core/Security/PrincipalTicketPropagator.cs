@@ -3,13 +3,15 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
-using AccessControl.Service.Security;
 using MassTransit;
 using MassTransit.Pipeline;
 
-namespace AccessControl.Service.Middleware
+namespace AccessControl.Service.Security
 {
-    internal class SendObserver : ISendObserver
+    /// <summary>
+    ///     Propagates authentication ticket of the current principal to remote services.
+    /// </summary>
+    public class PrincipalTicketPropagator : ISendObserver
     {
         public Task PreSend<T>(SendContext<T> context) where T : class
         {
@@ -21,7 +23,7 @@ namespace AccessControl.Service.Middleware
                 var principal = (ServicePrincipal) Thread.CurrentPrincipal;
                 context.Headers.Set(WellKnownHeaders.Ticket, principal.EncryptedTicket);
             }
-            
+
             return Task.FromResult(true);
         }
 

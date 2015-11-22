@@ -37,6 +37,11 @@ namespace AccessControl.Service.LDAP
                                 e.Consumer(() => container.Resolve<UserGroupConsumer>());
                                 e.Consumer(() => container.Resolve<DepartmentConsumer>());
                             });
+                    },
+                    bus =>
+                    {
+                        // Cross-services SSO
+                        bus.ConnectSendObserver(new PrincipalTicketPropagator());
                     })
                 .Run(
                     cfg =>

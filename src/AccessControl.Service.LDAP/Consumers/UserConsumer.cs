@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
@@ -47,10 +48,20 @@ namespace AccessControl.Service.LDAP.Consumers
             }
 
             var user = _ldapService.FindUserByName(context.Message.UserName);
-            var hasEmployees = _ldapService.FindUsersByManager(context.Message.UserName).Any();
-            var roles = hasEmployees ? new[] {WellKnownRoles.Manager} : new string[0];
+            var roles = new List<string>();
+            if (_ldapService.FindUsersByManager(context.Message.UserName).Any())
+                roles.Add(WellKnownRoles.Manager);
 
-            var ticket = new Ticket(user, roles);
+            /* IMPORTANT NOTE:
+               This is a temporary solution. User group name cannot be hardcoded. 
+               We should provide a feature that allows to map User Groups to the application roles.
+               But this is postponded, because of time limit.
+            */
+            var userGroups = _ldapService.GetUserGroups(user.UserName);
+            if (userGroups.Any(x => x.Name == "Access Control Clients"))
+                roles.Add(WellKnownRoles.ClientService);
+
+            var ticket = new Ticket(user, roles.ToArray());
             var encryptedTicket = _encryptor.Encrypt(ticket);
             return context.RespondAsync(new AuthenticateUserResult(true, encryptedTicket));
         }

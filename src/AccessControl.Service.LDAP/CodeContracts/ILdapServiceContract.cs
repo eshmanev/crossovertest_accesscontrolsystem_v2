@@ -29,6 +29,12 @@ namespace AccessControl.Service.LDAP.CodeContracts
             return null;
         }
 
+        public IEnumerable<IUserGroup> GetUserGroups(string userName)
+        {
+            Contract.Requires(userName != null);
+            return null;
+        }
+
         public IEnumerable<IUser> FindUsersByManager(string managerName)
         {
             Contract.Requires(managerName != null);

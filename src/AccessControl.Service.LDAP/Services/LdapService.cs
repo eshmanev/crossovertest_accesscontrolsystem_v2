@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
@@ -23,6 +24,24 @@ namespace AccessControl.Service.LDAP.Services
         {
             var result = FindUserByNameCore(userName);
             return result != null ? ConvertUser(result) : null;
+        }
+
+        public IEnumerable<IUserGroup> GetUserGroups(string userName)
+        {
+            var result = FindUserByNameCore(userName);
+            if (result == null)
+                yield break;
+
+            foreach (var property in result.Properties["memberOf"].OfType<string>())
+            {
+                var equalsIndex = property.IndexOf("=", 1, StringComparison.Ordinal);
+                var commaIndex = property.IndexOf(",", 1, StringComparison.Ordinal);
+                if (equalsIndex == -1)
+                    continue;
+
+                var groupName = property.Substring((equalsIndex + 1), (commaIndex - equalsIndex) - 1);
+                yield return new UserGroup(groupName);
+            }
         }
 
         public IEnumerable<IUser> FindUsersByManager(string managerName)

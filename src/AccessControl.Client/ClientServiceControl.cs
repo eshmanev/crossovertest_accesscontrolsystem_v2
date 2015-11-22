@@ -2,7 +2,10 @@
 using AccessControl.Client.Data;
 using AccessControl.Client.Services;
 using AccessControl.Client.Vendor;
+using AccessControl.Contracts.Commands.Security;
+using AccessControl.Contracts.Helpers;
 using AccessControl.Service;
+using AccessControl.Service.Security;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
@@ -13,6 +16,7 @@ namespace AccessControl.Client
 {
     public class ClientServiceControl : BusServiceControl
     {
+        private readonly IBusControl _busControl;
         private readonly IUnityContainer _container;
         private UnityServiceHost[] _wcfHosts;
 
@@ -24,7 +28,9 @@ namespace AccessControl.Client
         public ClientServiceControl(IBusControl busControl, IUnityContainer container)
             : base(busControl)
         {
+            Contract.Requires(busControl != null);
             Contract.Requires(container != null);
+            _busControl = busControl;
             _container = container;
         }
 
@@ -38,19 +44,11 @@ namespace AccessControl.Client
             // start service bus
             var result = base.Start(hostControl);
 
-            // restore and update permissions
-            var service = _container.Resolve<IAccessPermissionService>();
-            var accessPermissions = _container.Resolve<IAccessPermissionCollection>();
-            service.Load(accessPermissions);
-            service.Update(accessPermissions);
+            if (!AuthenticateClient())
+                return false;
 
-            // start WCF services
-            _wcfHosts = new[]
-            {
-                new UnityServiceHost(_container, typeof(AccessCheckService)),
-                new UnityServiceHost(_container, typeof(AccessPointRegistry))
-            };
-            _wcfHosts.ForEach(x => x.Open());
+            UpdatePermissions();
+            StartWcfServices();
 
             return result;
         }
@@ -62,11 +60,44 @@ namespace AccessControl.Client
         /// <returns></returns>
         public override bool Stop(HostControl hostControl)
         {
-            // stop WCF services
-            _wcfHosts?.ForEach(x => x.Close());
-
-            // stop service bus
+            StopWcfServices();
             return base.Stop(hostControl);
+        }
+
+        private bool AuthenticateClient()
+        {
+            var credentials = _container.Resolve<IClientCredentials>();
+            var authenticateRequest = _container.Resolve<IRequestClient<IAuthenticateUser, IAuthenticateUserResult>>();
+            var result = authenticateRequest.Request(new AuthenticateUser(credentials.LdapUserName, credentials.LdapPassword)).Result;
+            if (!result.Authenticated)
+                return false;
+
+            // take care of automatical request authentication
+            _busControl.ConnectSendObserver(new EncryptedTicketPropagator(result.Ticket));
+            return true;
+        }
+
+        private void UpdatePermissions()
+        {
+            var service = _container.Resolve<IAccessPermissionService>();
+            var accessPermissions = _container.Resolve<IAccessPermissionCollection>();
+            service.Load(accessPermissions);
+            service.Update(accessPermissions);
+        }
+
+        private void StartWcfServices()
+        {
+            _wcfHosts = new[]
+           {
+                new UnityServiceHost(_container, typeof(AccessCheckService)),
+                new UnityServiceHost(_container, typeof(AccessPointRegistry))
+            };
+            _wcfHosts.ForEach(x => x.Open());
+        }
+
+        private void StopWcfServices()
+        {
+            _wcfHosts?.ForEach(x => x.Close());
         }
     }
 }

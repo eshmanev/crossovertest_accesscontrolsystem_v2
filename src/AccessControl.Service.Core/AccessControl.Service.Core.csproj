@@ -95,7 +95,8 @@
     <Compile Include="Configuration\ISecurityConfig.cs" />
     <Compile Include="Configuration\RabbitMqElement.cs" />
     <Compile Include="ConsumeContextExtensions.cs" />
-    <Compile Include="Middleware\SendObserver.cs" />
+    <Compile Include="Security\EncryptedTicketPropagator.cs" />
+    <Compile Include="Security\PrincipalTicketPropagator.cs" />
     <Compile Include="Middleware\ExceptionLoggerFilter.cs" />
     <Compile Include="Middleware\TicketFilter.cs" />
     <Compile Include="Middleware\PipeConfiguratorExtensions.cs" />

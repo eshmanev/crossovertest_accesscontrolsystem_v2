@@ -98,6 +98,7 @@
     <Compile Include="CodeContracts\IAccessPermissionCollectionContract.cs" />
     <Compile Include="CodeContracts\IAccessPermissionContract.cs" />
     <Compile Include="CodeContracts\AccessPermissionServiceContract.cs" />
+    <Compile Include="CodeContracts\IClientCredentialsContract.cs" />
     <Compile Include="Consumers\EventConsumer.cs" />
     <Compile Include="Consumers\UpdateUserHashVisitor.cs" />
     <Compile Include="Data\AccessPermissionCollection.cs" />
@@ -111,7 +112,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccessPermissionService.cs" />
+    <Compile Include="Services\ClientCredentials.cs" />
     <Compile Include="Services\IAccessPermissionService.cs" />
+    <Compile Include="Services\IClientCredentials.cs" />
     <Compile Include="Vendor\AccessPointRegistry.cs" />
     <Compile Include="Vendor\AccessCheckService.cs" />
   </ItemGroup>
