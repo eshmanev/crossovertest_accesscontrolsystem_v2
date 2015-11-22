@@ -18,10 +18,10 @@ namespace AccessControl.Contracts.Dto
         string UserGroupName { get; }
 
         /// <summary>
-        /// Gets the permanent access rules.
+        ///     Gets the permanent access rules.
         /// </summary>
         /// <value>
-        /// The permanent access rules.
+        ///     The permanent access rules.
         /// </value>
         IPermanentAccessRule[] PermanentAccessRules { get; }
     }

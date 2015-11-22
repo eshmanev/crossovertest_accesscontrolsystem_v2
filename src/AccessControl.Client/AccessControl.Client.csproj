@@ -95,8 +95,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientServiceControl.cs" />
+    <Compile Include="CodeContracts\IAccessPermissionCollectionContract.cs" />
+    <Compile Include="CodeContracts\IAccessPermissionContract.cs" />
+    <Compile Include="CodeContracts\AccessPermissionServiceContract.cs" />
+    <Compile Include="Consumers\EventConsumer.cs" />
+    <Compile Include="Consumers\UpdateUserHashVisitor.cs" />
+    <Compile Include="Data\AccessPermissionCollection.cs" />
+    <Compile Include="Data\IAccessPermission.cs" />
+    <Compile Include="Data\IAccessPermissionCollection.cs" />
+    <Compile Include="Data\IAccessPermissionVisitor.cs" />
+    <Compile Include="Data\PermanentGroupAccess.cs" />
+    <Compile Include="Data\PermanentUserAccess.cs" />
+    <Compile Include="Data\ScheduledUserAccess.cs" />
+    <Compile Include="Data\UserHash.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AccessPermissionService.cs" />
+    <Compile Include="Services\IAccessPermissionService.cs" />
     <Compile Include="Vendor\AccessPointRegistry.cs" />
     <Compile Include="Vendor\AccessCheckService.cs" />
   </ItemGroup>
@@ -120,10 +135,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Mappings\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

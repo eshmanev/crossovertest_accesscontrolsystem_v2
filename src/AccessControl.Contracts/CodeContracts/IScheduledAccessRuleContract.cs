@@ -19,5 +19,9 @@ namespace AccessControl.Contracts.CodeContracts
                 return Guid.Empty;
             }
         }
+
+        public TimeSpan FromTimeUtc => default(TimeSpan);
+
+        public TimeSpan ToTimeUtc => default(TimeSpan);
     }
 }

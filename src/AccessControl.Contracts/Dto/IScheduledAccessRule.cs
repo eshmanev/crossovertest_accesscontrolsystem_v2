@@ -8,11 +8,27 @@ namespace AccessControl.Contracts.Dto
     public interface IScheduledAccessRule
     {
         /// <summary>
-        /// Gets the access point identifier.
+        ///     Gets the access point identifier.
         /// </summary>
         /// <value>
-        /// The access point identifier.
+        ///     The access point identifier.
         /// </value>
         Guid AccessPointId { get; }
+
+        /// <summary>
+        ///     Gets FROM time in UTC format.
+        /// </summary>
+        /// <value>
+        ///     FROM time, UTC.
+        /// </value>
+        TimeSpan FromTimeUtc { get; }
+
+        /// <summary>
+        ///     Gets TO time in UTC format.
+        /// </summary>
+        /// <value>
+        ///     TO time, UTC.
+        /// </value>
+        TimeSpan ToTimeUtc { get; }
     }
 }

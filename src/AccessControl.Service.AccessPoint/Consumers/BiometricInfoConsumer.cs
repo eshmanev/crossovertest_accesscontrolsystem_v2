@@ -18,23 +18,28 @@ namespace AccessControl.Service.AccessPoint.Consumers
     public class BiometricInfoConsumer : IConsumer<IListUsersBiometric>, IConsumer<IUpdateUserBiometric>
     {
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
+        private readonly IBus _bus;
         private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
         private readonly IRepository<User> _userRepository;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="BiometricInfoConsumer" /> class.
         /// </summary>
+        /// <param name="bus">The bus.</param>
         /// <param name="listUsersRequest">The list users request.</param>
         /// <param name="findUserRequest">The find user request.</param>
         /// <param name="userRepository">The user repository.</param>
-        public BiometricInfoConsumer(IRequestClient<IListUsers, IListUsersResult> listUsersRequest,
+        public BiometricInfoConsumer(IBus bus,
+                                     IRequestClient<IListUsers, IListUsersResult> listUsersRequest,
                                      IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest,
                                      IRepository<User> userRepository)
         {
+            Contract.Requires(bus != null);
             Contract.Requires(listUsersRequest != null);
             Contract.Requires(userRepository != null);
             Contract.Requires(findUserRequest != null);
 
+            _bus = bus;
             _listUsersRequest = listUsersRequest;
             _findUserRequest = findUserRequest;
             _userRepository = userRepository;
@@ -80,23 +85,27 @@ namespace AccessControl.Service.AccessPoint.Consumers
             var response = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
             if (response.User == null)
             {
-                context.Respond(new VoidResult("User is not found"));
+                await context.RespondAsync(new VoidResult("User is not found"));
                 return;
             }
 
+            string oldHash;
             var entity = _userRepository.Filter(x => x.UserName == context.Message.UserName).SingleOrDefault();
             if (entity != null)
             {
+                oldHash = entity.BiometricHash;
                 entity.BiometricHash = context.Message.BiometricHash;
                 _userRepository.Update(entity);
             }
             else
             {
+                oldHash = null;
                 entity = new User {UserName = context.Message.UserName, BiometricHash = context.Message.BiometricHash};
                 _userRepository.Insert(entity);
             }
 
-            context.Respond(new VoidResult());
+            await _bus.Publish(Events.UserBiometricUpdated(entity.UserName, oldHash, entity.BiometricHash));
+            await context.RespondAsync(new VoidResult());
         }
     }
 }

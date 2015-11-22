@@ -9,6 +9,7 @@ using AccessControl.Data;
 using AccessControl.Data.Entities;
 using AccessControl.Service.AccessPoint.Visitors;
 using MassTransit;
+using Microsoft.Practices.ObjectBuilder2;
 
 namespace AccessControl.Service.AccessPoint.Consumers
 {
@@ -101,11 +102,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             var accessRights = _accessRightsRepository.Filter(x => x.AccessRules.Any(rule => accessPointIds.Contains(rule.AccessPoint.AccessPointId)));
 
             var visitor = new ConvertAccessRightsVisitor();
-            foreach (var item in accessRights)
-            {
-                item.Accept(visitor);
-            }
-
+            accessRights.ForEach(x => x.Accept(visitor));
             return context.RespondAsync(ListCommand.Result(visitor.UserAccessRightsDto.ToArray(), visitor.UserGroupAccessRightsDto.ToArray()));
         }
 

@@ -40,8 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="CodeContracts\IFindUserByNameContract.cs" />
     <Compile Include="CodeContracts\IIdentityContract.cs" />
+    <Compile Include="CodeContracts\IListUsersInGroupContract.cs" />
+    <Compile Include="CodeContracts\IListUsersInGroupResultContract.cs" />
     <Compile Include="CodeContracts\IListUsersResultContract.cs" />
     <Compile Include="CodeContracts\IAccessPointContract.cs" />
     <Compile Include="CodeContracts\IDenyUserGroupAccessContract.cs" />
@@ -56,6 +59,7 @@
     <Compile Include="CodeContracts\IPermanentAccessRuleContract.cs" />
     <Compile Include="CodeContracts\IScheduledAccessRuleContract.cs" />
     <Compile Include="CodeContracts\IUserAccessRightsContract.cs" />
+    <Compile Include="CodeContracts\IUserBiometricUpdatedContract.cs" />
     <Compile Include="CodeContracts\IUserGroupAccessRightsContract.cs" />
     <Compile Include="CodeContracts\IUserGroupContract.cs" />
     <Compile Include="CodeContracts\IValidateDepartmentContract.cs" />
@@ -63,6 +67,8 @@
     <Compile Include="CodeContracts\IValidationFaultContract.cs" />
     <Compile Include="CodeContracts\IValidationPropertyErrorContract.cs" />
     <Compile Include="CodeContracts\IListUsersBiometricResultContract.cs" />
+    <Compile Include="Commands\Lists\IListUsersInGroup.cs" />
+    <Compile Include="Commands\Lists\IListUsersInGroupResult.cs" />
     <Compile Include="Commands\Management\IDenyUserGroupAccess.cs" />
     <Compile Include="Commands\Management\IDenyUserAccess.cs" />
     <Compile Include="Commands\Management\IAllowUserAccess.cs" />
@@ -87,12 +93,14 @@
     <Compile Include="Dto\IVoidResult.cs" />
     <Compile Include="Dto\IValidationFault.cs" />
     <Compile Include="Dto\IValidationPropertyError.cs" />
+    <Compile Include="Events\IUserBiometricUpdated.cs" />
     <Compile Include="Helpers\AccessPoint.cs" />
     <Compile Include="Helpers\AccessRights.cs" />
     <Compile Include="Helpers\AccessRule.cs" />
     <Compile Include="Helpers\AllowDenyUserAccess.cs" />
     <Compile Include="Helpers\AllowDenyUserGroupAccess.cs" />
     <Compile Include="Helpers\Department.cs" />
+    <Compile Include="Helpers\Events.cs" />
     <Compile Include="Helpers\Identity.cs" />
     <Compile Include="Helpers\UpdateUserBiometric.cs" />
     <Compile Include="CodeContracts\IUpdateUserBiometricContract.cs" />
@@ -128,6 +136,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WellKnownHeaders.cs" />
     <Compile Include="WellKnownQueues.cs" />
+    <Compile Include="WellKnownRoles.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

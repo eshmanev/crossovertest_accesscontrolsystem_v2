@@ -10,7 +10,7 @@ using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
 {
-    public class UserGroupConsumer : IConsumer<IListUserGroups>
+    public class UserGroupConsumer : IConsumer<IListUserGroups>, IConsumer<IListUsersInGroup>
     {
         private readonly ILdapConfig _config;
 
@@ -37,6 +37,11 @@ namespace AccessControl.Service.LDAP.Consumers
                                  .ToArray();
 
             return context.RespondAsync(ListCommand.Result(groups));
+        }
+
+        public Task Consume(ConsumeContext<IListUsersInGroup> context)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
