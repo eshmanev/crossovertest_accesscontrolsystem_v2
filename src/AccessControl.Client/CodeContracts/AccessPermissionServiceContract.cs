@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using AccessControl.Client.Data;
 using AccessControl.Client.Services;
 
@@ -21,9 +22,11 @@ namespace AccessControl.Client.CodeContracts
             Contract.Requires(accessPermissions != null);
         }
 
-        public void Update(IAccessPermissionCollection accessPermissions)
+        public Task<bool> Update(IAccessPermissionCollection accessPermissions)
         {
             Contract.Requires(accessPermissions != null);
+            Contract.Ensures(Contract.Result<Task<bool>>() != null);
+            return null;
         }
     }
 }

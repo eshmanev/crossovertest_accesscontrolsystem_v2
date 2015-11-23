@@ -20,6 +20,7 @@ namespace AccessControl.Service.LDAP.CodeContracts
         public IEnumerable<IDepartment> FindDepartmentsByManager(string managerName)
         {
             Contract.Requires(managerName != null);
+            Contract.Ensures(Contract.Result<IEnumerable<IDepartment>>() != null);
             return null;
         }
 
@@ -32,12 +33,33 @@ namespace AccessControl.Service.LDAP.CodeContracts
         public IEnumerable<IUserGroup> GetUserGroups(string userName)
         {
             Contract.Requires(userName != null);
+            Contract.Ensures(Contract.Result<IEnumerable<IUserGroup>>() != null);
+            return null;
+        }
+
+        public IEnumerable<IUser> GetUsersInGroup(string userGroupName)
+        {
+            Contract.Requires(userGroupName != null);
+            Contract.Ensures(Contract.Result<IEnumerable<IUser>>() != null);
+            return null;
+        }
+
+        public IEnumerable<IUserGroup> ListUserGroups()
+        {
+            Contract.Ensures(Contract.Result<IEnumerable<IUserGroup>>() != null);
             return null;
         }
 
         public IEnumerable<IUser> FindUsersByManager(string managerName)
         {
             Contract.Requires(managerName != null);
+            Contract.Ensures(Contract.Result<IEnumerable<IUser>>() != null);
+            return null;
+        }
+
+        public IEnumerable<IUser> ListUsers()
+        {
+            Contract.Ensures(Contract.Result<IEnumerable<IUser>>() != null);
             return null;
         }
 
@@ -51,6 +73,7 @@ namespace AccessControl.Service.LDAP.CodeContracts
         public IEnumerable<IUserGroup> FindUserGroupsByManager(string managerName)
         {
             Contract.Requires(managerName != null);
+            Contract.Ensures(Contract.Result<IEnumerable<IUserGroup>>() != null);
             return null;
         }
     }

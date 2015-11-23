@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Helpers;
@@ -47,6 +50,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IAllowUserAccess> context)
         {
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+                return context.RespondAsync(new VoidResult("You are not authorized"));
+
             var accessRights = GetUserAccessRights(context.Message.UserName);
             return TryAllowPermanentAccess(
                 context,
@@ -61,6 +67,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IAllowUserGroupAccess> context)
         {
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+                return context.RespondAsync(new VoidResult("You are not authorized"));
+
             var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
             return TryAllowPermanentAccess(
                 context,
@@ -75,6 +84,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IDenyUserAccess> context)
         {
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+                return context.RespondAsync(new VoidResult("You are not authorized"));
+
             var accessRights = GetUserAccessRights(context.Message.UserName);
             return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
         }
@@ -86,6 +98,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IDenyUserGroupAccess> context)
         {
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+                return context.RespondAsync(new VoidResult("You are not authorized"));
+
             var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
             return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
         }
@@ -97,13 +112,21 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IListAccessRights> context)
         {
-            var accessPoints = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
+            IEnumerable<Data.Entities.AccessPoint> accessPoints;
+
+            if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+                accessPoints = _accessPointRepository.GetAll();
+            else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+                accessPoints = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
+            else
+                accessPoints = Enumerable.Empty<Data.Entities.AccessPoint>();
+
             var accessPointIds = accessPoints.Select(x => x.AccessPointId).ToArray();
             var accessRights = _accessRightsRepository.Filter(x => x.AccessRules.Any(rule => accessPointIds.Contains(rule.AccessPoint.AccessPointId)));
 
             var visitor = new ConvertAccessRightsVisitor();
             accessRights.ForEach(x => x.Accept(visitor));
-            return context.RespondAsync(ListCommand.Result(visitor.UserAccessRightsDto.ToArray(), visitor.UserGroupAccessRightsDto.ToArray()));
+            return context.RespondAsync(ListCommand.AccessRightsResult(visitor.UserAccessRightsDto.ToArray(), visitor.UserGroupAccessRightsDto.ToArray()));
         }
 
         private Task DenyPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights)

@@ -46,7 +46,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                         .Cast<IAccessPoint>()
                         .ToArray();
 
-            return context.RespondAsync(ListCommand.Result(accessPoints));
+            return context.RespondAsync(ListCommand.AccessPointsResult(accessPoints));
         }
 
         /// <summary>

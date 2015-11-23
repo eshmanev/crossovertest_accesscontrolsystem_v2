@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Security;
+using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Services;
 using AccessControl.Service.Security;
@@ -84,8 +86,16 @@ namespace AccessControl.Service.LDAP.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IListUsers> context)
         {
-            var users = _ldapService.FindUsersByManager(context.UserName());
-            return context.RespondAsync(ListCommand.Result(users.ToArray()));
+            IEnumerable<IUser> users;
+
+            if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+                users = _ldapService.ListUsers();
+            else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+                users = _ldapService.FindUsersByManager(context.UserName());
+            else
+                users = Enumerable.Empty<IUser>();
+
+            return context.RespondAsync(ListCommand.UsersResult(users.ToArray()));
         }
     }
 }

@@ -1,8 +1,12 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Services;
 using MassTransit;
@@ -30,8 +34,14 @@ namespace AccessControl.Service.LDAP.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IListDepartments> context)
         {
-            var departments = _ldapService.FindDepartmentsByManager(context.UserName());
-            return context.RespondAsync(ListCommand.Result(departments.ToArray()));
+            IEnumerable<IDepartment> departments;
+
+            if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+                departments = _ldapService.FindDepartmentsByManager(context.UserName());
+            else
+                departments = Enumerable.Empty<IDepartment>();
+
+            return context.RespondAsync(ListCommand.DepartmentsResult(departments.ToArray()));
         }
 
         /// <summary>

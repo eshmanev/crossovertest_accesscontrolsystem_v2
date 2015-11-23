@@ -11,83 +11,104 @@ namespace AccessControl.Contracts.Helpers
     {
         public static readonly Command Default = new Command();
 
+        public static IListUsersInGroup ListUsersInGroup(string userGroupName)
+        {
+            return new ListUsersInGroupImpl {UserGroupName = userGroupName};
+        }
+
         #region Commands
 
         public class Command : IListUsers, IListAccessPoints, IListAccessRights, IListDepartments, IListUserGroups, IListUsersBiometric
         {
         }
 
+        private class ListUsersInGroupImpl : IListUsersInGroup
+        {
+            public string UserGroupName { get; set; }
+        }
+
         #endregion
 
         #region Results
 
-        public static IListAccessPointsResult Result(IAccessPoint[] accessPoints)
+        public static IListAccessPointsResult AccessPointsResult(IAccessPoint[] accessPoints)
         {
             Contract.Requires(accessPoints != null);
-            return new ListAccessPointsResult {AccessPoints = accessPoints};
+            return new ListAccessPointsResultImpl {AccessPoints = accessPoints};
         }
 
-        public static IListUsersResult Result(IUser[] users)
+        public static IListUsersResult UsersResult(IUser[] users)
         {
             Contract.Requires(users != null);
-            return new ListUsersResult {Users = users};
+            return new ListUsersResultImpl {Users = users};
         }
 
-        public static IListDepartmentsResult Result(IDepartment[] departments)
+        public static IListUsersInGroupResult UsersInGroupResult(IUser[] users)
+        {
+            Contract.Requires(users != null);
+            return new ListUsersInGroupResultImpl { Users = users };
+        }
+
+        public static IListDepartmentsResult DepartmentsResult(IDepartment[] departments)
         {
             Contract.Requires(departments != null);
-            return new ListDepartmentsResult {Departments = departments};
+            return new ListDepartmentsResultImpl {Departments = departments};
         }
 
-        public static IListUserGroupsResult Result(IUserGroup[] groups)
+        public static IListUserGroupsResult UserGroupsResult(IUserGroup[] groups)
         {
             Contract.Requires(groups != null);
-            return new ListUserGroupsResult {Groups = groups};
+            return new ListUserGroupsResultImpl {Groups = groups};
         }
 
-        public static IListUsersBiometricResult Result(IUserBiometric[] users)
+        public static IListUsersBiometricResult UsersBiometricResult(IUserBiometric[] users)
         {
             Contract.Requires(users != null);
-            return new ListUsersBiometricResult {Users = users};
+            return new ListUsersBiometricResultImpl {Users = users};
         }
 
-        public static IListAccessRightsResult Result(IUserAccessRights[] userAccessRights, IUserGroupAccessRights[] userGroupAccessRights)
+        public static IListAccessRightsResult AccessRightsResult(IUserAccessRights[] userAccessRights, IUserGroupAccessRights[] userGroupAccessRights)
         {
             Contract.Requires(userAccessRights != null);
             Contract.Requires(userGroupAccessRights != null);
-            return new ListAccessRightsResult {UserAccessRights = userAccessRights, UserGroupAccessRights = userGroupAccessRights};
+            return new ListAccessRightsResultImpl {UserAccessRights = userAccessRights, UserGroupAccessRights = userGroupAccessRights};
         }
 
         #endregion
 
         #region Nested classes
 
-        private class ListAccessPointsResult : IListAccessPointsResult
+        private class ListAccessPointsResultImpl : IListAccessPointsResult
         {
             public IAccessPoint[] AccessPoints { get; set; }
         }
 
-        private class ListUsersResult : IListUsersResult
+        private class ListUsersResultImpl : IListUsersResult
         {
             public IUser[] Users { get; set; }
         }
 
-        private class ListDepartmentsResult : IListDepartmentsResult
+        private class ListUsersInGroupResultImpl : IListUsersInGroupResult
+        {
+            public IUser[] Users { get; set; }
+        }
+
+        private class ListDepartmentsResultImpl : IListDepartmentsResult
         {
             public IDepartment[] Departments { get; set; }
         }
 
-        private class ListUserGroupsResult : IListUserGroupsResult
+        private class ListUserGroupsResultImpl : IListUserGroupsResult
         {
             public IUserGroup[] Groups { get; set; }
         }
 
-        private class ListUsersBiometricResult : IListUsersBiometricResult
+        private class ListUsersBiometricResultImpl : IListUsersBiometricResult
         {
             public IUserBiometric[] Users { get; set; }
         }
 
-        private class ListAccessRightsResult : IListAccessRightsResult
+        private class ListAccessRightsResultImpl : IListAccessRightsResult
         {
             public IUserAccessRights[] UserAccessRights { get; set; }
             public IUserGroupAccessRights[] UserGroupAccessRights { get; set; }

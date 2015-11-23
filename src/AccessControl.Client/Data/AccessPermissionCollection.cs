@@ -9,6 +9,7 @@ namespace AccessControl.Client.Data
     [Serializable]
     internal class AccessPermissionCollection : IAccessPermissionCollection
     {
+        [NonSerialized]
         private readonly ReaderWriterLockSlim _lockObj = new ReaderWriterLockSlim();
         private readonly HashSet<IAccessPermission> _permissions = new HashSet<IAccessPermission>();
 

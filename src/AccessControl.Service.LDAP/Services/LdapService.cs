@@ -30,18 +30,41 @@ namespace AccessControl.Service.LDAP.Services
         {
             var result = FindUserByNameCore(userName);
             if (result == null)
+            {
                 yield break;
+            }
 
             foreach (var property in result.Properties["memberOf"].OfType<string>())
             {
                 var equalsIndex = property.IndexOf("=", 1, StringComparison.Ordinal);
                 var commaIndex = property.IndexOf(",", 1, StringComparison.Ordinal);
                 if (equalsIndex == -1)
+                {
                     continue;
+                }
 
                 var groupName = property.Substring((equalsIndex + 1), (commaIndex - equalsIndex) - 1);
                 yield return new UserGroup(groupName);
             }
+        }
+
+        public IEnumerable<IUser> GetUsersInGroup(string userGroupName)
+        {
+            var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
+            var searcher = new DirectorySearcher(entry)
+            {
+                Filter = $"(&(objectClass=group)(name={userGroupName}))",
+                SearchScope = SearchScope.Subtree
+            };
+
+            var groupResult = searcher.FindOne();
+            var userNames = groupResult.Properties["member"].OfType<string>();
+            return userNames.Select(
+                x =>
+                {
+                    searcher.Filter = $"(distinguishedname={x})";
+                    return ConvertUser(searcher.FindOne());
+                });
         }
 
         public IEnumerable<IUser> FindUsersByManager(string managerName)
@@ -54,6 +77,13 @@ namespace AccessControl.Service.LDAP.Services
 
             var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
             var searcher = new DirectorySearcher(entry) {Filter = $"(&(objectClass=user)(manager={manager.GetProperty("distinguishedName")}))"};
+            return searcher.FindAll().Cast<SearchResult>().Select(ConvertUser);
+        }
+
+        public IEnumerable<IUser> ListUsers()
+        {
+            var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
+            var searcher = new DirectorySearcher(entry) {Filter = $"(objectClass=user)"};
             return searcher.FindAll().Cast<SearchResult>().Select(ConvertUser);
         }
 
@@ -78,6 +108,21 @@ namespace AccessControl.Service.LDAP.Services
             var searcher = new DirectorySearcher(entry)
             {
                 Filter = $"(&(objectClass=group)(managedby={manager.GetProperty("distinguishedName")}))",
+                SearchScope = SearchScope.Subtree
+            };
+
+            return searcher.FindAll().Cast<SearchResult>()
+                           .Select(x => new UserGroup(x.GetProperty("name")))
+                           .Cast<IUserGroup>()
+                           .ToArray();
+        }
+
+        public IEnumerable<IUserGroup> ListUserGroups()
+        {
+            var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
+            var searcher = new DirectorySearcher(entry)
+            {
+                Filter = $"(objectClass=group)",
                 SearchScope = SearchScope.Subtree
             };
 

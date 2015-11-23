@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using AccessControl.Client.Data;
 using AccessControl.Client.Services;
 using AccessControl.Client.Vendor;
@@ -6,6 +7,7 @@ using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service;
 using AccessControl.Service.Security;
+using log4net;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
@@ -16,6 +18,7 @@ namespace AccessControl.Client
 {
     public class ClientServiceControl : BusServiceControl
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ClientServiceControl));
         private readonly IBusControl _busControl;
         private readonly IUnityContainer _container;
         private UnityServiceHost[] _wcfHosts;
@@ -44,9 +47,7 @@ namespace AccessControl.Client
             // start service bus
             var result = base.Start(hostControl);
 
-            if (!AuthenticateClient())
-                return false;
-
+            AuthenticateClient();
             UpdatePermissions();
             StartWcfServices();
 
@@ -64,25 +65,41 @@ namespace AccessControl.Client
             return base.Stop(hostControl);
         }
 
-        private bool AuthenticateClient()
+        private void AuthenticateClient()
         {
             var credentials = _container.Resolve<IClientCredentials>();
             var authenticateRequest = _container.Resolve<IRequestClient<IAuthenticateUser, IAuthenticateUserResult>>();
-            var result = authenticateRequest.Request(new AuthenticateUser(credentials.LdapUserName, credentials.LdapPassword)).Result;
-            if (!result.Authenticated)
-                return false;
 
-            // take care of automatical request authentication
-            _busControl.ConnectSendObserver(new EncryptedTicketPropagator(result.Ticket));
-            return true;
+            try
+            {
+                var result = authenticateRequest.Request(new AuthenticateUser(credentials.LdapUserName, credentials.LdapPassword)).Result;
+                if (!result.Authenticated)
+                    return;
+
+                // take care of automatical request authentication
+                _busControl.ConnectSendObserver(new EncryptedTicketPropagator(result.Ticket));
+            }
+            catch (Exception e)
+            {
+                Log.Error("An error occurred while authenticating client", e);
+            }
         }
 
-        private void UpdatePermissions()
+        private async void UpdatePermissions()
         {
             var service = _container.Resolve<IAccessPermissionService>();
             var accessPermissions = _container.Resolve<IAccessPermissionCollection>();
-            service.Load(accessPermissions);
-            service.Update(accessPermissions);
+
+            if (await service.Update(accessPermissions))
+            {
+                // save to cache
+                service.Save(accessPermissions);
+            }
+            else
+            {
+                // load from cache
+                service.Load(accessPermissions);
+            }
         }
 
         private void StartWcfServices()

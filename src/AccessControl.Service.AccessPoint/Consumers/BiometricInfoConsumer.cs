@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
@@ -72,7 +74,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                     })
                 .Cast<IUserBiometric>()
                 .ToArray();
-            await context.RespondAsync(ListCommand.Result(userBiometrics));
+            await context.RespondAsync(ListCommand.UsersBiometricResult(userBiometrics));
         }
 
         /// <summary>
@@ -82,6 +84,12 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IUpdateUserBiometric> context)
         {
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
+                await context.RespondAsync(new VoidResult("You are not authorized"));
+                return;
+            }
+
             var response = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
             if (response.User == null)
             {
