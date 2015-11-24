@@ -40,12 +40,12 @@ namespace AccessControl.Web
 
                 // LDAP
                 .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
-                .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IListUserGroups, IListUserGroupsResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IListDepartments, IListDepartmentsResult>(WellKnownQueues.Ldap)
                 .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
 
                 // Access Control
+                .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IUpdateUserBiometric, IVoidResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl)

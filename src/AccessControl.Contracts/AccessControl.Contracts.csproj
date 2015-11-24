@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeContracts\ICheckCredentialsContract.cs" />
+    <Compile Include="CodeContracts\ICheckCredentialsResultContract.cs" />
     <Compile Include="CodeContracts\IFindUserByNameContract.cs" />
     <Compile Include="CodeContracts\ITicketContract.cs" />
     <Compile Include="CodeContracts\IListUsersInGroupContract.cs" />
@@ -85,6 +87,8 @@
     <Compile Include="Commands\Lists\IListUserGroups.cs" />
     <Compile Include="Commands\Lists\IListUserGroupsResult.cs" />
     <Compile Include="Commands\IValidateDepartment.cs" />
+    <Compile Include="Commands\Security\ICheckCredentials.cs" />
+    <Compile Include="Commands\Security\ICheckCredentialsResult.cs" />
     <Compile Include="Dto\IAccessPoint.cs" />
     <Compile Include="Dto\IDepartment.cs" />
     <Compile Include="Dto\ITicket.cs" />
@@ -103,6 +107,7 @@
     <Compile Include="Helpers\AccessRule.cs" />
     <Compile Include="Helpers\AllowDenyUserAccess.cs" />
     <Compile Include="Helpers\AllowDenyUserGroupAccess.cs" />
+    <Compile Include="Helpers\CheckCredentials.cs" />
     <Compile Include="Helpers\Department.cs" />
     <Compile Include="Helpers\Events.cs" />
     <Compile Include="Helpers\Ticket.cs" />

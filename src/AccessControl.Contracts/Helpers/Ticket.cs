@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Helpers
@@ -20,13 +19,25 @@ namespace AccessControl.Contracts.Helpers
         /// </summary>
         /// <param name="user">The user.</param>
         /// <param name="roles">The roles.</param>
-        public Ticket(IUser user, string[] roles)
+        /// <param name="onBehalfOf">The names of managers who delegated their management rights to the user.</param>
+        public Ticket(IUser user, string[] roles, string[] onBehalfOf)
         {
             Contract.Requires(user != null);
             Contract.Requires(roles != null);
+            Contract.Requires(onBehalfOf != null);
+
             User = new UserInfo(user);
             Roles = roles;
+            OnBehalfOf = onBehalfOf;
         }
+
+        /// <summary>
+        ///     Gets the user.
+        /// </summary>
+        /// <value>
+        ///     The user.
+        /// </value>
+        public UserInfo User { get; set; }
 
         /// <summary>
         ///     Gets the roles.
@@ -37,17 +48,17 @@ namespace AccessControl.Contracts.Helpers
         public string[] Roles { get; set; }
 
         /// <summary>
-        ///     Gets the user.
+        ///     Gets the names of managers who delegated their management rights to the user.
         /// </summary>
         /// <value>
-        ///     The user.
+        ///     An array of the user names.
         /// </value>
-        public UserInfo User { get; set; }
+        public string[] OnBehalfOf { get; }
 
         IUser ITicket.User => User;
 
         /// <summary>
-        /// Serializable user info.
+        ///     Serializable user info.
         /// </summary>
         public struct UserInfo : IUser
         {
@@ -65,6 +76,8 @@ namespace AccessControl.Contracts.Helpers
                 PhoneNumber = user.PhoneNumber;
                 Site = user.Site;
                 UserName = user.UserName;
+                Groups = user.Groups;
+                IsManager = user.IsManager;
             }
 
             /// <summary>
@@ -90,6 +103,9 @@ namespace AccessControl.Contracts.Helpers
             ///     The email.
             /// </value>
             public string Email { get; set; }
+
+            public string[] Groups { get; }
+            public bool IsManager { get; }
 
             /// <summary>
             ///     Gets the phone number.

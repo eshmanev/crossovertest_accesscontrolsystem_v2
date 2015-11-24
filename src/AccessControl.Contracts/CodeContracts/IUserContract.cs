@@ -30,6 +30,18 @@ namespace AccessControl.Contracts.CodeContracts
 
         public string DisplayName => null;
         public string Email => null;
+
+        public string[] Groups
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string[]>() != null);
+                return null;
+            }
+        }
+
+        public bool IsManager => false;
+
         public string PhoneNumber => null;
         public string Department => null;
     }

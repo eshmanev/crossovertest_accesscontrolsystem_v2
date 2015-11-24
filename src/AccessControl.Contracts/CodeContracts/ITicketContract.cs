@@ -27,5 +27,14 @@ namespace AccessControl.Contracts.CodeContracts
                 return null;
             }
         }
+
+        public string[] OnBehalfOf
+        {
+            get
+            {
+                Contract.Requires(Contract.Result<string[]>() != null);
+                return null;
+            }
+        }
     }
 }

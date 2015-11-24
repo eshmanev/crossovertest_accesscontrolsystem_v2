@@ -46,7 +46,7 @@ namespace AccessControl.Contracts.Helpers
         public static IListUsersInGroupResult UsersInGroupResult(IUser[] users)
         {
             Contract.Requires(users != null);
-            return new ListUsersInGroupResultImpl { Users = users };
+            return new ListUsersInGroupResultImpl {Users = users};
         }
 
         public static IListDepartmentsResult DepartmentsResult(IDepartment[] departments)
@@ -60,7 +60,7 @@ namespace AccessControl.Contracts.Helpers
             Contract.Requires(groups != null);
             return new ListUserGroupsResultImpl {Groups = groups};
         }
-
+        
         public static IListUsersBiometricResult UsersBiometricResult(IUserBiometric[] users)
         {
             Contract.Requires(users != null);

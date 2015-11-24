@@ -2,12 +2,49 @@
 
 namespace AccessControl.Data.Entities
 {
+    /// <summary>
+    /// Represents an access point entity.
+    /// </summary>
     public class AccessPoint
     {
+        /// <summary>
+        /// Gets or sets the access point identifier.
+        /// </summary>
+        /// <value>
+        /// The access point identifier.
+        /// </value>
         public virtual Guid AccessPointId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         public virtual string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
         public virtual string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the site.
+        /// </summary>
+        /// <value>
+        /// The site.
+        /// </value>
         public virtual string Site { get; set; }
+
+        /// <summary>
+        /// Gets or sets the department.
+        /// </summary>
+        /// <value>
+        /// The department.
+        /// </value>
         public virtual string Department { get; set; }
     }
 }

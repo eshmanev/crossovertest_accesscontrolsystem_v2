@@ -62,7 +62,6 @@ namespace AccessControl.Web.Controllers
 
         private async Task Initialize(AccessPointIndexViewModel model)
         {
-            var appUser = HttpContext.GetApplicationUser();
             var accessPointsTask = _listAccessPointsRequest.Request(ListCommand.Default);
             var departmentsTask = _listDepartmentsRequest.Request(ListCommand.Default);
 

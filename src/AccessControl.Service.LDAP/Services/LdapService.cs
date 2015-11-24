@@ -28,24 +28,7 @@ namespace AccessControl.Service.LDAP.Services
 
         public IEnumerable<IUserGroup> GetUserGroups(string userName)
         {
-            var result = FindUserByNameCore(userName);
-            if (result == null)
-            {
-                yield break;
-            }
-
-            foreach (var property in result.Properties["memberOf"].OfType<string>())
-            {
-                var equalsIndex = property.IndexOf("=", 1, StringComparison.Ordinal);
-                var commaIndex = property.IndexOf(",", 1, StringComparison.Ordinal);
-                if (equalsIndex == -1)
-                {
-                    continue;
-                }
-
-                var groupName = property.Substring((equalsIndex + 1), (commaIndex - equalsIndex) - 1);
-                yield return new UserGroup(groupName);
-            }
+            return GetUserGroupsCore(userName).Select(x => new UserGroup(x));
         }
 
         public IEnumerable<IUser> GetUsersInGroup(string userGroupName)
@@ -183,13 +166,13 @@ namespace AccessControl.Service.LDAP.Services
         private IUser ConvertUser(SearchResult result)
         {
             var userName = result.GetProperty("samaccountname");
-            var manager = result.GetProperty("manager");
-            return new User(result.GetDirectoryEntry().Parent.GetProperty("distinguishedName"), userName)
+            return new User(result.GetDirectoryEntry().Parent.GetProperty("distinguishedName"), userName, GetUserGroupsCore(userName).ToArray())
             {
                 DisplayName = result.GetProperty("displayname") ?? userName,
                 PhoneNumber = result.GetProperty("telephonenumber"),
                 Email = result.GetProperty("mail"),
-                Department = result.GetProperty("department")
+                Department = result.GetProperty("department"),
+                IsManager = FindUsersByManager(userName).Any()
             };
         }
 
@@ -198,6 +181,28 @@ namespace AccessControl.Service.LDAP.Services
             var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
             var searcher = new DirectorySearcher(entry) {Filter = $"(sAMAccountName={userName})"};
             return searcher.FindOne();
+        }
+
+        private IEnumerable<string> GetUserGroupsCore(string userName)
+        {
+            var result = FindUserByNameCore(userName);
+            if (result == null)
+            {
+                yield break;
+            }
+
+            foreach (var property in result.Properties["memberOf"].OfType<string>())
+            {
+                var equalsIndex = property.IndexOf("=", 1, StringComparison.Ordinal);
+                var commaIndex = property.IndexOf(",", 1, StringComparison.Ordinal);
+                if (equalsIndex == -1)
+                {
+                    continue;
+                }
+
+                var groupName = property.Substring((equalsIndex + 1), (commaIndex - equalsIndex) - 1);
+                yield return groupName;
+            }
         }
     }
 }

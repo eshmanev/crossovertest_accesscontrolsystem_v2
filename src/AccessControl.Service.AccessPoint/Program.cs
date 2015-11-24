@@ -3,6 +3,7 @@ using System.Configuration;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Dto;
 using AccessControl.Data;
 using AccessControl.Data.Configuration;
@@ -29,6 +30,8 @@ namespace AccessControl.Service.AccessPoint
                     {
                         cfg.RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
                            .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
+                           .RegisterType<IEncryptor, Encryptor>()
+                           .RegisterRequestClient<ICheckCredentials, ICheckCredentialsResult>(WellKnownQueues.Ldap)
                            .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
                            .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
                            .RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
@@ -42,6 +45,7 @@ namespace AccessControl.Service.AccessPoint
                             WellKnownQueues.AccessControl,
                             e =>
                             {
+                                e.Consumer<AuthenticationConsumer>(container);
                                 e.Consumer<AccessPointConsumer>(container);
                                 e.Consumer<BiometricInfoConsumer>(container);
                                 e.Consumer<AccessRightsConsumer>(container);

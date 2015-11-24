@@ -81,7 +81,7 @@ namespace AccessControl.Data.Session
 
         private void DisposeTransaction()
         {
-            if (IsInTransaction)
+            if (!IsInTransaction)
             {
                 return;
             }

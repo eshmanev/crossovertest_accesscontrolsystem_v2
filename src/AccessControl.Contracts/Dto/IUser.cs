@@ -34,6 +34,22 @@ namespace AccessControl.Contracts.Dto
         string Email { get; }
 
         /// <summary>
+        ///     Gets the user groups.
+        /// </summary>
+        /// <value>
+        ///     The groups.
+        /// </value>
+        string[] Groups { get; }
+
+        /// <summary>
+        ///     Gets a value indicating whether this user is a manager.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this user is a manager; otherwise, <c>false</c>.
+        /// </value>
+        bool IsManager { get; }
+
+        /// <summary>
         ///     Gets the phone number.
         /// </summary>
         /// <value>

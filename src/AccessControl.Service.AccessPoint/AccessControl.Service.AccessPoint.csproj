@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consumers\AccessRightsConsumer.cs" />
+    <Compile Include="Consumers\AuthenticationConsumer.cs" />
     <Compile Include="Consumers\BiometricInfoConsumer.cs" />
     <Compile Include="Consumers\AccessPointConsumer.cs" />
     <Compile Include="Program.cs" />

@@ -63,7 +63,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                     x =>
                     {
                         User userEntity;
-                        return new UserBiometric(x.Site, x.UserName)
+                        return new UserBiometric(x.Site, x.UserName, x.Groups)
                         {
                             Department = x.Department,
                             PhoneNumber = x.PhoneNumber,

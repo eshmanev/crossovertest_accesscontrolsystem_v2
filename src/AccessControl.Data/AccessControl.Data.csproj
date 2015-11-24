@@ -75,6 +75,7 @@
     <Compile Include="Entities\AccessPoint.cs" />
     <Compile Include="Entities\AccessRightsBase.cs" />
     <Compile Include="Entities\AccessRuleBase.cs" />
+    <Compile Include="Entities\DelegatedRights.cs" />
     <Compile Include="Entities\IAccessRightsVisitor.cs" />
     <Compile Include="Entities\IAccessRuleVisitor.cs" />
     <Compile Include="Entities\PermanentAccessRule.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Mappings\AccessPointMap.cs" />
     <Compile Include="Mappings\AccessRightsBaseMap.cs" />
     <Compile Include="Mappings\AccessRuleBaseMap.cs" />
+    <Compile Include="Mappings\DelegatedRightsMap.cs" />
     <Compile Include="Mappings\MappingExtensions.cs" />
     <Compile Include="Mappings\PermanentAccessRuleMap.cs" />
     <Compile Include="Mappings\ScheduledAccessRuleMap.cs" />
