@@ -1,7 +1,59 @@
+--------------------------------------------------------------------------------------------------------------
+INSTALLATION
+--------------------------------------------------------------------------------------------------------------
 
-1. If there is a WCF issue because an URL is blocked by Windows, then just execute the following command
+1. Select a server which will hosts the messaging queue.
+1.1. Download and install Erlang on the server http://www.erlang.org/download.html
+1.2. Download and install RabbitMQ on the server https://www.rabbitmq.com/download.html
+1.3. Run RabbitMQ Command Prompt (this tool is added to the start menu during installation)
+1.4. Within command prompt  execute the following commands: 
+     
+     rabbitmqctl add_user evgeny Test123
+     rabbitmqctl set_permissions evgeny ".*" ".*" ".*"
+     rabbitmqctl set_user_tags evgeny management
+     rabbitmqctl delete_user guest
+
+     Those commands will delete guest access and add a user, which is configured in web.config files.
+     NOTE: If you use a different username/password, you will have to change web.config files accordingly.
+1.5. Open port 5672 on RabbitMQ server. RabbitMQ uses this port for messaging by default.
+2. Здесь необходимо описать куда и как ставить сервисы
+
+OPTIONAL STEP. To enable RabbitMQ management tool you should execute the following commands.
+     rabbitmq-plugins.bat enable rabbitmq_management
+     rabbitmq-service.bat stop
+     rabbitmq-service.bat install
+     rabbitmq-service.bat start
+     
+     When it is done RabbitMQ management tool will be accessible on http://your-server-ip-address:15672 (ensure that the port is not blocked by firewall)
+
+--------------------------------------------------------------------------------------------------------------
+CONFIGURATION
+--------------------------------------------------------------------------------------------------------------
+1. You need to allow access to the LDAP directory for the system. 
+   Add the following users to the LDAP directory:
+     username    | password  | description   
+     -----------------------------------
+     ldapservice | Test123   | LDAP service uses this user to fetch data from the LDAP directory (See: AccessControl.Services.LDAP\app.config)
+     client1     | Test123   | Client access service uses this user to be authenticated within the system by default (See: AccessControl.Client\app.config)
+     client2     | Test123   | Client access service uses this user to be authenticated within the system (optional)
+     client3     | Test123   | Client access service uses this user to be authenticated within the system (optional)
+     client4     | Test123   | Client access service uses this user to be authenticated within the system (optional)
+     client5     | Test123   | Client access service uses this user to be authenticated within the system (optional)
+
+   NOTE: Optionally you can update configuration files mentioned above with different credentials from the LDAP directory.
+
+2. Create a new database. The configuration file AccessControl.Services.AccessPoint\app.config should point a proper database.
+   By default, it contains the following connection string:
+   Data Source=.\SQLEXPRESS;Initial Catalog=AccessControlSystem;Integrated Security=True
+
+   NOTE: The system automatically creates database schema at first run.
+
+--------------------------------------------------------------------------------------------------------------
+TROUBLESHOOTING
+--------------------------------------------------------------------------------------------------------------
+
+You may face a problem with WCF services, because Windows can block an URL if it has not been added to the access control list.
+To fix the issue execute the following commands:
+
 netsh http add urlacl url=http://+:9981/AccessCheckService user=<your user name>
 netsh http add urlacl url=http://+:9981/AccessPointRegistry user=<your user name>
-
-2. Create temprorary certificate for development
-makecert -sv AccessPoint.pvk -n "cn=Access Point Development" AccessPoint.cer -b 01/01/2010 -e 12/31/2016 -r

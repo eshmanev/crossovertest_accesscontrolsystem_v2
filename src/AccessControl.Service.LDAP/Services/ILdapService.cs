@@ -9,12 +9,12 @@ namespace AccessControl.Service.LDAP.Services
     internal interface ILdapService
     {
         /// <summary>
-        ///     Authenticates the specified user.
+        ///    Checks the specified credentials.
         /// </summary>
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         /// <returns></returns>
-        bool Authenticate(string userName, string password);
+        bool CheckCredentials(string userName, string password);
 
         /// <summary>
         ///     Finds the departments managed by the given manager.

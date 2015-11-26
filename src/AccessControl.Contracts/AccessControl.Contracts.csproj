@@ -100,7 +100,6 @@
     <Compile Include="Dto\IVoidResult.cs" />
     <Compile Include="Dto\IValidationFault.cs" />
     <Compile Include="Dto\IValidationPropertyError.cs" />
-    <Compile Include="Dto\UserInfo.cs" />
     <Compile Include="Events\IUserBiometricUpdated.cs" />
     <Compile Include="Helpers\AccessPoint.cs" />
     <Compile Include="Helpers\AccessRights.cs" />

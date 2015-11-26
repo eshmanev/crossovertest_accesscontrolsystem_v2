@@ -12,7 +12,7 @@ namespace AccessControl.Service.LDAP.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class ILdapServiceContract : ILdapService
     {
-        public bool Authenticate(string userName, string password)
+        public bool CheckCredentials(string userName, string password)
         {
             return false;
         }

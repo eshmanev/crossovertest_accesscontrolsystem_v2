@@ -115,7 +115,7 @@ namespace AccessControl.Service.LDAP.Services
                            .ToArray();
         }
 
-        public bool Authenticate(string userName, string password)
+        public bool CheckCredentials(string userName, string password)
         {
             try
             {
