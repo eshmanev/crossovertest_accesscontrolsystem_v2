@@ -193,12 +193,12 @@
     <Compile Include="Controllers\AccessPointController.cs" />
     <Compile Include="Controllers\AccessRightsController.cs" />
     <Compile Include="Controllers\BiometricController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Models\AccessPoint\AccessPointIndexViewModel.cs" />
     <Compile Include="Models\AccessPoint\EditAccessPointViewModel.cs" />
     <Compile Include="Models\AccessRights\AccessRightsIndexViewModel.cs" />
     <Compile Include="Models\AccessRights\EditAccessRightsViewModel.cs" />
-    <Compile Include="Models\Test\TestViewModel.cs" />
+    <Compile Include="Models\Logs\IndexViewModel.cs" />
     <Compile Include="Models\Validation\RequiredGuid.cs" />
     <Compile Include="Models\Validation\RequiredSelect.cs" />
     <Compile Include="Services\HttpContextExtensions.cs" />
@@ -232,6 +232,8 @@
   <ItemGroup>
     <Content Include="Content\accept-access.png" />
     <Content Include="Content\access-point.png" />
+    <Content Include="Content\bootstrap-datetimepicker.css" />
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\fingerpring.png" />
@@ -244,6 +246,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\access-point-index.js" />
     <Content Include="Scripts\access-rights-index.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -255,8 +258,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\site.js" />
     <Content Include="Scripts\userhash.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -292,7 +297,7 @@
     <Content Include="Views\AccessRights\EditorPartial.cshtml" />
     <Content Include="Views\AccessRights\PermanentPartial.cshtml" />
     <Content Include="Views\AccessRights\ScheduledPartial.cshtml" />
-    <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\Log\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">

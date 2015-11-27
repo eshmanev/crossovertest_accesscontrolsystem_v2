@@ -11,7 +11,7 @@ namespace AccessControl.Contracts.Impl.Events
             Contract.Requires(accessPointId != Guid.Empty);
             Contract.Requires(!string.IsNullOrWhiteSpace(biometricHash));
             AccessPointId = accessPointId;
-            CreatedUtc = DateTime.Now;
+            CreatedUtc = DateTime.UtcNow;
             BiometricHash = biometricHash;
             Failed = failed;
         }

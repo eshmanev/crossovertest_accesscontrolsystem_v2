@@ -13,12 +13,12 @@ namespace AccessControl.Data.Entities
         public virtual int Id { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the attempted access point identifier.
+        /// Gets or sets the attempted access point.
         /// </summary>
         /// <value>
         /// The access point.
         /// </value>
-        public virtual Guid AccessPointId { get; set; }
+        public virtual AccessPoint AccessPoint { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user. This property can be null in case of unknown attampted hash.

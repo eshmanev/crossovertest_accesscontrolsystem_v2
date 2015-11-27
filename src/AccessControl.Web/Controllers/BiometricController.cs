@@ -6,6 +6,7 @@ using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Web.Services;
 using MassTransit;
 
@@ -30,7 +31,7 @@ namespace AccessControl.Web.Controllers
         // GET: Biometric
         public async Task<ActionResult> Index()
         {
-            var result = await _listUsersRequest.Request(ListCommand.Default);
+            var result = await _listUsersRequest.Request(ListCommand.WithoutParameters);
             return View(result.Users);
         }
 

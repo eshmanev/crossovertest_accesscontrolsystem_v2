@@ -55,6 +55,7 @@ namespace AccessControl.Web
                 .RegisterRequestClient<IAllowUserGroupAccess, IVoidResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl)
                 .RegisterRequestClient<IDenyUserGroupAccess, IVoidResult>(WellKnownQueues.AccessControl)
+                .RegisterRequestClient<IListLogs, IListLogsResult>(WellKnownQueues.AccessControl)
                 ;
 
             return container;

@@ -8,8 +8,8 @@ using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Events;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Data;
 using MassTransit;
 
@@ -20,58 +20,24 @@ namespace AccessControl.Service.AccessPoint.Consumers
     /// </summary>
     public class AccessPointConsumer : IConsumer<IRegisterAccessPoint>,
                                        IConsumer<IUnregisterAccessPoint>,
-                                       IConsumer<IListAccessPoints>,
-                                       IConsumer<IAccessAttempted>
+                                       IConsumer<IListAccessPoints>
     {
         private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
-        private readonly IRepository<Data.Entities.LogEntry> _logRepository;
-        private readonly IRepository<Data.Entities.User> _userRepository;
         private readonly IRequestClient<IValidateDepartment, IVoidResult> _validateDepartmentRequest;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccessPointConsumer" /> class.
         /// </summary>
         /// <param name="accessPointRepository">The access point repository.</param>
-        /// <param name="logRepository">The log repository.</param>
-        /// <param name="userRepository">The user repository.</param>
         /// <param name="validateDepartmentRequest">The validate department request.</param>
         public AccessPointConsumer(IRepository<Data.Entities.AccessPoint> accessPointRepository,
-                                   IRepository<Data.Entities.LogEntry> logRepository,
-                                   IRepository<Data.Entities.User> userRepository,
                                    IRequestClient<IValidateDepartment, IVoidResult> validateDepartmentRequest)
         {
             Contract.Requires(accessPointRepository != null);
-            Contract.Requires(logRepository != null);
             Contract.Requires(validateDepartmentRequest != null);
 
             _accessPointRepository = accessPointRepository;
-            _logRepository = logRepository;
-            _userRepository = userRepository;
             _validateDepartmentRequest = validateDepartmentRequest;
-        }
-
-        /// <summary>
-        ///     Logs the attempt.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public Task Consume(ConsumeContext<IAccessAttempted> context)
-        {
-            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
-                return Task.FromResult(false);
-
-            var user = _userRepository.Filter(x => x.BiometricHash == context.Message.BiometricHash).SingleOrDefault();
-            var entry = new Data.Entities.LogEntry
-            {
-                AccessPointId = context.Message.AccessPointId,
-                AttemptedHash = context.Message.BiometricHash,
-                UserName = user?.UserName,
-                CreatedUtc = context.Message.CreatedUtc,
-                Failed = context.Message.Failed
-            };
-            _logRepository.Insert(entry);
-            return Task.FromResult(true);
         }
 
         /// <summary>
@@ -84,11 +50,17 @@ namespace AccessControl.Service.AccessPoint.Consumers
             IEnumerable<Data.Entities.AccessPoint> entities;
 
             if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 entities = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
+            }
             else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+            {
                 entities = _accessPointRepository.GetAll();
+            }
             else
+            {
                 entities = Enumerable.Empty<Data.Entities.AccessPoint>();
+            }
 
             var accessPoints =
                 entities.Select(x => new Contracts.Helpers.AccessPoint(x.AccessPointId, x.Site, x.Department, x.Name) {Description = x.Description})

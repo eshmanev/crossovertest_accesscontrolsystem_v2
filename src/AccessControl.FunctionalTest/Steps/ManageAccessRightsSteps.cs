@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.FunctionalTest.Rows;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AccessControl.Client.Data;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using log4net;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
@@ -81,7 +82,7 @@ namespace AccessControl.Client.Services
             // Normally it should be replaced with an implementation of partial updates based on MS Sync Framework
             try
             {
-                var biometricInfo = await _listUsersBiometricRequest.Request(ListCommand.Default);
+                var biometricInfo = await _listUsersBiometricRequest.Request(ListCommand.WithoutParameters);
                 var biometricInfoMap = biometricInfo.Users.ToDictionary(x => x.UserName);
                 Func<string, UserHash> getHash = x =>
                 {
@@ -90,7 +91,7 @@ namespace AccessControl.Client.Services
                 };
 
                 // add user permissions
-                var accessRights = await _listAccessRightsRequest.Request(ListCommand.Default);
+                var accessRights = await _listAccessRightsRequest.Request(ListCommand.WithoutParameters);
                 foreach (var userAccessRights in accessRights.UserAccessRights)
                 {
                     var userName = userAccessRights.UserName;

@@ -8,6 +8,7 @@ using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using MassTransit;
@@ -56,7 +57,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public async Task Consume(ConsumeContext<IListUsersBiometric> context)
         {
             // response contains the filtered result
-            var requestResult = await _listUsersRequest.Request(ListCommand.Default);
+            var requestResult = await _listUsersRequest.Request(ListCommand.WithoutParameters);
             var users = requestResult.Users.ToList();
             var userNames = users.Select(x => x.UserName).ToList();
             var entities = _userRepository.Filter(x => userNames.Contains(x.UserName)).ToDictionary(x => x.UserName);

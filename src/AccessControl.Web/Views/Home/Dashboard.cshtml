@@ -31,10 +31,12 @@
     </div>
     <div class="row">
         <div class="col-md-4 text-center">
-            <p>
-                <img src="@Url.Content("~/Content/log.png")" />
-            </p>
-            View logs
+            <a href="@Url.Action("Index", "Log")">
+                <p>
+                    <img src="@Url.Content("~/Content/log.png")" />
+                </p>
+                View logs
+            </a>
         </div>
         <div class="col-md-4 text-center">
             <p>

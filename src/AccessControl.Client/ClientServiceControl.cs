@@ -5,6 +5,7 @@ using AccessControl.Client.Services;
 using AccessControl.Client.Vendor;
 using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service;
 using AccessControl.Service.Security;
 using log4net;

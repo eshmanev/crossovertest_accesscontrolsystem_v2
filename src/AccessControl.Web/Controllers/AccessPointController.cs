@@ -7,6 +7,7 @@ using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Web.Models.AccessPoint;
 using AccessControl.Web.Services;
 using MassTransit;
@@ -62,8 +63,8 @@ namespace AccessControl.Web.Controllers
 
         private async Task Initialize(AccessPointIndexViewModel model)
         {
-            var accessPointsTask = _listAccessPointsRequest.Request(ListCommand.Default);
-            var departmentsTask = _listDepartmentsRequest.Request(ListCommand.Default);
+            var accessPointsTask = _listAccessPointsRequest.Request(ListCommand.WithoutParameters);
+            var departmentsTask = _listDepartmentsRequest.Request(ListCommand.WithoutParameters);
 
             await Task.WhenAll(accessPointsTask, departmentsTask);
 

@@ -6,6 +6,7 @@ using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Web.Models.AccessRights;
 using MassTransit;
 
@@ -98,10 +99,10 @@ namespace AccessControl.Web.Controllers
 
         private async Task Initialize(AccessRightsIndexViewModel model)
         {
-            var accessRightsTask = _listAccessRightsRequest.Request(ListCommand.Default);
-            var usersTask = _listUsersRequest.Request(ListCommand.Default);
-            var accessPointsTask = _listAccessPointsRequest.Request(ListCommand.Default);
-            var userGroupsTask = _listUserGroupsRequest.Request(ListCommand.Default);
+            var accessRightsTask = _listAccessRightsRequest.Request(ListCommand.WithoutParameters);
+            var usersTask = _listUsersRequest.Request(ListCommand.WithoutParameters);
+            var accessPointsTask = _listAccessPointsRequest.Request(ListCommand.WithoutParameters);
+            var userGroupsTask = _listUserGroupsRequest.Request(ListCommand.WithoutParameters);
 
             await Task.WhenAll(accessRightsTask, usersTask, accessPointsTask, userGroupsTask);
 

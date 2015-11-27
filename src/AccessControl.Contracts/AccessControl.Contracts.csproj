@@ -48,6 +48,9 @@
     <Compile Include="CodeContracts\ICheckCredentialsContract.cs" />
     <Compile Include="CodeContracts\ICheckCredentialsResultContract.cs" />
     <Compile Include="CodeContracts\IFindUserByNameContract.cs" />
+    <Compile Include="CodeContracts\IListLogsContract.cs" />
+    <Compile Include="CodeContracts\IListLogsResultContract.cs" />
+    <Compile Include="CodeContracts\ILogEntryContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserAccessAllowedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserAccessDeniedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserGroupAccessAllowedContract.cs" />
@@ -81,6 +84,8 @@
     <Compile Include="CodeContracts\IValidationFaultContract.cs" />
     <Compile Include="CodeContracts\IValidationPropertyErrorContract.cs" />
     <Compile Include="CodeContracts\IListUsersBiometricResultContract.cs" />
+    <Compile Include="Commands\Lists\IListLogs.cs" />
+    <Compile Include="Commands\Lists\IListLogsResult.cs" />
     <Compile Include="Commands\Lists\IListUsersInGroup.cs" />
     <Compile Include="Commands\Lists\IListUsersInGroupResult.cs" />
     <Compile Include="Commands\Management\IDenyUserGroupAccess.cs" />
@@ -101,6 +106,7 @@
     <Compile Include="Commands\Security\ICheckCredentialsResult.cs" />
     <Compile Include="Dto\IAccessPoint.cs" />
     <Compile Include="Dto\IDepartment.cs" />
+    <Compile Include="Dto\ILogEntry.cs" />
     <Compile Include="Dto\ITicket.cs" />
     <Compile Include="Dto\IPermanentAccessRule.cs" />
     <Compile Include="Dto\IScheduledAccessRule.cs" />
@@ -117,6 +123,7 @@
     <Compile Include="Events\IPermanentUserGroupAccessDenied.cs" />
     <Compile Include="Events\IUserBiometricUpdated.cs" />
     <Compile Include="Events\IUserDeleted.cs" />
+    <Compile Include="Impl\Commands\CheckCredentialsResult.cs" />
     <Compile Include="Impl\Dto\AccessPoint.cs" />
     <Compile Include="Impl\Dto\AccessRights.cs" />
     <Compile Include="Impl\Dto\AccessRule.cs" />
@@ -124,6 +131,7 @@
     <Compile Include="Impl\Commands\AllowDenyUserGroupAccess.cs" />
     <Compile Include="Impl\Commands\CheckCredentials.cs" />
     <Compile Include="Impl\Dto\Department.cs" />
+    <Compile Include="Impl\Dto\LogEntry.cs" />
     <Compile Include="Impl\Events\AccessAttempted.cs" />
     <Compile Include="Events\IUserAddedToGroup.cs" />
     <Compile Include="Events\IUserRemovedFromGroup.cs" />

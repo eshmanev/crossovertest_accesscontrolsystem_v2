@@ -6,6 +6,7 @@ using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessSimulator.AccessCheckServiceProxy;
 using MassTransit;
 
@@ -76,8 +77,8 @@ namespace AccessSimulator
                 accessPointCombo.Items.Clear();
                 userCombo.Items.Clear();
 
-                var listBiometricsTask = _bus.CreateClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl).Request(ListCommand.Default);
-                var listAccessPointsTask = _bus.CreateClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl).Request(ListCommand.Default);
+                var listBiometricsTask = _bus.CreateClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl).Request(ListCommand.WithoutParameters);
+                var listAccessPointsTask = _bus.CreateClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl).Request(ListCommand.WithoutParameters);
                 await Task.WhenAll(listBiometricsTask, listAccessPointsTask);
 
                 // convert

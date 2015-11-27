@@ -8,6 +8,7 @@ using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using AccessControl.Data.Entities;

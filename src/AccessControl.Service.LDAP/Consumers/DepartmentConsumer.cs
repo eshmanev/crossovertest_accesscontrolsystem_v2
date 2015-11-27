@@ -8,6 +8,7 @@ using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service.LDAP.Services;
 using MassTransit;
 

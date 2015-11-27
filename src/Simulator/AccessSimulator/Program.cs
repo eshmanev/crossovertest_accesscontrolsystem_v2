@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service.Security;
 using MassTransit;
 
