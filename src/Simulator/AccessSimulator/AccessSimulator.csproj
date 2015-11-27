@@ -56,6 +56,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,6 +78,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\AccessCheckServiceProxy\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\AccessPointRegistryProxy\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -98,6 +110,26 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService.wsdl" />
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AccessPointRegistryProxy\AccessPointRegistry.wsdl" />
+    <None Include="Service References\AccessPointRegistryProxy\AccessPointRegistry.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AccessPointRegistryProxy\AccessPointRegistry1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AccessPointRegistryProxy\AccessPointRegistry2.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -114,6 +146,40 @@
       <Project>{F92CA63C-0A6E-413A-AA74-2E2C4F354309}</Project>
       <Name>AccessControl.Service.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\AccessCheckServiceProxy\" />
+    <WCFMetadataStorage Include="Service References\AccessPointRegistryProxy\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessPointRegistryProxy\AccessPointRegistry.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessPointRegistryProxy\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessPointRegistryProxy\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessPointRegistryProxy\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

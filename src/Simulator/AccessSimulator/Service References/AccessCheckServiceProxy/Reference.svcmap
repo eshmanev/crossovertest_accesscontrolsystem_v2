@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="5d587ec3-f666-4f20-901e-ebf1d3ff93d4" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:9981/AccessCheckService" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="AccessCheckService.xsd" MetadataType="Schema" ID="39c91245-ad97-4e16-bcdb-33c35bfaec72" SourceId="1" SourceUrl="http://localhost:9981/AccessCheckService?xsd=xsd1" />
+    <MetadataFile FileName="AccessCheckService.disco" MetadataType="Disco" ID="7a19b724-977e-4da6-b059-b45321549caa" SourceId="1" SourceUrl="http://localhost:9981/AccessCheckService?disco" />
+    <MetadataFile FileName="AccessCheckService1.xsd" MetadataType="Schema" ID="fa82d5d0-71b2-48da-8170-08a6ee3fad8d" SourceId="1" SourceUrl="http://localhost:9981/AccessCheckService?xsd=xsd0" />
+    <MetadataFile FileName="AccessCheckService2.xsd" MetadataType="Schema" ID="ead813af-896e-4268-80ff-f69108dbd743" SourceId="1" SourceUrl="http://localhost:9981/AccessCheckService?xsd=xsd2" />
+    <MetadataFile FileName="AccessCheckService.wsdl" MetadataType="Wsdl" ID="08cba1c7-7424-4565-876a-15d7e7a5fdbb" SourceId="1" SourceUrl="http://localhost:9981/AccessCheckService?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
