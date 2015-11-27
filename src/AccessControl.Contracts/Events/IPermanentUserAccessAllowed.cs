@@ -1,29 +1,30 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts.Events
 {
     /// <summary>
-    ///     Occurs when user's biometric information is updated.
+    ///     Occurs when a permanent access is allowed for a user.
     /// </summary>
-    [ContractClass(typeof(IUserBiometricUpdatedContract))]
-    public interface IUserBiometricUpdated
+    [ContractClass(typeof(IPermanentUserAccessAllowedContract))]
+    public interface IPermanentUserAccessAllowed
     {
         /// <summary>
-        ///     Gets the biometric hash.
+        ///     Gets the access point identifier.
         /// </summary>
         /// <value>
-        ///     The biometric hash.
+        ///     The access point identifier.
         /// </value>
-        string NewBiometricHash { get; }
+        Guid AccessPointId { get; }
 
         /// <summary>
-        ///     Gets the biometric hash.
+        ///     Gets the user's biometric hash.
         /// </summary>
         /// <value>
         ///     The biometric hash.
         /// </value>
-        string OldBiometricHash { get; }
+        string BiometricHash { get; }
 
         /// <summary>
         ///     Gets the name of the user.

@@ -29,7 +29,10 @@ OPTIONAL STEP. To enable RabbitMQ management tool you should execute the followi
 --------------------------------------------------------------------------------------------------------------
 CONFIGURATION
 --------------------------------------------------------------------------------------------------------------
-1. You need to allow access to the LDAP directory for the system. 
+1. The system requires access to the LDAP directory. 
+   LDAP service should be authorized to fetch data from the LDAP directory.
+   Client services are authenticated within the system using LDAP credentials. 
+   
    Add the following users to the LDAP directory:
      username    | password  | description   
      -----------------------------------
@@ -42,9 +45,10 @@ CONFIGURATION
 
    NOTE: Optionally you can update configuration files mentioned above with different credentials from the LDAP directory.
 
-2. Create a new database. The configuration file AccessControl.Services.AccessPoint\app.config should point a proper database.
-   By default, it contains the following connection string:
-   Data Source=.\SQLEXPRESS;Initial Catalog=AccessControlSystem;Integrated Security=True
+2. Open the file AccessControl.Services.LDAP\app.config, navigate to the section <ldap ldapPath="...." /> and pick valid address of the LDAP directory server.
+3. Create a new SQL Server database.
+4. Open the file AccessControl.Services.AccessPoint\app.config, navigate to the section <connectionStrings> and pick valid connection string.
+   By default, there is the following connection string: "Data Source=.\SQLEXPRESS;Initial Catalog=AccessControlSystem;Integrated Security=True"
 
    NOTE: The system automatically creates database schema at first run.
 

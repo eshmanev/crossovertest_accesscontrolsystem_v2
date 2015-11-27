@@ -8,11 +8,13 @@ using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using AccessControl.Data.Entities;
 using AccessControl.Service.AccessPoint.Visitors;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
+using User = AccessControl.Data.Entities.User;
 
 namespace AccessControl.Service.AccessPoint.Consumers
 {
@@ -27,20 +29,35 @@ namespace AccessControl.Service.AccessPoint.Consumers
     {
         private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
         private readonly IRepository<AccessRightsBase> _accessRightsRepository;
+        private readonly IBus _bus;
+        private readonly IRequestClient<IListUsersInGroup, IListUsersInGroupResult> _listUsersInGroupRequest;
+        private readonly IRepository<User> _userRepository;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccessRightsConsumer" /> class.
         /// </summary>
+        /// <param name="bus">The bus.</param>
+        /// <param name="listUsersInGroupRequest">The list users in group request.</param>
         /// <param name="accessPointRepository">The access point repository.</param>
         /// <param name="accessRightsRepository">The access rights repository.</param>
-        public AccessRightsConsumer(IRepository<Data.Entities.AccessPoint> accessPointRepository,
-                                    IRepository<AccessRightsBase> accessRightsRepository)
+        /// <param name="userRepository">The user repository.</param>
+        public AccessRightsConsumer(IBus bus,
+                                    IRequestClient<IListUsersInGroup, IListUsersInGroupResult> listUsersInGroupRequest,
+                                    IRepository<Data.Entities.AccessPoint> accessPointRepository,
+                                    IRepository<AccessRightsBase> accessRightsRepository,
+                                    IRepository<User> userRepository)
         {
+            Contract.Requires(bus != null);
+            Contract.Requires(listUsersInGroupRequest != null);
             Contract.Requires(accessPointRepository != null);
             Contract.Requires(accessRightsRepository != null);
+            Contract.Requires(userRepository != null);
 
+            _bus = bus;
+            _listUsersInGroupRequest = listUsersInGroupRequest;
             _accessPointRepository = accessPointRepository;
             _accessRightsRepository = accessRightsRepository;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -51,13 +68,18 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public Task Consume(ConsumeContext<IAllowUserAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 return context.RespondAsync(new VoidResult("You are not authorized"));
+            }
 
-            var accessRights = GetUserAccessRights(context.Message.UserName);
-            return TryAllowPermanentAccess(
-                context,
-                context.Message.AccessPointId,
-                accessRights ?? new UserAccessRights {UserName = context.Message.UserName});
+            var accessRights = GetUserAccessRights(context.Message.UserName) ?? new UserAccessRights {UserName = context.Message.UserName};
+            Task response;
+            if (TryAllowPermanentAccess(context, context.Message.AccessPointId, accessRights, out response))
+            {
+                var hash = FindUserHash(context.Message.UserName);
+                _bus.Publish(new PermanentUserAccessAllowed(context.Message.AccessPointId, context.Message.UserName, hash));
+            }
+            return response;
         }
 
         /// <summary>
@@ -65,16 +87,28 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public Task Consume(ConsumeContext<IAllowUserGroupAccess> context)
+        public async Task Consume(ConsumeContext<IAllowUserGroupAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-                return context.RespondAsync(new VoidResult("You are not authorized"));
+            {
+                await context.RespondAsync(new VoidResult("You are not authorized"));
+            }
 
-            var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
-            return TryAllowPermanentAccess(
-                context,
-                context.Message.AccessPointId,
-                accessRights ?? new UserGroupAccessRights {UserGroupName = context.Message.UserGroupName});
+            var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName) ?? new UserGroupAccessRights {UserGroupName = context.Message.UserGroupName};
+            Task response;
+            if (TryAllowPermanentAccess(context, context.Message.AccessPointId, accessRights, out response))
+            {
+                var usersInGroupResult = await _listUsersInGroupRequest.Request(ListCommand.ListUsersInGroup(context.Message.UserGroupName));
+                var userNames = usersInGroupResult.Users.Select(x => x.UserName).ToArray();
+                var userHashes = new string[userNames.Length];
+                for (var i = 0; i < userNames.Length; i++)
+                {
+                    userHashes[i] = FindUserHash(userNames[i]);
+                }
+
+                await _bus.Publish(new PermanentUserGroupAccessAllowed(context.Message.AccessPointId, context.Message.UserGroupName, userNames, userHashes));
+            }
+            await response;
         }
 
         /// <summary>
@@ -85,7 +119,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public Task Consume(ConsumeContext<IDenyUserAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 return context.RespondAsync(new VoidResult("You are not authorized"));
+            }
 
             var accessRights = GetUserAccessRights(context.Message.UserName);
             return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
@@ -99,7 +135,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public Task Consume(ConsumeContext<IDenyUserGroupAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 return context.RespondAsync(new VoidResult("You are not authorized"));
+            }
 
             var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
             return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
@@ -115,11 +153,17 @@ namespace AccessControl.Service.AccessPoint.Consumers
             IEnumerable<Data.Entities.AccessPoint> accessPoints;
 
             if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+            {
                 accessPoints = _accessPointRepository.GetAll();
+            }
             else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 accessPoints = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
+            }
             else
+            {
                 accessPoints = Enumerable.Empty<Data.Entities.AccessPoint>();
+            }
 
             var accessPointIds = accessPoints.Select(x => x.AccessPointId).ToArray();
             var accessRights = _accessRightsRepository.Filter(x => x.AccessRules.Any(rule => accessPointIds.Contains(rule.AccessPoint.AccessPointId)));
@@ -159,6 +203,12 @@ namespace AccessControl.Service.AccessPoint.Consumers
             return context.RespondAsync(new VoidResult());
         }
 
+        private string FindUserHash(string userName)
+        {
+            var hashEntity = _userRepository.Filter(x => x.UserName == userName).SingleOrDefault();
+            return hashEntity?.BiometricHash;
+        }
+
         private UserAccessRights GetUserAccessRights(string userName)
         {
             return _accessRightsRepository.Filter(x => x is UserAccessRights && ((UserAccessRights) x).UserName == userName)
@@ -173,17 +223,19 @@ namespace AccessControl.Service.AccessPoint.Consumers
                                           .FirstOrDefault();
         }
 
-        private Task TryAllowPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights)
+        private bool TryAllowPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights, out Task response)
         {
-            if (accessRights.AccessRules.Any(x => x.AccessPoint.AccessPointId == accessPointId))
+            if (accessRights.AccessRules.OfType<PermanentAccessRule>().Any(x => x.AccessPoint.AccessPointId == accessPointId))
             {
-                return context.RespondAsync(new VoidResult());
+                response = context.RespondAsync(new VoidResult());
+                return false;
             }
 
             var accessPoint = _accessPointRepository.GetById(accessPointId);
             if (accessPoint == null)
             {
-                return context.RespondAsync(new VoidResult($"Access point {accessPointId} is not registered."));
+                response = context.RespondAsync(new VoidResult($"Access point {accessPointId} is not registered."));
+                return false;
             }
 
             accessRights.AddAccessRule(new PermanentAccessRule {AccessPoint = accessPoint});
@@ -196,7 +248,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 _accessRightsRepository.Update(accessRights);
             }
 
-            return context.RespondAsync(new VoidResult());
+            response = context.RespondAsync(new VoidResult());
+            return true;
         }
     }
 }

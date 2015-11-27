@@ -28,13 +28,19 @@ namespace AccessControl.Service.AccessPoint
                 .ConfigureContainer(
                     cfg =>
                     {
-                        cfg.RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
-                           .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
-                           .RegisterType<IEncryptor, Encryptor>()
-                           .RegisterRequestClient<ICheckCredentials, ICheckCredentialsResult>(WellKnownQueues.Ldap)
-                           .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
-                           .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
-                           .RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
+                        // types
+                        cfg
+                            .RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
+                            .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
+                            .RegisterType<IEncryptor, Encryptor>();
+
+                        // request clients
+                        cfg
+                            .RegisterRequestClient<IListUsersInGroup, IListUsersInGroupResult>(WellKnownQueues.Ldap)
+                            .RegisterRequestClient<ICheckCredentials, ICheckCredentialsResult>(WellKnownQueues.Ldap)
+                            .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
+                            .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
+                            .RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>

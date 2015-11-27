@@ -8,6 +8,7 @@ using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using MassTransit;
 using User = AccessControl.Data.Entities.User;
@@ -19,8 +20,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
     /// </summary>
     public class BiometricInfoConsumer : IConsumer<IListUsersBiometric>, IConsumer<IUpdateUserBiometric>
     {
-        private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
         private readonly IBus _bus;
+        private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
         private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
         private readonly IRepository<User> _userRepository;
 
@@ -112,7 +113,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 _userRepository.Insert(entity);
             }
 
-            await _bus.Publish(Events.UserBiometricUpdated(entity.UserName, oldHash, entity.BiometricHash));
+            await _bus.Publish(new UserBiometricUpdated(entity.UserName, oldHash, entity.BiometricHash));
             await context.RespondAsync(new VoidResult());
         }
     }
