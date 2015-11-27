@@ -55,6 +55,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IListUsersBiometric> context)
         {
+            // response contains the filtered result
             var requestResult = await _listUsersRequest.Request(ListCommand.Default);
             var users = requestResult.Users.ToList();
             var userNames = users.Select(x => x.UserName).ToList();
@@ -87,7 +88,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
-                await context.RespondAsync(new VoidResult("You are not authorized"));
+                await context.RespondAsync(new VoidResult("Not authorized"));
                 return;
             }
 
@@ -95,6 +96,16 @@ namespace AccessControl.Service.AccessPoint.Consumers
             if (response.User == null)
             {
                 await context.RespondAsync(new VoidResult("User is not found"));
+                return;
+            }
+
+            var duplicated = _userRepository
+                .Filter(x => x.BiometricHash == context.Message.BiometricHash && x.UserName != context.Message.UserName)
+                .Any();
+
+            if (duplicated)
+            {
+                await context.RespondAsync(new VoidResult("This biometric hash is reserved already"));
                 return;
             }
 

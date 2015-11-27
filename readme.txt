@@ -1,7 +1,6 @@
 --------------------------------------------------------------------------------------------------------------
 INSTALLATION
 --------------------------------------------------------------------------------------------------------------
-
 1. Select a server which will hosts the messaging queue.
 1.1. Download and install Erlang on the server http://www.erlang.org/download.html
 1.2. Download and install RabbitMQ on the server https://www.rabbitmq.com/download.html
@@ -26,6 +25,8 @@ OPTIONAL STEP. To enable RabbitMQ management tool you should execute the followi
      
      When it is done RabbitMQ management tool will be accessible on http://your-server-ip-address:15672 (ensure that the port is not blocked by firewall)
 
+
+
 --------------------------------------------------------------------------------------------------------------
 CONFIGURATION
 --------------------------------------------------------------------------------------------------------------
@@ -33,9 +34,9 @@ CONFIGURATION
    LDAP service should be authorized to fetch data from the LDAP directory.
    Client services are authenticated within the system using LDAP credentials. 
    
-   Add the following users to the LDAP directory:
+1.1. Create the following users in the LDAP directory:
      username    | password  | description   
-     -----------------------------------
+     -------------------------------------------------------------------------------------------------------------------------------------------------------
      ldapservice | Test123   | LDAP service uses this user to fetch data from the LDAP directory (See: AccessControl.Services.LDAP\app.config)
      client1     | Test123   | Client access service uses this user to be authenticated within the system by default (See: AccessControl.Client\app.config)
      client2     | Test123   | Client access service uses this user to be authenticated within the system (optional)
@@ -45,6 +46,15 @@ CONFIGURATION
 
    NOTE: Optionally you can update configuration files mentioned above with different credentials from the LDAP directory.
 
+1.2. Create the following user group in the LDAP directory:
+
+     user group name        | user group members
+     --------------------------------------------------------------------
+     Access Control Clients | client1, client2, client3, client4, client5
+
+   NOTE: Client service require this group to be authorized fetching user names and user groups from the LDAP directory.
+   It would be nice to create a manageable mappings between LDAP users and the system roles, but this is out of the scope of the current task at the moment.
+
 2. Open the file AccessControl.Services.LDAP\app.config, navigate to the section <ldap ldapPath="...." /> and pick valid address of the LDAP directory server.
 3. Create a new SQL Server database.
 4. Open the file AccessControl.Services.AccessPoint\app.config, navigate to the section <connectionStrings> and pick valid connection string.
@@ -52,10 +62,11 @@ CONFIGURATION
 
    NOTE: The system automatically creates database schema at first run.
 
+
+
 --------------------------------------------------------------------------------------------------------------
 TROUBLESHOOTING
 --------------------------------------------------------------------------------------------------------------
-
 You may face a problem with WCF services, because Windows can block an URL if it has not been added to the access control list.
 To fix the issue execute the following commands:
 

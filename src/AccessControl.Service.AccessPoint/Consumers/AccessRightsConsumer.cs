@@ -68,9 +68,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public Task Consume(ConsumeContext<IAllowUserAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                return context.RespondAsync(new VoidResult("You are not authorized"));
-            }
+                return context.RespondAsync(new VoidResult("Not authorized"));
 
             var accessRights = GetUserAccessRights(context.Message.UserName) ?? new UserAccessRights {UserName = context.Message.UserName};
             Task response;
@@ -91,7 +89,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
-                await context.RespondAsync(new VoidResult("You are not authorized"));
+                await context.RespondAsync(new VoidResult("Not authorized"));
+                return;
             }
 
             var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName) ?? new UserGroupAccessRights {UserGroupName = context.Message.UserGroupName};
@@ -120,7 +119,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
-                return context.RespondAsync(new VoidResult("You are not authorized"));
+                return context.RespondAsync(new VoidResult("Not authorized"));
             }
 
             var accessRights = GetUserAccessRights(context.Message.UserName);
@@ -136,7 +135,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
-                return context.RespondAsync(new VoidResult("You are not authorized"));
+                return context.RespondAsync(new VoidResult("Not authorized"));
             }
 
             var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);

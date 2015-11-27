@@ -20,7 +20,7 @@ namespace AccessControl.Contracts.CodeContracts
             }
         }
 
-        public DateTime DateTimeCreated
+        public DateTime CreatedUtc
         {
             get
             {
@@ -31,7 +31,7 @@ namespace AccessControl.Contracts.CodeContracts
 
         public bool Failed => false;
 
-        public string UserName
+        public string BiometricHash
         {
             get
             {

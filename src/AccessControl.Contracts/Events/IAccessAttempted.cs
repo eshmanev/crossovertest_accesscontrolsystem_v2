@@ -19,12 +19,20 @@ namespace AccessControl.Contracts.Events
         Guid AccessPointId { get; }
 
         /// <summary>
+        ///     Gets the biometric hash.
+        /// </summary>
+        /// <value>
+        ///     The biometric hash.
+        /// </value>
+        string BiometricHash { get; }
+
+        /// <summary>
         ///     Gets the date time created.
         /// </summary>
         /// <value>
         ///     The date time created.
         /// </value>
-        DateTime DateTimeCreated { get; }
+        DateTime CreatedUtc { get; }
 
         /// <summary>
         ///     Gets a value indicating whether the attempt is failed.
@@ -33,13 +41,5 @@ namespace AccessControl.Contracts.Events
         ///     <c>true</c> if failed; otherwise, <c>false</c>.
         /// </value>
         bool Failed { get; }
-
-        /// <summary>
-        ///     Gets the name of the user.
-        /// </summary>
-        /// <value>
-        ///     The name of the user.
-        /// </value>
-        string UserName { get; }
     }
 }

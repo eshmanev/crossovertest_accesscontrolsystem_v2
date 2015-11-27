@@ -8,8 +8,8 @@ namespace AccessControl.Data.Mappings
         public UserMap()
         {
             Id(x => x.Id).GeneratedBy.HiLo<User>();
-            Map(x => x.UserName).Unique();
-            Map(x => x.BiometricHash).Unique();
+            Map(x => x.UserName).Unique().Index("IDX_UserName");
+            Map(x => x.BiometricHash).Unique().Index("IDX_BiometricHash");
         }
     }
 }

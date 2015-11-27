@@ -6,19 +6,19 @@ namespace AccessControl.Contracts.Impl.Events
 {
     public class AccessAttempted : IAccessAttempted
     {
-        public AccessAttempted(Guid accessPointId, string userName, bool failed)
+        public AccessAttempted(Guid accessPointId, string biometricHash, bool failed)
         {
             Contract.Requires(accessPointId != Guid.Empty);
-            Contract.Requires(!string.IsNullOrWhiteSpace(userName));
+            Contract.Requires(!string.IsNullOrWhiteSpace(biometricHash));
             AccessPointId = accessPointId;
-            DateTimeCreated = DateTime.Now;
-            UserName = userName;
+            CreatedUtc = DateTime.Now;
+            BiometricHash = biometricHash;
             Failed = failed;
         }
 
         public Guid AccessPointId { get; }
-        public DateTime DateTimeCreated { get; }
+        public DateTime CreatedUtc { get; }
         public bool Failed { get; }
-        public string UserName { get; }
+        public string BiometricHash { get; }
     }
 }

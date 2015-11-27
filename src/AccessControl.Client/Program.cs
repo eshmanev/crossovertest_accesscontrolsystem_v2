@@ -16,7 +16,18 @@ namespace AccessControl.Client
     {
         public static void Main()
         {
-            new ServiceRunner<ClientServiceControl>()
+            CreateService().Run(
+                cfg =>
+                {
+                    cfg.SetServiceName("AccessControl.AccessPointClient");
+                    cfg.SetDisplayName("Access Point Client");
+                    cfg.SetDescription("Represents a glue between Vendor-specific software and Access Control System");
+                });
+        }
+
+        public static ServiceRunner<ClientServiceControl> CreateService()
+        {
+            return new ServiceRunner<ClientServiceControl>()
                 .ConfigureContainer(
                     cfg =>
                     {
@@ -50,13 +61,6 @@ namespace AccessControl.Client
                                 //e.Durable = false;
                                 e.Consumer(() => container.Resolve<EventConsumer>());
                             });
-                    })
-                .Run(
-                    cfg =>
-                    {
-                        cfg.SetServiceName("AccessControl.AccessPointClient");
-                        cfg.SetDisplayName("Access Point Client");
-                        cfg.SetDescription("Represents a glue between Vendor-specific software and Access Control System");
                     });
         }
     }

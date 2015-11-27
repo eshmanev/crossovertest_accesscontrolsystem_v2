@@ -10,11 +10,21 @@ using Microsoft.Practices.Unity;
 
 namespace AccessControl.Service.LDAP
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main()
         {
-            new ServiceRunner()
+            CreateService().Run(
+                cfg =>
+                {
+                    cfg.SetServiceName("AccessControl.Service.LDAP");
+                    cfg.SetDescription("Provides information from LDAP directory");
+                });
+        }
+
+        public static ServiceRunner<BusServiceControl> CreateService()
+        {
+            return new ServiceRunner()
                 .ConfigureContainer(
                     cfg =>
                     {
@@ -42,12 +52,6 @@ namespace AccessControl.Service.LDAP
                     {
                         // Cross-services SSO
                         bus.ConnectSendObserver(new PrincipalTicketPropagator());
-                    })
-                .Run(
-                    cfg =>
-                    {
-                        cfg.SetServiceName("AccessControl.LDAPService");
-                        cfg.SetDescription("Provides information from LDAP directory");
                     });
         }
     }

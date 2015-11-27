@@ -24,7 +24,18 @@ namespace AccessControl.Service.AccessPoint
         /// </summary>
         public static void Main()
         {
-            new ServiceRunner()
+            CreateService().Run(
+                cfg =>
+                {
+                    cfg.SetServiceName("AccessControl.Service.AccessPoint");
+                    cfg.SetDisplayName("Access Point Manager");
+                    cfg.SetDescription("This service is responsible for access points management");
+                });
+        }
+
+        public static ServiceRunner<BusServiceControl> CreateService()
+        {
+            return new ServiceRunner()
                 .ConfigureContainer(
                     cfg =>
                     {
@@ -61,15 +72,8 @@ namespace AccessControl.Service.AccessPoint
                     {
                         // Cross-services SSO
                         bus.ConnectSendObserver(new PrincipalTicketPropagator());
-                    })
-                .Run(
-                    cfg =>
-                    {
-                        cfg.SetServiceName("AccessControl.AccessPointManager");
-                        cfg.SetDisplayName("Access Point Manager");
-                        cfg.SetDescription("This service is responsible for access points management");
                     });
-        }
+        } 
 
         /// <summary>
         /// Configures a consumer to be created withing a unit of work.
