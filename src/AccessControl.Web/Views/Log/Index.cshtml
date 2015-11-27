@@ -1,8 +1,13 @@
 ﻿@using System.Globalization
 @model AccessControl.Web.Models.Logs.IndexViewModel
+@{
+    ViewBag.Title = "Logs";
+}
 
-<h3>View logs</h3>
-
+<h2>View logs</h2>
+<p>
+    Pick a date range and click Show logs button to view the log of accesses.
+</p>
 @using (Html.BeginForm("Index", "Log", new { ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-inline", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -39,6 +44,7 @@
     <table class="table table-striped table-bordered">
         <tr>
             <th>Created</th>
+            <th>Status</th>
             <th>Site</th>
             <th>Department</th>
             <th>Access Point</th>
@@ -49,6 +55,16 @@
         {
             <tr>
                 <td>@entry.CreatedUtc.ToLocalTime()</td>
+                <td>
+                    @if (entry.Failed)
+                    {
+                        <span class="text-danger">Failed</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">Succeed</span>
+                    }
+                </td>
                 <td>@entry.AttemptedAccessPoint.Site</td>
                 <td>@entry.AttemptedAccessPoint.Department</td>
                 <td>@entry.AttemptedAccessPoint.Name</td>

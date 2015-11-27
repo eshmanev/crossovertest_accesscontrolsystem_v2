@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Dto;
+using AccessControl.Contracts.Helpers;
 
-namespace AccessControl.Contracts.Helpers
+namespace AccessControl.Contracts.Impl.Dto
 {
     public class VoidResult : IVoidResult
     {

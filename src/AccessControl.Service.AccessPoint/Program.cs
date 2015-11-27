@@ -67,6 +67,7 @@ namespace AccessControl.Service.AccessPoint
                                 e.Consumer<BiometricInfoConsumer>(container);
                                 e.Consumer<AccessRightsConsumer>(container);
                                 e.Consumer<LoggingConsumer>(container);
+                                e.Consumer<DelegateConsumer>(container);
                             });
                     },
                     bus =>

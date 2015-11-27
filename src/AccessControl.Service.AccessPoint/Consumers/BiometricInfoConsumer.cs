@@ -9,6 +9,7 @@ using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
+using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using MassTransit;

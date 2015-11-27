@@ -7,8 +7,8 @@ using AccessControl.Contracts;
 using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
+using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Service.LDAP.Services;
 using MassTransit;
 
@@ -38,9 +38,13 @@ namespace AccessControl.Service.LDAP.Consumers
             IEnumerable<IDepartment> departments;
 
             if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 departments = _ldapService.FindDepartmentsByManager(context.UserName());
+            }
             else
+            {
                 departments = Enumerable.Empty<IDepartment>();
+            }
 
             return context.RespondAsync(ListCommand.DepartmentsResult(departments.ToArray()));
         }

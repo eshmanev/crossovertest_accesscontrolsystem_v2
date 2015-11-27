@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
+using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using AccessControl.Data.Entities;
 using AccessControl.Service.AccessPoint.Visitors;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
-using User = AccessControl.Data.Entities.User;
 
 namespace AccessControl.Service.AccessPoint.Consumers
 {
@@ -69,7 +68,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public Task Consume(ConsumeContext<IAllowUserAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 return context.RespondAsync(new VoidResult("Not authorized"));
+            }
 
             var accessRights = GetUserAccessRights(context.Message.UserName) ?? new UserAccessRights {UserName = context.Message.UserName};
             Task response;
@@ -182,8 +183,6 @@ namespace AccessControl.Service.AccessPoint.Consumers
             accessRights.ForEach(x => x.Accept(visitor));
             return context.RespondAsync(ListCommand.AccessRightsResult(visitor.UserAccessRightsDto.ToArray(), visitor.UserGroupAccessRightsDto.ToArray()));
         }
-
-        
 
         private string FindUserHash(string userName)
         {

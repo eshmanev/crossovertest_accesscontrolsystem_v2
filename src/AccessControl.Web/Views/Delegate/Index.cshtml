@@ -1,0 +1,35 @@
+﻿@model AccessControl.Web.Models.Delegate.IndexViewModel
+@{
+    ViewBag.Title = "Management and monitoring rights";
+}
+
+<h2>Delegate your managmenet and monitoring rights</h2>
+<p>
+    Use this page to delegate your management and monitoring rights to your employees.
+</p>
+<table class="table table-hover">
+    <tr>
+        <th></th>
+        <th>Employee</th>
+        <th>Site</th>
+        <th>Department</th>
+        <th>#</th>
+    </tr>
+    @foreach (var user in Model.Users.OrderBy(x => x.User.DisplayName))
+    {
+        <tr>
+            <td><span class="@(user.IsDelegated ? null : "sr-only") glyphicon glyphicon-bookmark text-success" aria-hidden="true"></span></td>
+            <td>@user.User.DisplayName</td>
+            <td>@user.User.Site</td>
+            <td>@user.User.Department</td>
+            <td>
+                @Html.ActionLink("Grant rights", "Grant", new {userName = user.User.UserName}, new {@class = "grant-button"}) |
+                @Html.ActionLink("Revoke rights", "Revoke", new {userName = user.User.UserName}, new {@class = "revoke-button"})
+            </td>
+        </tr>
+    }
+</table>
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/grantrights.js"></script>
+}

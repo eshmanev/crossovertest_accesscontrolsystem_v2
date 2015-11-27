@@ -193,11 +193,14 @@
     <Compile Include="Controllers\AccessPointController.cs" />
     <Compile Include="Controllers\AccessRightsController.cs" />
     <Compile Include="Controllers\BiometricController.cs" />
+    <Compile Include="Controllers\DelegateController.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Models\AccessPoint\AccessPointIndexViewModel.cs" />
     <Compile Include="Models\AccessPoint\EditAccessPointViewModel.cs" />
     <Compile Include="Models\AccessRights\AccessRightsIndexViewModel.cs" />
     <Compile Include="Models\AccessRights\EditAccessRightsViewModel.cs" />
+    <Compile Include="Models\Delegate\IndexViewModel.cs" />
+    <Compile Include="Models\Delegate\UserViewModel.cs" />
     <Compile Include="Models\Logs\IndexViewModel.cs" />
     <Compile Include="Models\Validation\RequiredGuid.cs" />
     <Compile Include="Models\Validation\RequiredSelect.cs" />
@@ -250,6 +253,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\grantrights.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -298,6 +302,7 @@
     <Content Include="Views\AccessRights\PermanentPartial.cshtml" />
     <Content Include="Views\AccessRights\ScheduledPartial.cshtml" />
     <Content Include="Views\Log\Index.cshtml" />
+    <Content Include="Views\Delegate\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">

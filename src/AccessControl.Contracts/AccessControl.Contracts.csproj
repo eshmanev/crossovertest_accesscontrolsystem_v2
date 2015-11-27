@@ -48,6 +48,9 @@
     <Compile Include="CodeContracts\ICheckCredentialsContract.cs" />
     <Compile Include="CodeContracts\ICheckCredentialsResultContract.cs" />
     <Compile Include="CodeContracts\IFindUserByNameContract.cs" />
+    <Compile Include="CodeContracts\IGrantManagementRightsContract.cs" />
+    <Compile Include="CodeContracts\IListDelegatedUsersContract.cs" />
+    <Compile Include="CodeContracts\IListDelegatedUsersResultContract.cs" />
     <Compile Include="CodeContracts\IListLogsContract.cs" />
     <Compile Include="CodeContracts\IListLogsResultContract.cs" />
     <Compile Include="CodeContracts\ILogEntryContract.cs" />
@@ -55,6 +58,7 @@
     <Compile Include="CodeContracts\IPermanentUserAccessDeniedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserGroupAccessAllowedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserGroupAccessDeniedContract.cs" />
+    <Compile Include="CodeContracts\IRevokeManagementRightsContract.cs" />
     <Compile Include="CodeContracts\IUnregisterAccessPointContract.cs" />
     <Compile Include="CodeContracts\ITicketContract.cs" />
     <Compile Include="CodeContracts\IListUsersInGroupContract.cs" />
@@ -84,10 +88,13 @@
     <Compile Include="CodeContracts\IValidationFaultContract.cs" />
     <Compile Include="CodeContracts\IValidationPropertyErrorContract.cs" />
     <Compile Include="CodeContracts\IListUsersBiometricResultContract.cs" />
+    <Compile Include="Commands\Lists\IListDelegatedUsers.cs" />
+    <Compile Include="Commands\Lists\IListDelegatedUsersResult.cs" />
     <Compile Include="Commands\Lists\IListLogs.cs" />
     <Compile Include="Commands\Lists\IListLogsResult.cs" />
     <Compile Include="Commands\Lists\IListUsersInGroup.cs" />
     <Compile Include="Commands\Lists\IListUsersInGroupResult.cs" />
+    <Compile Include="Commands\Management\GrantRevokeManagementRights.cs" />
     <Compile Include="Commands\Management\IDenyUserGroupAccess.cs" />
     <Compile Include="Commands\Management\IDenyUserAccess.cs" />
     <Compile Include="Commands\Management\IAllowUserAccess.cs" />
@@ -101,6 +108,8 @@
     <Compile Include="Commands\Lists\IListUserGroups.cs" />
     <Compile Include="Commands\Lists\IListUserGroupsResult.cs" />
     <Compile Include="Commands\IValidateDepartment.cs" />
+    <Compile Include="Commands\Management\IGrantManagementRights.cs" />
+    <Compile Include="Commands\Management\IRevokeManagementRights.cs" />
     <Compile Include="Commands\Management\IUnregisterAccessPoint.cs" />
     <Compile Include="Commands\Security\ICheckCredentials.cs" />
     <Compile Include="Commands\Security\ICheckCredentialsResult.cs" />

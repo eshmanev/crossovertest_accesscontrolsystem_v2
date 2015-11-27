@@ -32,7 +32,7 @@ namespace AccessControl.Contracts.Impl.Commands
 
         #region Commands
 
-        public class Command : IListUsers, IListAccessPoints, IListAccessRights, IListDepartments, IListUserGroups, IListUsersBiometric
+        public class Command : IListUsers, IListAccessPoints, IListAccessRights, IListDepartments, IListUserGroups, IListUsersBiometric, IListDelegatedUsers
         {
         }
 
@@ -142,9 +142,25 @@ namespace AccessControl.Contracts.Impl.Commands
             return new ListLogsResultImpl {Logs = logs};
         }
 
+        /// <summary>
+        ///     Creates a new instance of the <see cref="IListDelegatedUsersResult" />.
+        /// </summary>
+        /// <param name="userNames">The user names.</param>
+        /// <returns></returns>
+        public static IListDelegatedUsersResult DelegatedUsersResult(string[] userNames)
+        {
+            Contract.Requires(userNames != null);
+            return new ListDelegatedUsersResultImpl { UserNames = userNames };
+        }
+
         #endregion
 
         #region Nested classes
+
+        private class ListDelegatedUsersResultImpl : IListDelegatedUsersResult
+        {
+            public string[] UserNames { get; set; }
+        }
 
         private class ListLogsResultImpl : IListLogsResult
         {
