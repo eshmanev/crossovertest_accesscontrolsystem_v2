@@ -8,7 +8,6 @@ using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service.LDAP.Services;
 using MassTransit;
@@ -21,7 +20,6 @@ namespace AccessControl.Service.LDAP.Consumers
     internal class UserConsumer : IConsumer<ICheckCredentials>, IConsumer<IFindUserByName>, IConsumer<IListUsers>
     {
         private readonly ILdapService _ldapService;
-        
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="UserConsumer" /> class.
@@ -42,7 +40,9 @@ namespace AccessControl.Service.LDAP.Consumers
         {
             var result = _ldapService.CheckCredentials(context.Message.UserName, context.Message.Password);
             if (!result)
+            {
                 return context.RespondAsync(new CheckCredentialsResult(null));
+            }
 
             var user = _ldapService.FindUserByName(context.Message.UserName);
             return context.RespondAsync(new CheckCredentialsResult(user));
@@ -69,11 +69,17 @@ namespace AccessControl.Service.LDAP.Consumers
             IEnumerable<IUser> users;
 
             if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+            {
                 users = _ldapService.ListUsers();
+            }
             else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
+            {
                 users = _ldapService.FindUsersByManager(context.UserName());
+            }
             else
+            {
                 users = Enumerable.Empty<IUser>();
+            }
 
             return context.RespondAsync(ListCommand.UsersResult(users.ToArray()));
         }

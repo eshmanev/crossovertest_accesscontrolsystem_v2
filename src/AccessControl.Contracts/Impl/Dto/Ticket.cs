@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Dto;
 
-namespace AccessControl.Contracts.Helpers
+namespace AccessControl.Contracts.Impl.Dto
 {
     /// <summary>
     ///     Represents an authentication ticket.
@@ -53,7 +53,7 @@ namespace AccessControl.Contracts.Helpers
         /// <value>
         ///     An array of the user names.
         /// </value>
-        public string[] OnBehalfOf { get; }
+        public string[] OnBehalfOf { get; set; }
 
         IUser ITicket.User => User;
 
@@ -104,7 +104,20 @@ namespace AccessControl.Contracts.Helpers
             /// </value>
             public string Email { get; set; }
 
+            /// <summary>
+            ///     Gets the groups.
+            /// </summary>
+            /// <value>
+            ///     The groups.
+            /// </value>
             public string[] Groups { get; }
+
+            /// <summary>
+            ///     Gets a value indicating whether this instance is manager.
+            /// </summary>
+            /// <value>
+            ///     <c>true</c> if this instance is manager; otherwise, <c>false</c>.
+            /// </value>
             public bool IsManager { get; }
 
             /// <summary>

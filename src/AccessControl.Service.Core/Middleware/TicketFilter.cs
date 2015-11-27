@@ -1,12 +1,12 @@
 using System.Diagnostics.Contracts;
 using System.Security.Principal;
 using AccessControl.Contracts;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Service.Security;
 using MassTransit;
 using MassTransit.Pipeline;
 using System.Threading;
 using System.Threading.Tasks;
+using AccessControl.Contracts.Impl.Dto;
 
 namespace AccessControl.Service.Middleware
 {
