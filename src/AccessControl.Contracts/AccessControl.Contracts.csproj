@@ -49,7 +49,9 @@
     <Compile Include="CodeContracts\ICheckCredentialsResultContract.cs" />
     <Compile Include="CodeContracts\IFindUserByNameContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserAccessAllowedContract.cs" />
+    <Compile Include="CodeContracts\IPermanentUserAccessDeniedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserGroupAccessAllowedContract.cs" />
+    <Compile Include="CodeContracts\IPermanentUserGroupAccessDeniedContract.cs" />
     <Compile Include="CodeContracts\IUnregisterAccessPointContract.cs" />
     <Compile Include="CodeContracts\ITicketContract.cs" />
     <Compile Include="CodeContracts\IListUsersInGroupContract.cs" />
@@ -110,7 +112,9 @@
     <Compile Include="Dto\IValidationPropertyError.cs" />
     <Compile Include="Events\IAccessAttempted.cs" />
     <Compile Include="Events\IPermanentUserAccessAllowed.cs" />
+    <Compile Include="Events\IPermanentUserAccessDenied.cs" />
     <Compile Include="Events\IPermanentUserGroupAccessAllowed.cs" />
+    <Compile Include="Events\IPermanentUserGroupAccessDenied.cs" />
     <Compile Include="Events\IUserBiometricUpdated.cs" />
     <Compile Include="Events\IUserDeleted.cs" />
     <Compile Include="Impl\Dto\AccessPoint.cs" />
@@ -124,6 +128,8 @@
     <Compile Include="Events\IUserAddedToGroup.cs" />
     <Compile Include="Events\IUserRemovedFromGroup.cs" />
     <Compile Include="Impl\Events\PermanentUserAccessAllowed.cs" />
+    <Compile Include="Impl\Events\PermanentUserAccessDenied.cs" />
+    <Compile Include="Impl\Events\PermanentUserGroupAccessDenied.cs" />
     <Compile Include="Impl\Events\PermanentUserGroupAccessAllowed.cs" />
     <Compile Include="Impl\Events\UserBiometricUpdatedImpl.cs" />
     <Compile Include="Impl\Commands\UnregisterAccessPoint.cs" />

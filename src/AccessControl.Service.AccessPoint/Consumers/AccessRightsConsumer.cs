@@ -123,7 +123,12 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
 
             var accessRights = GetUserAccessRights(context.Message.UserName);
-            return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
+            Task response;
+            if (TryDenyPermanentAccess(context, context.Message.AccessPointId, accessRights, out response))
+            {
+                _bus.Publish(new PermanentUserAccessDenied(context.Message.AccessPointId, context.Message.UserName));
+            }
+            return response;
         }
 
         /// <summary>
@@ -139,7 +144,12 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
 
             var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
-            return DenyPermanentAccess(context, context.Message.AccessPointId, accessRights);
+            Task response;
+            if (TryDenyPermanentAccess(context, context.Message.AccessPointId, accessRights, out response))
+            {
+                _bus.Publish(new PermanentUserGroupAccessDenied(context.Message.AccessPointId, context.Message.UserGroupName));
+            }
+            return response;
         }
 
         /// <summary>
@@ -172,35 +182,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             return context.RespondAsync(ListCommand.AccessRightsResult(visitor.UserAccessRightsDto.ToArray(), visitor.UserGroupAccessRightsDto.ToArray()));
         }
 
-        private Task DenyPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights)
-        {
-            if (accessRights == null)
-            {
-                return context.RespondAsync(new VoidResult());
-            }
-
-            var accessRule = accessRights.AccessRules
-                                         .OfType<PermanentAccessRule>()
-                                         .FirstOrDefault(x => x.AccessPoint.AccessPointId == accessPointId);
-
-            if (accessRule == null)
-            {
-                return context.RespondAsync(new VoidResult());
-            }
-
-            accessRights.RemoveAccessRule(accessRule);
-            if (accessRights.AccessRules.Any())
-            {
-                _accessRightsRepository.Update(accessRights);
-            }
-
-            else
-            {
-                _accessRightsRepository.Delete(accessRights);
-            }
-
-            return context.RespondAsync(new VoidResult());
-        }
+        
 
         private string FindUserHash(string userName)
         {
@@ -245,6 +227,39 @@ namespace AccessControl.Service.AccessPoint.Consumers
             else
             {
                 _accessRightsRepository.Update(accessRights);
+            }
+
+            response = context.RespondAsync(new VoidResult());
+            return true;
+        }
+
+        private bool TryDenyPermanentAccess(ConsumeContext context, Guid accessPointId, AccessRightsBase accessRights, out Task response)
+        {
+            if (accessRights == null)
+            {
+                response = context.RespondAsync(new VoidResult());
+                return false;
+            }
+
+            var accessRule = accessRights.AccessRules
+                                         .OfType<PermanentAccessRule>()
+                                         .FirstOrDefault(x => x.AccessPoint.AccessPointId == accessPointId);
+
+            if (accessRule == null)
+            {
+                response = context.RespondAsync(new VoidResult());
+                return false;
+            }
+
+            accessRights.RemoveAccessRule(accessRule);
+            if (accessRights.AccessRules.Any())
+            {
+                _accessRightsRepository.Update(accessRights);
+            }
+
+            else
+            {
+                _accessRightsRepository.Delete(accessRights);
             }
 
             response = context.RespondAsync(new VoidResult());
