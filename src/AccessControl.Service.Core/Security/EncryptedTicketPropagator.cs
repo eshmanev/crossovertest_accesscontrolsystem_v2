@@ -10,7 +10,7 @@ namespace AccessControl.Service.Security
     /// <summary>
     ///     Propagates the specified authentication ticket to remote services.
     /// </summary>
-    public class EncryptedTicketPropagator : ISendObserver
+    public class EncryptedTicketPropagator : ISendObserver, IPublishObserver
     {
         private readonly string _encryptedTicket;
 
@@ -36,6 +36,22 @@ namespace AccessControl.Service.Security
         }
 
         public Task SendFault<T>(SendContext<T> context, Exception exception) where T : class
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task PrePublish<T>(PublishContext<T> context) where T : class
+        {
+            context.Headers.Set(WellKnownHeaders.Ticket, _encryptedTicket);
+            return Task.FromResult(true);
+        }
+
+        public Task PostPublish<T>(PublishContext<T> context) where T : class
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task PublishFault<T>(PublishContext<T> context, Exception exception) where T : class
         {
             return Task.FromResult(true);
         }

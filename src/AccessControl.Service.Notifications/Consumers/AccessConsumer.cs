@@ -8,7 +8,7 @@ namespace AccessControl.Service.Notifications.Consumers
     {
         public Task Consume(ConsumeContext<IAccessAttempted> context)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(true);
         }
     }
 }

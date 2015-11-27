@@ -27,7 +27,7 @@ namespace AccessControl.Service.Notifications
                     bus =>
                     {
                         // Cross-services SSO
-                        bus.ConnectSendObserver(new PrincipalTicketPropagator());
+                        bus.ConnectThreadPrincipal();
                     });
         }
 

@@ -67,7 +67,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 AccessPointId = context.Message.AccessPointId,
                 AttemptedHash = context.Message.BiometricHash,
                 UserName = user?.UserName,
-                CreatedUtc = context.Message.CreatedUtc
+                CreatedUtc = context.Message.CreatedUtc,
+                Failed = context.Message.Failed
             };
             _logRepository.Insert(entry);
             return Task.FromResult(true);

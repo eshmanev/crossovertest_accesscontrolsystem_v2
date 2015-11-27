@@ -43,5 +43,13 @@ namespace AccessControl.Data.Entities
         /// The date created, UTC.
         /// </value>
         public virtual DateTime CreatedUtc { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the attempt has been failed.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the attempt has been failed; otherwise, <c>false</c>.
+        /// </value>
+        public virtual bool Failed { get; set; }
     }
 }

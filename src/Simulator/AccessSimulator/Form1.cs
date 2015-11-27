@@ -36,17 +36,25 @@ namespace AccessSimulator
                 return;
             }
 
-            var accessPoint = ((AccessPointItem) accessPointCombo.SelectedItem);
-            var userHash = ((UserItem)userCombo.SelectedItem).Id;
+            var accessPoint = ((CacheItem) accessPointCombo.SelectedItem);
+            var userHash = ((CacheItem)userCombo.SelectedItem).Id;
             var proxy = new AccessCheckServiceClient();
-            if (proxy.TryPass(new CheckAccess {AccessPointId = accessPoint.Id, UserHash = userHash}))
+            try
             {
-                MessageBox.Show("Welcome to " + accessPoint.Name, "Authorized", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (proxy.TryPass(new CheckAccess { AccessPointId = new Guid(accessPoint.Id), UserHash = userHash }))
+                {
+                    MessageBox.Show("Welcome to " + accessPoint.Name, "Authorized", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("You are not authorized!", "Not authorized", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("You are not authorized!", "Not authorized", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+           
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -56,21 +64,61 @@ namespace AccessSimulator
 
         private async void FillData()
         {
-            accessPointCombo.Items.Clear();
-            userCombo.Items.Clear();
-
-            var listBiometricsTask = _bus.CreateClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl).Request(ListCommand.Default);
-            var listAccessPointsTask = _bus.CreateClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl).Request(ListCommand.Default);
-            await Task.WhenAll(listBiometricsTask, listAccessPointsTask);
-
-            foreach (var item in listAccessPointsTask.Result.AccessPoints)
+            messageLabel.Show();
+            messageLabel.Text = "Loading data...";
+            Enabled = false;
+            CacheItem[] accessPoints = new CacheItem[0];
+            CacheItem[] users = new CacheItem[0];
+            try
             {
-                Invoke(new MethodInvoker(() => accessPointCombo.Items.Add(new AccessPointItem(item))));
+                accessPointCombo.SelectedItem = null;
+                userCombo.SelectedItem = null;
+                accessPointCombo.Items.Clear();
+                userCombo.Items.Clear();
+
+                var listBiometricsTask = _bus.CreateClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl).Request(ListCommand.Default);
+                var listAccessPointsTask = _bus.CreateClient<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl).Request(ListCommand.Default);
+                await Task.WhenAll(listBiometricsTask, listAccessPointsTask);
+
+                // convert
+                accessPoints = listAccessPointsTask.Result.AccessPoints
+                                                   .Select(
+                                                       x => new CacheItem
+                                                       {
+                                                           Id = x.AccessPointId.ToString(),
+                                                           Name = $"{x.Name} - {SiteName(x.Site)}/{x.Department}"
+                                                       })
+                                                   .ToArray();
+
+                users = listBiometricsTask.Result.Users
+                                          .Where(x => !string.IsNullOrWhiteSpace(x.BiometricHash))
+                                          .Select(
+                                              x => new CacheItem
+                                              {
+                                                  Id = x.BiometricHash,
+                                                  Name = $"{x.DisplayName} - {SiteName(x.Site)}/{x.Department}"
+                                              })
+                                          .ToArray();
+
+                // save cache
+                CacheData.Save(accessPoints, users);
             }
-
-            foreach (var item in listBiometricsTask.Result.Users.Where(x => !string.IsNullOrWhiteSpace(x.BiometricHash)))
+            catch
             {
-                Invoke(new MethodInvoker(() => userCombo.Items.Add(new UserItem(item))));
+                // load from cache
+                CacheData.Load(out accessPoints, out users);
+            }
+            finally
+            {
+                // update UI
+                Invoke(new MethodInvoker(
+                    () =>
+                    {
+                        accessPointCombo.Items.AddRange(accessPoints.Cast<object>().ToArray());
+                        userCombo.Items.AddRange(users.Cast<object>().ToArray());
+                        Enabled = true;
+                        messageLabel.Hide();
+                    }));
             }
         }
 
@@ -83,30 +131,6 @@ namespace AccessSimulator
                 firstIndex += 1;
             }
             return site.Substring(firstIndex, lastIndex - firstIndex);
-        }
-
-        private class AccessPointItem
-        {
-            public AccessPointItem(IAccessPoint point)
-            {
-                Id = point.AccessPointId;
-                Name = $"{point.Name} - {SiteName(point.Site)}/{point.Department}";
-            }
-
-            public Guid Id { get; }
-            public string Name { get; }
-        }
-
-        private class UserItem
-        {
-            public UserItem(IUserBiometric user)
-            {
-                Id = user.BiometricHash;
-                Name = $"{user.DisplayName} - {SiteName(user.Site)}/{user.Department}";
-            }
-
-            public string Id { get; }
-            public string Name { get; }
         }
     }
 }

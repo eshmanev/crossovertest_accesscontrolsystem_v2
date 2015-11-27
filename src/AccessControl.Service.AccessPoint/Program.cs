@@ -71,7 +71,7 @@ namespace AccessControl.Service.AccessPoint
                     bus =>
                     {
                         // Cross-services SSO
-                        bus.ConnectSendObserver(new PrincipalTicketPropagator());
+                        bus.ConnectThreadPrincipal();
                     });
         } 
 

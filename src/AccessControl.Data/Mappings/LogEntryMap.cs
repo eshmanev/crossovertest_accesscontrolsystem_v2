@@ -12,6 +12,7 @@ namespace AccessControl.Data.Mappings
             Map(x => x.AccessPointId).Not.Nullable();
             Map(x => x.AttemptedHash).Not.Nullable();
             Map(x => x.UserName);
+            Map(x => x.Failed);
         }
     }
 }

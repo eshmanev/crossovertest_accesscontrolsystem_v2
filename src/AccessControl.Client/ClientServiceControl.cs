@@ -77,7 +77,7 @@ namespace AccessControl.Client
                     return;
 
                 // take care of automatical request authentication
-                _busControl.ConnectSendObserver(new EncryptedTicketPropagator(result.Ticket));
+                _busControl.ConnectTicket(result.Ticket);
             }
             catch (Exception e)
             {

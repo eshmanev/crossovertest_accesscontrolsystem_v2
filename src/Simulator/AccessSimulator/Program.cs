@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Windows.Forms;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Security;
@@ -17,6 +18,14 @@ namespace AccessSimulator
         [STAThread]
         private static void Main()
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+
+            var splash = new Splash();
+            splash.Show();
+            splash.Progress = "Starting messaging bus";
+
             var busControl = Bus.Factory.CreateUsingRabbitMq(
                 cfg =>
                 {
@@ -33,9 +42,8 @@ namespace AccessSimulator
             busControl.Start();
             try
             {
-                AuthenticateClient(busControl);
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
+                AuthenticateClient(splash, busControl);
+                splash.Dispose();
                 Application.Run(new Form1(busControl));
             }
             finally
@@ -44,17 +52,29 @@ namespace AccessSimulator
             }
         }
 
-        private static void AuthenticateClient(IBusControl busControl)
+        private static void AuthenticateClient(Splash splash, IBusControl busControl)
         {
-            var authenticateRequest = busControl.CreateClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.AccessControl);
+            try
+            {
+                splash.Progress = "Authenticating...";
+                var authenticateRequest = busControl.CreateClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.AccessControl);
 
-            var result = authenticateRequest.Request(
-                new AuthenticateUser(
-                    ConfigurationManager.AppSettings["LdapUserName"],
-                    ConfigurationManager.AppSettings["LdapPassword"])).Result;
+                var result = authenticateRequest.Request(
+                    new AuthenticateUser(
+                        ConfigurationManager.AppSettings["LdapUserName"],
+                        ConfigurationManager.AppSettings["LdapPassword"])).Result;
 
-            if (result.Authenticated)
-                busControl.ConnectSendObserver(new EncryptedTicketPropagator(result.Ticket));
+                if (result.Authenticated)
+                    busControl.ConnectTicket(result.Ticket);
+            }
+            catch (AggregateException e)
+            {
+                MessageBox.Show(e.InnerExceptions.First().Message);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
     }
 }

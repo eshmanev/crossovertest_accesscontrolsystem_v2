@@ -34,6 +34,7 @@
             this.userCombo = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.messageLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // accessPointCombo
@@ -41,6 +42,7 @@
             this.accessPointCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.accessPointCombo.DisplayMember = "Name";
+            this.accessPointCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.accessPointCombo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.accessPointCombo.FormattingEnabled = true;
             this.accessPointCombo.Location = new System.Drawing.Point(124, 10);
@@ -74,6 +76,7 @@
             this.userCombo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.userCombo.DisplayMember = "Name";
+            this.userCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.userCombo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.userCombo.FormattingEnabled = true;
             this.userCombo.Location = new System.Drawing.Point(124, 50);
@@ -106,11 +109,23 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // messageLabel
+            // 
+            this.messageLabel.AutoSize = true;
+            this.messageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.messageLabel.Location = new System.Drawing.Point(120, 81);
+            this.messageLabel.Name = "messageLabel";
+            this.messageLabel.Size = new System.Drawing.Size(74, 20);
+            this.messageLabel.TabIndex = 6;
+            this.messageLabel.Text = "Message";
+            this.messageLabel.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(515, 194);
+            this.Controls.Add(this.messageLabel);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
@@ -133,6 +148,7 @@
         private System.Windows.Forms.ComboBox userCombo;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label messageLabel;
     }
 }
 

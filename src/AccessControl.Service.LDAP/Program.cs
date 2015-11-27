@@ -51,7 +51,7 @@ namespace AccessControl.Service.LDAP
                     bus =>
                     {
                         // Cross-services SSO
-                        bus.ConnectSendObserver(new PrincipalTicketPropagator());
+                        bus.ConnectThreadPrincipal();
                     });
         }
     }

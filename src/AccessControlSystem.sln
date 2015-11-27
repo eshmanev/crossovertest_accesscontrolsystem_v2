@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vendor.API", "Vendor.API\Ve
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simulator", "Simulator", "{03C835F1-837C-4223-9AA0-3BE0D9C06262}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessPointSimulator", "Simulator\AccessPointSimulator\AccessPointSimulator.csproj", "{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Data", "AccessControl.Data\AccessControl.Data.csproj", "{4B62B8A1-B09A-45FC-B9BD-A08EB54405B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Service.LDAP", "AccessControl.Service.LDAP\AccessControl.Service.LDAP.csproj", "{E63FC351-B5F8-41D3-B7B9-84EFC570DB51}"
@@ -22,8 +20,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Web", "AccessControl.Web\AccessControl.Web.csproj", "{28CE0FE7-007D-4FA3-83DC-02E00CBE0CFD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Service.Core", "AccessControl.Service.Core\AccessControl.Service.Core.csproj", "{F92CA63C-0A6E-413A-AA74-2E2C4F354309}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LDAPSimulator", "Simulator\LDAPSimulator\LDAPSimulator.csproj", "{85BDABD6-805F-4D6F-AEF1-5B29412E4C6D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccessControl.Service.Notifications", "AccessControl.Service.Notifications\AccessControl.Service.Notifications.csproj", "{E2C63043-31F8-471A-B669-F11E62B8FDE1}"
 EndProject
@@ -55,10 +51,6 @@ Global
 		{C1B2F55F-51D6-4B69-83A8-60608402B136}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1B2F55F-51D6-4B69-83A8-60608402B136}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1B2F55F-51D6-4B69-83A8-60608402B136}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4B62B8A1-B09A-45FC-B9BD-A08EB54405B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4B62B8A1-B09A-45FC-B9BD-A08EB54405B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B62B8A1-B09A-45FC-B9BD-A08EB54405B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,10 +67,6 @@ Global
 		{F92CA63C-0A6E-413A-AA74-2E2C4F354309}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F92CA63C-0A6E-413A-AA74-2E2C4F354309}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F92CA63C-0A6E-413A-AA74-2E2C4F354309}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85BDABD6-805F-4D6F-AEF1-5B29412E4C6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85BDABD6-805F-4D6F-AEF1-5B29412E4C6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85BDABD6-805F-4D6F-AEF1-5B29412E4C6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85BDABD6-805F-4D6F-AEF1-5B29412E4C6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E2C63043-31F8-471A-B669-F11E62B8FDE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E2C63043-31F8-471A-B669-F11E62B8FDE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2C63043-31F8-471A-B669-F11E62B8FDE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -96,8 +84,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{CF5CC194-B9CC-421A-A0A0-4A27FC85B800} = {03C835F1-837C-4223-9AA0-3BE0D9C06262}
-		{85BDABD6-805F-4D6F-AEF1-5B29412E4C6D} = {03C835F1-837C-4223-9AA0-3BE0D9C06262}
 		{7B6E5994-162F-4060-9745-39CCA3114014} = {696DC1F9-FE40-43B1-9BCF-F7445245B5C1}
 		{E21D3200-3326-4125-909B-896F0777106E} = {03C835F1-837C-4223-9AA0-3BE0D9C06262}
 	EndGlobalSection

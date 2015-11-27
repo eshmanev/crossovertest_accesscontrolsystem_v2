@@ -33,8 +33,8 @@ namespace AccessControl.Client
                     {
                         // bus
                         cfg
-                            .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IListUsersInGroup, IListUsersInGroupResult>(WellKnownQueues.Ldap)
+                            .RegisterRequestClient<IAuthenticateUser, IAuthenticateUserResult>(WellKnownQueues.AccessControl)
                             .RegisterRequestClient<IListAccessRights, IListAccessRightsResult>(WellKnownQueues.AccessControl)
                             .RegisterRequestClient<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl);
 
