@@ -6,7 +6,7 @@ using System.Linq;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Service.LDAP.Configuration;
-using AccessControl.Service.LDAP.Consumers;
+using AccessControl.Service.LDAP.Helpers;
 
 namespace AccessControl.Service.LDAP.Services
 {
@@ -14,23 +14,42 @@ namespace AccessControl.Service.LDAP.Services
     {
         private readonly ILdapConfig _config;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="LdapService" /> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
         public LdapService(ILdapConfig config)
         {
             Contract.Requires(config != null);
             _config = config;
         }
 
+        /// <summary>
+        ///     Finds the user by name.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <returns></returns>
         public IUser FindUserByName(string userName)
         {
             var result = FindUserByNameCore(userName);
             return result != null ? ConvertUser(result) : null;
         }
 
+        /// <summary>
+        ///     Gets the user groups in which the specified user is member of.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <returns></returns>
         public IEnumerable<IUserGroup> GetUserGroups(string userName)
         {
             return GetUserGroupsCore(userName).Select(x => new UserGroup(x));
         }
 
+        /// <summary>
+        ///     Gets the users in the specified group.
+        /// </summary>
+        /// <param name="userGroupName">Name of the user group.</param>
+        /// <returns></returns>
         public IEnumerable<IUser> GetUsersInGroup(string userGroupName)
         {
             var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
@@ -50,6 +69,11 @@ namespace AccessControl.Service.LDAP.Services
                 });
         }
 
+        /// <summary>
+        ///     Finds the users by manager.
+        /// </summary>
+        /// <param name="managerName">Name of the manager.</param>
+        /// <returns></returns>
         public IEnumerable<IUser> FindUsersByManager(string managerName)
         {
             var manager = FindUserByNameCore(managerName);
@@ -63,6 +87,10 @@ namespace AccessControl.Service.LDAP.Services
             return searcher.FindAll().Cast<SearchResult>().Select(ConvertUser);
         }
 
+        /// <summary>
+        ///     Lists the users.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IUser> ListUsers()
         {
             var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
@@ -70,6 +98,12 @@ namespace AccessControl.Service.LDAP.Services
             return searcher.FindAll().Cast<SearchResult>().Select(ConvertUser);
         }
 
+        /// <summary>
+        ///     Validates the department.
+        /// </summary>
+        /// <param name="site">The site.</param>
+        /// <param name="department">The department.</param>
+        /// <returns></returns>
         public bool ValidateDepartment(string site, string department)
         {
             var path = _config.CombinePath(site);
@@ -79,6 +113,11 @@ namespace AccessControl.Service.LDAP.Services
             return searcher.FindAll().Cast<SearchResult>().Any(x => x.GetProperty("department") == department);
         }
 
+        /// <summary>
+        ///     Finds the user groups by manager.
+        /// </summary>
+        /// <param name="managerName">Name of the manager.</param>
+        /// <returns></returns>
         public IEnumerable<IUserGroup> FindUserGroupsByManager(string managerName)
         {
             var manager = FindUserByNameCore(managerName);
@@ -100,12 +139,16 @@ namespace AccessControl.Service.LDAP.Services
                            .ToArray();
         }
 
+        /// <summary>
+        ///     Lists the user groups.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<IUserGroup> ListUserGroups()
         {
             var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
             var searcher = new DirectorySearcher(entry)
             {
-                Filter = $"(objectClass=group)",
+                Filter = "(objectClass=group)",
                 SearchScope = SearchScope.Subtree
             };
 
@@ -115,6 +158,12 @@ namespace AccessControl.Service.LDAP.Services
                            .ToArray();
         }
 
+        /// <summary>
+        ///     Checks the credentials.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <param name="password">The password.</param>
+        /// <returns></returns>
         public bool CheckCredentials(string userName, string password)
         {
             try
@@ -130,6 +179,29 @@ namespace AccessControl.Service.LDAP.Services
             }
         }
 
+        /// <summary>
+        ///     Lists the departments.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<IDepartment> ListDepartments()
+        {
+            var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
+            var searcher = new DirectorySearcher(entry) { Filter = "(objectClass=user)" };
+            searcher.PropertiesToLoad.Add("department");
+
+            var departments = searcher.FindAll()
+                                      .Cast<SearchResult>()
+                                      .Select(ConvertDepartment)
+                                      .Where(x => x != null);
+
+            return departments.Distinct();
+        }
+
+        /// <summary>
+        ///     Finds the departments by manager.
+        /// </summary>
+        /// <param name="managerName">Name of the manager.</param>
+        /// <returns></returns>
         public IEnumerable<IDepartment> FindDepartmentsByManager(string managerName)
         {
             var manager = FindUserByNameCore(managerName);
@@ -144,7 +216,7 @@ namespace AccessControl.Service.LDAP.Services
 
             var departments = searcher.FindAll()
                                       .Cast<SearchResult>()
-                                      .Select(ConvertDepartment).Union(new[] {ConvertDepartment(manager)})
+                                      .Select(ConvertDepartment)
                                       .Where(x => x != null);
 
             return departments.Distinct();

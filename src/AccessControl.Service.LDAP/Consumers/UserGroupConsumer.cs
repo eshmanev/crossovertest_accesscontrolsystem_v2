@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service.LDAP.Services;
+using AccessControl.Service.Security;
 using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
@@ -37,21 +33,8 @@ namespace AccessControl.Service.LDAP.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IListUserGroups> context)
         {
-            IEnumerable<IUserGroup> groups;
-
-            if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
-            {
-                groups = _ldapService.ListUserGroups();
-            }
-            else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                groups = _ldapService.FindUserGroupsByManager(context.UserName());
-            }
-            else
-            {
-                groups = Enumerable.Empty<IUserGroup>();
-            }
-
+            var fetcher = RoleBasedDataFetcher.Create(_ldapService.ListUserGroups, manager => _ldapService.FindUserGroupsByManager(manager));
+            var groups = fetcher.Execute();
             return context.RespondAsync(ListCommand.UserGroupsResult(groups.ToArray()));
         }
 
@@ -62,23 +45,16 @@ namespace AccessControl.Service.LDAP.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IListUsersInGroup> context)
         {
-            IEnumerable<IUser> users;
+            var fetcher = RoleBasedDataFetcher.Create(
+                () => _ldapService.GetUsersInGroup(context.Message.UserGroupName),
+                manager =>
+                {
+                    var allUsers = _ldapService.GetUsersInGroup(context.Message.UserGroupName);
+                    var allowed = _ldapService.FindUsersByManager(manager);
+                    return allUsers.Where(x => allowed.Any(y => y.UserName == x.UserName));
+                });
 
-            if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
-            {
-                users = _ldapService.GetUsersInGroup(context.Message.UserGroupName);
-            }
-            else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                users = _ldapService.GetUsersInGroup(context.Message.UserGroupName);
-                var allowed = _ldapService.FindUsersByManager(context.UserName());
-                users = users.Where(x => allowed.Any(y => y.UserName == x.UserName));
-            }
-            else
-            {
-                users = Enumerable.Empty<IUser>();
-            }
-
+            var users = fetcher.Execute();
             return context.RespondAsync(ListCommand.UsersInGroupResult(users.ToArray()));
         }
     }

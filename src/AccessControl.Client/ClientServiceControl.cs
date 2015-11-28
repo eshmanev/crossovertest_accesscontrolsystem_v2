@@ -4,7 +4,6 @@ using AccessControl.Client.Data;
 using AccessControl.Client.Services;
 using AccessControl.Client.Vendor;
 using AccessControl.Contracts.Commands.Security;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service;
 using AccessControl.Service.Security;
@@ -19,10 +18,10 @@ namespace AccessControl.Client
 {
     public class ClientServiceControl : BusServiceControl
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(ClientServiceControl));
         private readonly IBusControl _busControl;
         private readonly IUnityContainer _container;
         private UnityServiceHost[] _wcfHosts;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(ClientServiceControl));
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ClientServiceControl" /> class.
@@ -75,7 +74,9 @@ namespace AccessControl.Client
             {
                 var result = authenticateRequest.Request(new AuthenticateUser(credentials.LdapUserName, credentials.LdapPassword)).Result;
                 if (!result.Authenticated)
+                {
                     return;
+                }
 
                 // take care of automatical request authentication
                 _busControl.ConnectTicket(result.Ticket);
@@ -84,6 +85,20 @@ namespace AccessControl.Client
             {
                 Log.Error("An error occurred while authenticating client", e);
             }
+        }
+
+        private void StartWcfServices()
+        {
+            _wcfHosts = new[]
+            {
+                new UnityServiceHost(_container, typeof(AccessCheckService)),
+            };
+            _wcfHosts.ForEach(x => x.Open());
+        }
+
+        private void StopWcfServices()
+        {
+            _wcfHosts?.ForEach(x => x.Close());
         }
 
         private async void UpdatePermissions()
@@ -101,21 +116,6 @@ namespace AccessControl.Client
                 // load from cache
                 service.Load(accessPermissions);
             }
-        }
-
-        private void StartWcfServices()
-        {
-            _wcfHosts = new[]
-           {
-                new UnityServiceHost(_container, typeof(AccessCheckService)),
-                new UnityServiceHost(_container, typeof(AccessPointRegistry))
-            };
-            _wcfHosts.ForEach(x => x.Open());
-        }
-
-        private void StopWcfServices()
-        {
-            _wcfHosts?.ForEach(x => x.Close());
         }
     }
 }

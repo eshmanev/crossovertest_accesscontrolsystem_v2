@@ -42,11 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessPointDto.cs" />
     <Compile Include="AccessCheckDto.cs" />
-    <Compile Include="CodeContracts\IAccessPointRegistryContract.cs" />
     <Compile Include="CodeContracts\AccessCheckServiceContract.cs" />
-    <Compile Include="IAccessPointRegistry.cs" />
     <Compile Include="IAccessCheckService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

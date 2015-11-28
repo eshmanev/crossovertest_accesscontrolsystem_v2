@@ -1,7 +1,7 @@
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 
-namespace AccessControl.Service.LDAP.Consumers
+namespace AccessControl.Service.LDAP.Helpers
 {
     internal static class SearchResultExtensions
     {

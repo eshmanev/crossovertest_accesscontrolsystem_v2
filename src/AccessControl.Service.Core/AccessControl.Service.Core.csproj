@@ -94,7 +94,7 @@
     <Compile Include="Configuration\IRabbitMqConfig.cs" />
     <Compile Include="Configuration\ISecurityConfig.cs" />
     <Compile Include="Configuration\RabbitMqElement.cs" />
-    <Compile Include="ConsumeContextExtensions.cs" />
+    <Compile Include="PrincipalExtensions.cs" />
     <Compile Include="Security\BusControlExtensions.cs" />
     <Compile Include="Security\EncryptedTicketPropagator.cs" />
     <Compile Include="Security\PrincipalTicketPropagator.cs" />
@@ -104,6 +104,7 @@
     <Compile Include="Middleware\GenericPipeSpecification.cs" />
     <Compile Include="Security\Encyptor.cs" />
     <Compile Include="Security\IEncryptor.cs" />
+    <Compile Include="Security\RoleBasedDataFetcher.cs" />
     <Compile Include="Security\ServicePrincipal.cs" />
     <Compile Include="Security\ServiceIdentity.cs" />
     <Compile Include="ServiceRunner.cs" />

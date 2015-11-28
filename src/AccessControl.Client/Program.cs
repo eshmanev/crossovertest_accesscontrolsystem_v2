@@ -45,9 +45,7 @@ namespace AccessControl.Client
                             .RegisterType<IAccessPermissionService, AccessPermissionService>();
 
                         // vendor
-                        cfg
-                            .RegisterType<IAccessPointRegistry, AccessPointRegistry>()
-                            .RegisterType<IAccessCheckService, AccessCheckService>();
+                        cfg.RegisterType<IAccessCheckService, AccessCheckService>();
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>

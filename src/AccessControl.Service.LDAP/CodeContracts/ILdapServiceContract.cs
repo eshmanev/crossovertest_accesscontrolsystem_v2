@@ -17,6 +17,12 @@ namespace AccessControl.Service.LDAP.CodeContracts
             return false;
         }
 
+        public IEnumerable<IDepartment> ListDepartments()
+        {
+            Contract.Ensures(Contract.Result<IEnumerable<IDepartment>>() != null);
+            return null;
+        }
+
         public IEnumerable<IDepartment> FindDepartmentsByManager(string managerName)
         {
             Contract.Requires(managerName != null);

@@ -55,7 +55,14 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
             var user = checkResult.User;
             var roles = new List<string>();
-            if (user.IsManager)
+
+            // select delegated privileges
+            var delegatedRights = _delegatedRightsRepository.Filter(x => x.Grantee == user.UserName);
+            var onBehalfOf = delegatedRights.Select(x => x.Grantor).ToArray();
+
+
+            // add manager role
+            if (user.IsManager || onBehalfOf.Length > 0)
             {
                 roles.Add(WellKnownRoles.Manager);
             }
@@ -70,10 +77,6 @@ namespace AccessControl.Service.AccessPoint.Consumers
             {
                 roles.Add(WellKnownRoles.ClientService);
             }
-
-            // select delegated privileges
-            var delegatedRights = _delegatedRightsRepository.Filter(x => x.Grantee == user.UserName);
-            var onBehalfOf = delegatedRights.Select(x => x.Grantor).ToArray();
 
             // create a ticket
             var ticket = new Ticket(user, roles.ToArray(), onBehalfOf);

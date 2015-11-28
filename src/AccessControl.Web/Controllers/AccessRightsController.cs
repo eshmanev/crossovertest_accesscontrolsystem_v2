@@ -5,7 +5,6 @@ using System.Web.Mvc;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Web.Models.AccessRights;
 using MassTransit;
@@ -52,14 +51,8 @@ namespace AccessControl.Web.Controllers
             _denyUserGroupRequest = denyUserGroupRequest;
         }
 
-        public async Task<ActionResult> Index()
-        {
-            var model = new AccessRightsIndexViewModel {Editor = new EditAccessRightsViewModel()};
-            await Initialize(model);
-            return View(model);
-        }
-
-        [HttpPost, ActionName("Index")]
+        [HttpPost]
+        [ActionName("Index")]
         public async Task<ActionResult> Allow(AccessRightsIndexViewModel model)
         {
             if (!ModelState.IsValid)
@@ -95,6 +88,13 @@ namespace AccessControl.Web.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Index()
+        {
+            var model = new AccessRightsIndexViewModel {Editor = new EditAccessRightsViewModel()};
+            await Initialize(model);
+            return View(model);
         }
 
         private async Task Initialize(AccessRightsIndexViewModel model)

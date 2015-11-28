@@ -6,7 +6,7 @@ using AccessControl.Service.LDAP.CodeContracts;
 namespace AccessControl.Service.LDAP.Services
 {
     [ContractClass(typeof(ILdapServiceContract))]
-    internal interface ILdapService
+    public interface ILdapService
     {
         /// <summary>
         ///    Checks the specified credentials.
@@ -15,6 +15,12 @@ namespace AccessControl.Service.LDAP.Services
         /// <param name="password">The password.</param>
         /// <returns></returns>
         bool CheckCredentials(string userName, string password);
+
+        /// <summary>
+        ///     Lists the departments.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IDepartment> ListDepartments();
 
         /// <summary>
         ///     Finds the departments managed by the given manager.

@@ -56,7 +56,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
 
             var entity = _delegatedRightsRepository
-                .Filter(x => x.Grantor == context.UserName() && x.Grantee == context.Message.UserName)
+                .Filter(x => x.Grantor == Thread.CurrentPrincipal.UserName() && x.Grantee == context.Message.UserName)
                 .SingleOrDefault();
 
             if (entity != null)
@@ -65,7 +65,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return;
             }
 
-            entity = new DelegatedRights {Grantor = context.UserName(), Grantee = userResult.User.UserName};
+            entity = new DelegatedRights {Grantor = Thread.CurrentPrincipal.UserName(), Grantee = userResult.User.UserName};
             _delegatedRightsRepository.Insert(entity);
             await context.RespondAsync(new VoidResult());
         }
@@ -85,7 +85,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
             else
             {
-                userNames = _delegatedRightsRepository.Filter(x => x.Grantor == context.UserName()).Select(x => x.Grantee);
+                userNames = _delegatedRightsRepository.Filter(x => x.Grantor == Thread.CurrentPrincipal.UserName()).Select(x => x.Grantee);
             }
 
             return context.RespondAsync(ListCommand.DelegatedUsersResult(userNames.ToArray()));
@@ -104,7 +104,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
 
             var entity = _delegatedRightsRepository
-                .Filter(x => x.Grantor == context.UserName() && x.Grantee == context.Message.UserName)
+                .Filter(x => x.Grantor == Thread.CurrentPrincipal.UserName() && x.Grantee == context.Message.UserName)
                 .SingleOrDefault();
 
             if (entity != null)

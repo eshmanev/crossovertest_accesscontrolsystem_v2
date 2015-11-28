@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Data;
+using AccessControl.Service.Security;
 using MassTransit;
 
 namespace AccessControl.Service.AccessPoint.Consumers
@@ -47,21 +47,11 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public Task Consume(ConsumeContext<IListAccessPoints> context)
         {
-            IEnumerable<Data.Entities.AccessPoint> entities;
+            var fetcher = RoleBasedDataFetcher.Create(
+                _accessPointRepository.GetAll,
+                manager => _accessPointRepository.Filter(x => x.ManagedBy == manager));
 
-            if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                entities = _accessPointRepository.Filter(x => x.Site == context.Site() && x.Department == context.Department());
-            }
-            else if (Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
-            {
-                entities = _accessPointRepository.GetAll();
-            }
-            else
-            {
-                entities = Enumerable.Empty<Data.Entities.AccessPoint>();
-            }
-
+            var entities = fetcher.Execute();
             var accessPoints =
                 entities.Select(x => new Contracts.Helpers.AccessPoint(x.AccessPointId, x.Site, x.Department, x.Name) {Description = x.Description})
                         .Cast<IAccessPoint>()
@@ -97,7 +87,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 Name = context.Message.AccessPoint.Name,
                 Description = context.Message.AccessPoint.Description,
                 Site = context.Message.AccessPoint.Site,
-                Department = context.Message.AccessPoint.Department
+                Department = context.Message.AccessPoint.Department,
+                ManagedBy = Thread.CurrentPrincipal.UserName()
             };
             _accessPointRepository.Insert(accessPoint);
             context.Respond(new VoidResult());

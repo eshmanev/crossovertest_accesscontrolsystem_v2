@@ -12,6 +12,7 @@ namespace AccessControl.Data.Mappings
             Map(x => x.Description);
             Map(x => x.Site);
             Map(x => x.Department);
+            Map(x => x.ManagedBy).Index("IDX_ManagedBy");
         }    
     }
 }

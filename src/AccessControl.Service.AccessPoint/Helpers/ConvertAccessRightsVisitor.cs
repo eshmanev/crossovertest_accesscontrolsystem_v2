@@ -4,7 +4,7 @@ using AccessControl.Contracts.Helpers;
 using AccessControl.Data.Entities;
 using Microsoft.Practices.ObjectBuilder2;
 
-namespace AccessControl.Service.AccessPoint.Visitors
+namespace AccessControl.Service.AccessPoint.Helpers
 {
     /// <summary>
     ///     Represents a converter of access rights.

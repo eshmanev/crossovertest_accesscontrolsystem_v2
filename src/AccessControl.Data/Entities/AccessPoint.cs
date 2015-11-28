@@ -46,5 +46,13 @@ namespace AccessControl.Data.Entities
         /// The department.
         /// </value>
         public virtual string Department { get; set; }
+
+        /// <summary>
+        /// Gets or sets the managed by.
+        /// </summary>
+        /// <value>
+        /// The managed by.
+        /// </value>
+        public virtual string ManagedBy { get; set; }
     }
 }
