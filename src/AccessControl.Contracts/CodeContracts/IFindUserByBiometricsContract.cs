@@ -1,17 +1,16 @@
 ﻿using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Search;
 
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IFindUserByName" /> interface.
+    ///     Represents a contract class for the <see cref="IFindUserByBiometrics" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IFindUserByName))]
+    [ContractClassFor(typeof(IFindUserByBiometrics))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IFindUserByNameContract : IFindUserByName
+    internal abstract class IFindUserByBiometricsContract : IFindUserByBiometrics
     {
-        public string UserName
+        public string BiometricHash
         {
             get
             {

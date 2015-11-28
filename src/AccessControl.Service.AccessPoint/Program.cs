@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using AccessControl.Contracts;
-using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Commands.Management;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Dto;
 using AccessControl.Data;
@@ -19,20 +20,6 @@ namespace AccessControl.Service.AccessPoint
 {
     public static class Program
     {
-        /// <summary>
-        ///     The main entry point for the application.
-        /// </summary>
-        public static void Main()
-        {
-            CreateService().Run(
-                cfg =>
-                {
-                    cfg.SetServiceName("AccessControl.Service.AccessPoint");
-                    cfg.SetDisplayName("Access Point Manager");
-                    cfg.SetDescription("This service is responsible for access points management");
-                });
-        }
-
         public static ServiceRunner<BusServiceControl> CreateService()
         {
             return new ServiceRunner()
@@ -75,17 +62,31 @@ namespace AccessControl.Service.AccessPoint
                         // Cross-services SSO
                         bus.ConnectThreadPrincipal();
                     });
-        } 
+        }
 
         /// <summary>
-        /// Configures a consumer to be created withing a unit of work.
+        ///     The main entry point for the application.
+        /// </summary>
+        public static void Main()
+        {
+            CreateService().Run(
+                cfg =>
+                {
+                    cfg.SetServiceName("AccessControl.Service.AccessPoint");
+                    cfg.SetDisplayName("Access Point Manager");
+                    cfg.SetDescription("This service is responsible for access points management");
+                });
+        }
+
+        /// <summary>
+        ///     Configures a consumer to be created withing a unit of work.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="configurator">The configurator.</param>
         /// <param name="container">The container.</param>
         /// <param name="configure">The configure.</param>
         private static void Consumer<T>(this IReceiveEndpointConfigurator configurator, IUnityContainer container, Action<IConsumerConfigurator<T>> configure = null)
-           where T : class, IConsumer
+            where T : class, IConsumer
         {
             var consumerFactory = new UnitOfWorkConsumerFactory<T>(container);
             configurator.Consumer(consumerFactory, configure);

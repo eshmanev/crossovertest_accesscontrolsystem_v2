@@ -1,3 +1,15 @@
+Used design patterns:
+
+MVC - web application
+ORM - data access layer
+Servant - see: RoleBasedDataFetcher provides common functionality for fetching data depending of roles of the current principal
+Visitor - AccessRightsBase/IAccessRightsVisitor, AccessRuleBase/IAccessRuleVisitor
+Abstract Factory - ISessionFactoryHolder, ISessionFactory
+Lazy Initialization - SessionFactoryHolder - lazy initialization of session factory
+Inversion of Control - Unity
+Message bus - messaging
+Microservices pattern - architecture
+
 --------------------------------------------------------------------------------------------------------------
 INSTALLATION
 --------------------------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ namespace AccessControl.Contracts.CodeContracts
         }
 
         public bool IsManager => false;
-
+        public string ManagerName => null;
         public string PhoneNumber => null;
         public string Department => null;
     }

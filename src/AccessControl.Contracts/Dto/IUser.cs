@@ -50,6 +50,14 @@ namespace AccessControl.Contracts.Dto
         bool IsManager { get; }
 
         /// <summary>
+        ///     Gets the name of the manager.
+        /// </summary>
+        /// <value>
+        ///     The name of the manager.
+        /// </value>
+        string ManagerName { get; }
+
+        /// <summary>
         ///     Gets the phone number.
         /// </summary>
         /// <value>

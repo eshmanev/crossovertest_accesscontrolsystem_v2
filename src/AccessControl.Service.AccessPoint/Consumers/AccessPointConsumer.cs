@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
-using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Dto;
@@ -20,7 +20,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
     /// </summary>
     public class AccessPointConsumer : IConsumer<IRegisterAccessPoint>,
                                        IConsumer<IUnregisterAccessPoint>,
-                                       IConsumer<IListAccessPoints>
+                                       IConsumer<IListAccessPoints>,
+                                       IConsumer<IFindAccessPointById>
     {
         private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
         private readonly IRequestClient<IValidateDepartment, IVoidResult> _validateDepartmentRequest;
@@ -41,6 +42,24 @@ namespace AccessControl.Service.AccessPoint.Consumers
         }
 
         /// <summary>
+        ///     Searches for an access point by its identifier.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public Task Consume(ConsumeContext<IFindAccessPointById> context)
+        {
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager) &&
+                !Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+            {
+                return context.RespondAsync(new FindAccessPointByIdResult(null));
+            }
+
+            var accessPoint = _accessPointRepository.GetById(context.Message.AccessPointId);
+            return context.RespondAsync(new FindAccessPointByIdResult(accessPoint != null ? ConvertAccessPoint(accessPoint) : null));
+        }
+
+        /// <summary>
         ///     Returns a list of access points.
         /// </summary>
         /// <param name="context">The context.</param>
@@ -52,11 +71,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 manager => _accessPointRepository.Filter(x => x.ManagedBy == manager));
 
             var entities = fetcher.Execute();
-            var accessPoints =
-                entities.Select(x => new Contracts.Helpers.AccessPoint(x.AccessPointId, x.Site, x.Department, x.Name) {Description = x.Description})
-                        .Cast<IAccessPoint>()
-                        .ToArray();
-
+            var accessPoints = entities.Select(ConvertAccessPoint).ToArray();
             return context.RespondAsync(ListCommand.AccessPointsResult(accessPoints));
         }
 
@@ -114,6 +129,14 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 _accessPointRepository.Delete(accessPoint);
             }
             return context.RespondAsync(new VoidResult());
+        }
+
+        private IAccessPoint ConvertAccessPoint(Data.Entities.AccessPoint entity)
+        {
+            return new Contracts.Helpers.AccessPoint(entity.AccessPointId, entity.Site, entity.Department, entity.Name)
+            {
+                Description = entity.Description
+            };
         }
     }
 }

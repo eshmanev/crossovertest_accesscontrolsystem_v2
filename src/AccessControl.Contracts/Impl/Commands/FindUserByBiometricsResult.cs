@@ -1,16 +1,15 @@
-﻿using AccessControl.Contracts.Commands;
-using AccessControl.Contracts.Commands.Search;
+﻿using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Impl.Commands
 {
-    public class FindUserByNameResult : IFindUserByNameResult
+    public class FindUserByBiometricsResult : IFindUserByBiometricsResult
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FindUserByNameResult" /> class.
+        ///     Initializes a new instance of the <see cref="FindUserByBiometricsResult" /> class.
         /// </summary>
         /// <param name="user">The user.</param>
-        public FindUserByNameResult(IUser user)
+        public FindUserByBiometricsResult(IUserBiometric user)
         {
             User = user;
         }
@@ -21,6 +20,6 @@ namespace AccessControl.Contracts.Impl.Commands
         /// <value>
         ///     The user.
         /// </value>
-        public IUser User { get; }
+        public IUserBiometric User { get; }
     }
 }

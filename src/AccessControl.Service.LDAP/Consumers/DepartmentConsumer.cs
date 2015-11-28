@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
-using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Service.LDAP.Services;

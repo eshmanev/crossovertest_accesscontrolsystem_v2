@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using AccessControl.Contracts.Commands;
-using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Web.Models.Account;
 using log4net;

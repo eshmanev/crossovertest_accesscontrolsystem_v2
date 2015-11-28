@@ -12,6 +12,7 @@ using MassTransit;
 
 namespace AccessControl.Web.Controllers
 {
+    [Authorize]
     public class DelegateController : Controller
     {
         private readonly IRequestClient<IGrantManagementRights, IVoidResult> _grantRequest;
@@ -35,6 +36,15 @@ namespace AccessControl.Web.Controllers
             _revokeRequest = revokeRequest;
         }
 
+        [HttpPost]
+        public async Task<JsonResult> Grant(string userName)
+        {
+            var result = await _grantRequest.Request(new GrantRevokeManagementRights(userName));
+            return !result.Succeded
+                       ? Json(new {Succeded = false, result.Fault}, JsonRequestBehavior.AllowGet)
+                       : Json(new {Succeded = true}, JsonRequestBehavior.AllowGet);
+        }
+
         public async Task<ActionResult> Index()
         {
             var listUsersTask = _listUsersRequest.Request(ListCommand.WithoutParameters);
@@ -53,20 +63,11 @@ namespace AccessControl.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Grant(string userName)
-        {
-            var result = await _grantRequest.Request(new GrantRevokeManagementRights(userName));
-            return !result.Succeded
-                       ? Json(new { Succeded = false, result.Fault }, JsonRequestBehavior.AllowGet)
-                       : Json(new { Succeded = true }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
         public async Task<JsonResult> Revoke(string userName)
         {
             var result = await _revokeRequest.Request(new GrantRevokeManagementRights(userName));
             return !result.Succeded
-                       ? Json(new {Succeded = false, result.Fault }, JsonRequestBehavior.AllowGet)
+                       ? Json(new {Succeded = false, result.Fault}, JsonRequestBehavior.AllowGet)
                        : Json(new {Succeded = true}, JsonRequestBehavior.AllowGet);
         }
     }

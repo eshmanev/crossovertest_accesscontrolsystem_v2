@@ -109,6 +109,9 @@
   <ItemGroup>
     <Compile Include="CodeContracts\INotificationServiceContract.cs" />
     <Compile Include="Consumers\NotificationConsumer.cs" />
+    <Compile Include="Consumers\RedeliveryConsumer.cs" />
+    <Compile Include="Messages\RedeliverEmalMessage.cs" />
+    <Compile Include="Messages\RedeliverSmsMessage.cs" />
     <Compile Include="NotificationServiceControl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

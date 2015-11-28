@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts.Commands
+namespace AccessControl.Contracts.Commands.Search
 {
     /// <summary>
     ///     Searches for user by name.

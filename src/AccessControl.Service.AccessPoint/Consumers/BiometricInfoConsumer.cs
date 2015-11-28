@@ -3,11 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
-using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Contracts.Impl.Events;
@@ -20,7 +19,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
     /// <summary>
     ///     Represents a consumer of users' biometric information.
     /// </summary>
-    public class BiometricInfoConsumer : IConsumer<IListUsersBiometric>, IConsumer<IUpdateUserBiometric>
+    public class BiometricInfoConsumer : IConsumer<IListUsersBiometric>, IConsumer<IUpdateUserBiometric>, IConsumer<IFindUserByBiometrics>
     {
         private readonly IBus _bus;
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
@@ -51,6 +50,37 @@ namespace AccessControl.Service.AccessPoint.Consumers
         }
 
         /// <summary>
+        ///     Searches for a user by biometric hash.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public async Task Consume(ConsumeContext<IFindUserByBiometrics> context)
+        {
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager) &&
+                !Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+            {
+                context.Respond(new FindUserByBiometricsResult(null));
+                return;
+            }
+
+            var entity = _userRepository.Filter(x => x.BiometricHash == context.Message.BiometricHash).SingleOrDefault();
+            if (entity == null)
+            {
+                context.Respond(new FindUserByBiometricsResult(null));
+                return;
+            }
+
+            var findUserResult = await _findUserRequest.Request(new FindUserByName(entity.UserName));
+            if (findUserResult.User == null)
+            {
+                context.Respond(new FindUserByBiometricsResult(null));
+                return;
+            }
+
+            context.Respond(new FindUserByBiometricsResult(ConvertUser(findUserResult.User, entity.BiometricHash)));
+        }
+
+        /// <summary>
         ///     Returns a list of users with biometric information.
         /// </summary>
         /// <param name="context">The context.</param>
@@ -67,16 +97,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
                     x =>
                     {
                         User userEntity;
-                        return new UserBiometric(x.Site, x.UserName, x.Groups)
-                        {
-                            Department = x.Department,
-                            PhoneNumber = x.PhoneNumber,
-                            DisplayName = x.DisplayName,
-                            Email = x.Email,
-                            BiometricHash = entities.TryGetValue(x.UserName, out userEntity) ? userEntity.BiometricHash : null
-                        };
+                        var hash = entities.TryGetValue(x.UserName, out userEntity) ? userEntity.BiometricHash : null;
+                        return ConvertUser(x, hash);
                     })
-                .Cast<IUserBiometric>()
                 .ToArray();
             await context.RespondAsync(ListCommand.UsersBiometricResult(userBiometrics));
         }
@@ -128,6 +151,19 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
             await _bus.Publish(new UserBiometricUpdated(entity.UserName, oldHash, entity.BiometricHash));
             await context.RespondAsync(new VoidResult());
+        }
+
+        private IUserBiometric ConvertUser(IUser user, string biometricHash)
+        {
+            return new UserBiometric(user.Site, user.UserName, user.Groups)
+            {
+                Department = user.Department,
+                PhoneNumber = user.PhoneNumber,
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                BiometricHash = biometricHash,
+                ManagerName = user.ManagerName
+            };
         }
     }
 }

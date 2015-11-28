@@ -3,7 +3,6 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Web.Models.Logs;
@@ -11,6 +10,7 @@ using MassTransit;
 
 namespace AccessControl.Web.Controllers
 {
+    [Authorize]
     public class LogController : Controller
     {
         private readonly IRequestClient<IListLogs, IListLogsResult> _listLogsRequest;
@@ -43,16 +43,24 @@ namespace AccessControl.Web.Controllers
             DateTime end;
 
             if (!DateTime.TryParse(model.FromDate, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal | DateTimeStyles.AdjustToUniversal, out start))
+            {
                 ModelState.AddModelError("FromDate", "Invalid From date");
+            }
 
             if (!DateTime.TryParse(model.ToDate, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal | DateTimeStyles.AdjustToUniversal, out end))
+            {
                 ModelState.AddModelError("ToDate", "Invalid To date");
+            }
 
             if (start >= end)
+            {
                 ModelState.AddModelError("FromDate", "From date should less than To date");
+            }
 
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
             var command = ListCommand.ListLogs(start, end);
             var logsResult = await _listLogsRequest.Request(command);

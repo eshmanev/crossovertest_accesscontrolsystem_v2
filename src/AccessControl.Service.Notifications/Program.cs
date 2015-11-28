@@ -1,7 +1,8 @@
 ﻿using System;
 using AccessControl.Contracts;
-using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Service.Configuration;
+using AccessControl.Service.Middleware;
 using AccessControl.Service.Notifications.Consumers;
 using AccessControl.Service.Notifications.Services;
 using AccessControl.Service.Security;
@@ -20,24 +21,27 @@ namespace AccessControl.Service.Notifications
                 .ConfigureContainer(
                     cfg =>
                     {
-                        cfg.RegisterType<INotificationService, NotificationService>();
-                        cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap);
+                        cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
+                           .RegisterRequestClient<IFindUserByBiometrics, IFindUserByBiometricsResult>(WellKnownQueues.AccessControl)
+                           .RegisterRequestClient<IFindAccessPointById, IFindAccessPointByIdResult>(WellKnownQueues.AccessControl);
 
                         var scheduler = new StdSchedulerFactory().GetScheduler();
                         cfg.RegisterInstance(scheduler);
+                        cfg.RegisterType<INotificationService, NotificationService>();
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>
                     {
                         var rabbitMqConfig = container.Resolve<IServiceConfig>().RabbitMq;
                         cfg.UseMessageScheduler(new Uri(rabbitMqConfig.GetQueueUrl(WellKnownQueues.Notifications)));
-
+                        cfg.UseTickets(container.Resolve<Encryptor>());
                         cfg.ReceiveEndpoint(
                             host,
                             WellKnownQueues.Notifications,
                             e =>
                             {
                                 e.Consumer(() => container.Resolve<NotificationConsumer>());
+                                e.Consumer(() => container.Resolve<RedeliveryConsumer>());
                                 e.Consumer(() => container.Resolve<ScheduleMessageConsumer>());
                                 e.Consumer(() => container.Resolve<CancelScheduledMessageConsumer>());
                             });

@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Commands;
+using AccessControl.Contracts.Commands.Search;
 
 namespace AccessControl.Contracts.Impl.Commands
 {

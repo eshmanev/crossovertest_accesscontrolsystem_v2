@@ -5,6 +5,7 @@ using System.DirectoryServices;
 using System.Linq;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Service.LDAP.Configuration;
 using AccessControl.Service.LDAP.Helpers;
 
@@ -238,14 +239,24 @@ namespace AccessControl.Service.LDAP.Services
         private IUser ConvertUser(SearchResult result)
         {
             var userName = result.GetProperty("samaccountname");
+            var managerName = result.GetProperty("manager");
+            var manager = managerName != null ? FindUserByDistinguishedName(managerName) : null;
             return new User(result.GetDirectoryEntry().Parent.GetProperty("distinguishedName"), userName, GetUserGroupsCore(userName).ToArray())
             {
                 DisplayName = result.GetProperty("displayname") ?? userName,
                 PhoneNumber = result.GetProperty("telephonenumber"),
                 Email = result.GetProperty("mail"),
                 Department = result.GetProperty("department"),
-                IsManager = FindUsersByManager(userName).Any()
+                IsManager = FindUsersByManager(userName).Any(),
+                ManagerName = manager?.GetProperty("samaccountname")
             };
+        }
+
+        private SearchResult FindUserByDistinguishedName(string distinguishedName)
+        {
+            var entry = new DirectoryEntry(_config.LdapPath, _config.UserName, _config.Password);
+            var searcher = new DirectorySearcher(entry) { Filter = $"(distinguishedName={distinguishedName})" };
+            return searcher.FindOne();
         }
 
         private SearchResult FindUserByNameCore(string userName)

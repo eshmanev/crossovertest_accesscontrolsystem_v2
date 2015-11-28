@@ -47,6 +47,13 @@
     <Compile Include="CodeContracts\IAccessAttemptedContract.cs" />
     <Compile Include="CodeContracts\ICheckCredentialsContract.cs" />
     <Compile Include="CodeContracts\ICheckCredentialsResultContract.cs" />
+    <Compile Include="CodeContracts\IFindAccessPointByIdContract.cs" />
+    <Compile Include="CodeContracts\IFindAccessPointByIdResultContract.cs" />
+    <Compile Include="CodeContracts\IFindUserByBiometricsContract.cs" />
+    <Compile Include="Commands\Search\IFindAccessPointById.cs" />
+    <Compile Include="Commands\Search\IFindAccessPointByIdResult.cs" />
+    <Compile Include="Commands\Search\IFindUserByBiometricsResult.cs" />
+    <Compile Include="CodeContracts\IFindUserByBiometricsResultContract.cs" />
     <Compile Include="CodeContracts\IFindUserByNameContract.cs" />
     <Compile Include="CodeContracts\IGrantManagementRightsContract.cs" />
     <Compile Include="CodeContracts\IListDelegatedUsersContract.cs" />
@@ -90,6 +97,7 @@
     <Compile Include="CodeContracts\IValidationFaultContract.cs" />
     <Compile Include="CodeContracts\IValidationPropertyErrorContract.cs" />
     <Compile Include="CodeContracts\IListUsersBiometricResultContract.cs" />
+    <Compile Include="Commands\Search\IFindUserByBiometrics.cs" />
     <Compile Include="Commands\Lists\IListDelegatedUsers.cs" />
     <Compile Include="Commands\Lists\IListDelegatedUsersResult.cs" />
     <Compile Include="Commands\Lists\IListLogs.cs" />
@@ -109,7 +117,7 @@
     <Compile Include="Commands\Lists\IListDepartmentsResult.cs" />
     <Compile Include="Commands\Lists\IListUserGroups.cs" />
     <Compile Include="Commands\Lists\IListUserGroupsResult.cs" />
-    <Compile Include="Commands\IValidateDepartment.cs" />
+    <Compile Include="Commands\Management\IValidateDepartment.cs" />
     <Compile Include="Commands\Management\IGrantManagementRights.cs" />
     <Compile Include="Commands\Management\IRevokeManagementRights.cs" />
     <Compile Include="Commands\Management\IUnregisterAccessPoint.cs" />
@@ -137,6 +145,10 @@
     <Compile Include="Events\IUserBiometricUpdated.cs" />
     <Compile Include="Events\IUserDeleted.cs" />
     <Compile Include="Impl\Commands\CheckCredentialsResult.cs" />
+    <Compile Include="Impl\Commands\FindAccessPointById.cs" />
+    <Compile Include="Impl\Commands\FindAccessPointByIdResult.cs" />
+    <Compile Include="Impl\Commands\FindUserByBiometricsResult.cs" />
+    <Compile Include="Impl\Commands\FindUserByBiometrics.cs" />
     <Compile Include="Impl\Dto\AccessPoint.cs" />
     <Compile Include="Impl\Dto\AccessRights.cs" />
     <Compile Include="Impl\Dto\AccessRule.cs" />
@@ -163,8 +175,8 @@
     <Compile Include="CodeContracts\IAuthenticateUserContract.cs" />
     <Compile Include="CodeContracts\IAuthenticateUserResultContract.cs" />
     <Compile Include="CodeContracts\IUserBiometricContract.cs" />
-    <Compile Include="Commands\IFindUserByName.cs" />
-    <Compile Include="Commands\IFindUserByNameResult.cs" />
+    <Compile Include="Commands\Search\IFindUserByName.cs" />
+    <Compile Include="Commands\Search\IFindUserByNameResult.cs" />
     <Compile Include="Commands\Lists\IListUsersResult.cs" />
     <Compile Include="Commands\Lists\IListUsersBiometricResult.cs" />
     <Compile Include="Impl\Commands\FindUserByNameResult.cs" />

@@ -1,6 +1,6 @@
 ﻿using AccessControl.Contracts.Dto;
 
-namespace AccessControl.Contracts.Commands
+namespace AccessControl.Contracts.Commands.Search
 {
     /// <summary>
     ///     Represents a result of the <see cref="IFindUserByName" /> command.

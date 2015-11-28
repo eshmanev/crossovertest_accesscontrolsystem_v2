@@ -32,7 +32,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         private readonly IRepository<AccessRightsBase> _accessRightsRepository;
         private readonly IBus _bus;
         private readonly IRequestClient<IListUsersInGroup, IListUsersInGroupResult> _listUsersInGroupRequest;
-        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Data.Entities.User> _userRepository;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccessRightsConsumer" /> class.
@@ -46,7 +46,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                                     IRequestClient<IListUsersInGroup, IListUsersInGroupResult> listUsersInGroupRequest,
                                     IRepository<Data.Entities.AccessPoint> accessPointRepository,
                                     IRepository<AccessRightsBase> accessRightsRepository,
-                                    IRepository<User> userRepository)
+                                    IRepository<Data.Entities.User> userRepository)
         {
             Contract.Requires(bus != null);
             Contract.Requires(listUsersInGroupRequest != null);

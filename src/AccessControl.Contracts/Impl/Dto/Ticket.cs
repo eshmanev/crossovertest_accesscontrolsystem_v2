@@ -78,6 +78,7 @@ namespace AccessControl.Contracts.Impl.Dto
                 UserName = user.UserName;
                 Groups = user.Groups;
                 IsManager = user.IsManager;
+                ManagerName = user.ManagerName;
             }
 
             /// <summary>
@@ -110,7 +111,7 @@ namespace AccessControl.Contracts.Impl.Dto
             /// <value>
             ///     The groups.
             /// </value>
-            public string[] Groups { get; }
+            public string[] Groups { get; set; }
 
             /// <summary>
             ///     Gets a value indicating whether this instance is manager.
@@ -118,7 +119,15 @@ namespace AccessControl.Contracts.Impl.Dto
             /// <value>
             ///     <c>true</c> if this instance is manager; otherwise, <c>false</c>.
             /// </value>
-            public bool IsManager { get; }
+            public bool IsManager { get; set; }
+
+            /// <summary>
+            ///     Gets or sets the name of the manager.
+            /// </summary>
+            /// <value>
+            ///     The name of the manager.
+            /// </value>
+            public string ManagerName { get; set; }
 
             /// <summary>
             ///     Gets the phone number.
