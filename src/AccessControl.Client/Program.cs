@@ -55,8 +55,6 @@ namespace AccessControl.Client
                             "AccessControl.Client",
                             e =>
                             {
-                                //e.AutoDelete = true;
-                                //e.Durable = false;
                                 e.Consumer(() => container.Resolve<EventConsumer>());
                             });
                     });

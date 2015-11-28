@@ -54,6 +54,8 @@
     <Compile Include="CodeContracts\IListLogsContract.cs" />
     <Compile Include="CodeContracts\IListLogsResultContract.cs" />
     <Compile Include="CodeContracts\ILogEntryContract.cs" />
+    <Compile Include="CodeContracts\IManagementRightsGrantedContract.cs" />
+    <Compile Include="CodeContracts\IManagementRightsRevokedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserAccessAllowedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserAccessDeniedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserGroupAccessAllowedContract.cs" />
@@ -126,6 +128,8 @@
     <Compile Include="Dto\IValidationFault.cs" />
     <Compile Include="Dto\IValidationPropertyError.cs" />
     <Compile Include="Events\IAccessAttempted.cs" />
+    <Compile Include="Events\IManagementRightsGranted.cs" />
+    <Compile Include="Events\IManagementRightsRevoked.cs" />
     <Compile Include="Events\IPermanentUserAccessAllowed.cs" />
     <Compile Include="Events\IPermanentUserAccessDenied.cs" />
     <Compile Include="Events\IPermanentUserGroupAccessAllowed.cs" />
@@ -144,6 +148,8 @@
     <Compile Include="Impl\Events\AccessAttempted.cs" />
     <Compile Include="Events\IUserAddedToGroup.cs" />
     <Compile Include="Events\IUserRemovedFromGroup.cs" />
+    <Compile Include="Impl\Events\ManagementRightsRevoked.cs" />
+    <Compile Include="Impl\Events\ManagementRightsGranted.cs" />
     <Compile Include="Impl\Events\PermanentUserAccessAllowed.cs" />
     <Compile Include="Impl\Events\PermanentUserAccessDenied.cs" />
     <Compile Include="Impl\Events\PermanentUserGroupAccessDenied.cs" />

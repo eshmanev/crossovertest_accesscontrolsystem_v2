@@ -9,6 +9,7 @@ using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Dto;
+using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using AccessControl.Data.Entities;
 using MassTransit;
@@ -17,20 +18,25 @@ namespace AccessControl.Service.AccessPoint.Consumers
 {
     public class DelegateConsumer : IConsumer<IListDelegatedUsers>, IConsumer<IGrantManagementRights>, IConsumer<IRevokeManagementRights>
     {
+        private readonly IBus _bus;
         private readonly IRepository<DelegatedRights> _delegatedRightsRepository;
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DelegateConsumer" /> class.
         /// </summary>
+        /// <param name="bus">The bus.</param>
         /// <param name="delegatedRightsRepository">The delegated rights repository.</param>
         /// <param name="findUserRequest">The find user request.</param>
-        public DelegateConsumer(IRepository<DelegatedRights> delegatedRightsRepository,
+        public DelegateConsumer(IBus bus,
+                                IRepository<DelegatedRights> delegatedRightsRepository,
                                 IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest)
         {
+            Contract.Requires(bus != null);
             Contract.Requires(delegatedRightsRepository != null);
             Contract.Requires(findUserRequest != null);
 
+            _bus = bus;
             _delegatedRightsRepository = delegatedRightsRepository;
             _findUserRequest = findUserRequest;
         }
@@ -67,6 +73,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
             entity = new DelegatedRights {Grantor = Thread.CurrentPrincipal.UserName(), Grantee = userResult.User.UserName};
             _delegatedRightsRepository.Insert(entity);
+
+            await _bus.Publish(new ManagementRightsGranted(entity.Grantor, entity.Grantee));
             await context.RespondAsync(new VoidResult());
         }
 
@@ -110,6 +118,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             if (entity != null)
             {
                 _delegatedRightsRepository.Delete(entity);
+                _bus.Publish(new ManagementRightsRevoked(entity.Grantor, entity.Grantee));
             }
 
             return context.RespondAsync(new VoidResult());

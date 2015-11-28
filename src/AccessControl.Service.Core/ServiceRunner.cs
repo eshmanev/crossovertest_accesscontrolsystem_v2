@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using AccessControl.Service.Configuration;
-using AccessControl.Service;
 using AccessControl.Service.Middleware;
-using AccessControl.Service.Security;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Practices.Unity;
@@ -52,7 +50,9 @@ namespace AccessControl.Service
                 cfg =>
                 {
                     cfg.UseExceptionLogger();
-                    cfg.UseBsonSerializer();
+                    cfg.UseJsonSerializer();
+                    // binary messages cannot be scheduled
+                    // cfg.UseBsonSerializer();
 
                     var host = cfg.Host(
                         new Uri(configuration.RabbitMq.Url),

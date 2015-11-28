@@ -1,27 +1,45 @@
-﻿using AccessControl.Contracts;
+﻿using System;
+using AccessControl.Contracts;
+using AccessControl.Contracts.Commands;
+using AccessControl.Service.Configuration;
 using AccessControl.Service.Notifications.Consumers;
+using AccessControl.Service.Notifications.Services;
 using AccessControl.Service.Security;
 using MassTransit;
+using MassTransit.QuartzIntegration;
 using Microsoft.Practices.Unity;
+using Quartz.Impl;
 
 namespace AccessControl.Service.Notifications
 {
     public static class Program
     {
-        public static ServiceRunner<BusServiceControl> CreateService()
+        public static ServiceRunner<NotificationServiceControl> CreateService()
         {
-            return new ServiceRunner()
+            return new ServiceRunner<NotificationServiceControl>()
                 .ConfigureContainer(
-                    cfg => { })
+                    cfg =>
+                    {
+                        cfg.RegisterType<INotificationService, NotificationService>();
+                        cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap);
+
+                        var scheduler = new StdSchedulerFactory().GetScheduler();
+                        cfg.RegisterInstance(scheduler);
+                    })
                 .ConfigureBus(
                     (cfg, host, container) =>
                     {
+                        var rabbitMqConfig = container.Resolve<IServiceConfig>().RabbitMq;
+                        cfg.UseMessageScheduler(new Uri(rabbitMqConfig.GetQueueUrl(WellKnownQueues.Notifications)));
+
                         cfg.ReceiveEndpoint(
                             host,
                             WellKnownQueues.Notifications,
                             e =>
                             {
-                                e.Consumer(() => container.Resolve<AccessConsumer>());
+                                e.Consumer(() => container.Resolve<NotificationConsumer>());
+                                e.Consumer(() => container.Resolve<ScheduleMessageConsumer>());
+                                e.Consumer(() => container.Resolve<CancelScheduledMessageConsumer>());
                             });
                     },
                     bus =>
