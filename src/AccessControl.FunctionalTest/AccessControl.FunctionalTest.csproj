@@ -120,6 +120,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Specs\DelegateManagementRights.feature.cs">
+      <DependentUpon>DelegateManagementRights.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Specs\ManageAccessRights.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -128,6 +133,7 @@
     <Compile Include="Steps\AccessRightsSteps.cs" />
     <Compile Include="Steps\AuthenticationSteps.cs" />
     <Compile Include="Steps\BiometricSteps.cs" />
+    <Compile Include="Steps\DelegateSteps.cs" />
     <Compile Include="Steps\NotificationSteps.cs" />
     <Compile Include="Steps\CommonSteps.cs" />
     <Compile Include="Steps\AccessPointSteps.cs" />
@@ -149,6 +155,10 @@
     <None Include="Specs\ManageAccessPoints.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ManageAccessPoints.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Specs\DelegateManagementRights.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DelegateManagementRights.feature.cs</LastGenOutput>
     </None>
     <None Include="Specs\ManageAccessRights.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

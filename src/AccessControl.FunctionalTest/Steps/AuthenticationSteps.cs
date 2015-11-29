@@ -26,6 +26,12 @@ namespace AccessControl.FunctionalTest.Steps
             Authenticate("TestClientServiceUserName", "TestClientServicePassword");
         }
 
+        [When(@"My employee get authenticated")]
+        public void WhenMyEmployeeGetAuthenticated()
+        {
+            Authenticate("ManagedUserName", "ManagedUserPassword");
+        }
+
         private void Authenticate(string userNameKey, string passwordKey)
         {
             var serviceConfig = (IServiceConfig)ConfigurationManager.GetSection("service");

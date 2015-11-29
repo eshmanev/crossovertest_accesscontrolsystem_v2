@@ -35,6 +35,7 @@ namespace AccessControl.FunctionalTest.Steps
 
 
         [When(@"I get a list of registered access points")]
+        [When(@"My employee tries to list access points")]
         public void WhenIGetAListOfRegisteredAccessPoints()
         {
             var result = Bus.Request<IListAccessPoints, IListAccessPointsResult>(WellKnownQueues.AccessControl, ListCommand.WithoutParameters);

@@ -9,6 +9,7 @@ namespace AccessControl.FunctionalTest
         public static string TestClientServiceUserName => ConfigurationManager.AppSettings["TestClientServiceUserName"];
         public static string TestClientServicePassword => ConfigurationManager.AppSettings["TestClientServicePassword"];
         public static string ManagedUserName => ConfigurationManager.AppSettings["ManagedUserName"];
+        public static string ManagedUserPassword => ConfigurationManager.AppSettings["ManagedUserPassword"];
         public static string ManagedUserGroup => ConfigurationManager.AppSettings["ManagedUserGroup"];
     }
 }
