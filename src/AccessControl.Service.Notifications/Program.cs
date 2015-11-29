@@ -15,9 +15,20 @@ namespace AccessControl.Service.Notifications
 {
     public static class Program
     {
-        public static ServiceRunner<NotificationServiceControl> CreateService()
+        public static void Main()
         {
-            return new ServiceRunner<NotificationServiceControl>()
+            ServiceRunner.Run<NotificationServiceControl>(
+                ConfigureService,
+                cfg =>
+                {
+                    cfg.SetServiceName("AccessControl.Service.Notifications");
+                    cfg.SetDescription("Processes notifications");
+                });
+        }
+
+        public static void ConfigureService(ServiceBuilder<NotificationServiceControl> builder)
+        {
+            builder
                 .ConfigureContainer(
                     cfg =>
                     {
@@ -51,16 +62,6 @@ namespace AccessControl.Service.Notifications
                         // Cross-services SSO
                         bus.ConnectThreadPrincipal();
                     });
-        }
-
-        public static void Main()
-        {
-            CreateService().Run(
-                cfg =>
-                {
-                    cfg.SetServiceName("AccessControl.Service.Notifications");
-                    cfg.SetDescription("Processes notifications");
-                });
         }
     }
 }

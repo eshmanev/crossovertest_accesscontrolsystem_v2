@@ -20,15 +20,30 @@ namespace AccessControl.Service.AccessPoint
 {
     public static class Program
     {
-        public static ServiceRunner<BusServiceControl> CreateService()
+        /// <summary>
+        ///     The main entry point for the application.
+        /// </summary>
+        public static void Main()
         {
-            return new ServiceRunner()
+            ServiceRunner.Run<BusServiceControl>(
+                ConfigureService,
+                host =>
+                {
+                    host.SetServiceName("AccessControl.Service.AccessPoint");
+                    host.SetDisplayName("Access Point Manager");
+                    host.SetDescription("This service is responsible for access points management");
+                });
+        }
+
+        public static void ConfigureService(ServiceBuilder<BusServiceControl> builder)
+        {
+            builder
                 .ConfigureContainer(
                     cfg =>
                     {
                         // types
                         cfg
-                            .RegisterInstance((IDataConfiguration) ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
+                            .RegisterInstance((IDataConfiguration)ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
                             .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
                             .RegisterType<IEncryptor, Encryptor>();
 
@@ -62,20 +77,6 @@ namespace AccessControl.Service.AccessPoint
                         // Cross-services SSO
                         bus.ConnectThreadPrincipal();
                     });
-        }
-
-        /// <summary>
-        ///     The main entry point for the application.
-        /// </summary>
-        public static void Main()
-        {
-            CreateService().Run(
-                cfg =>
-                {
-                    cfg.SetServiceName("AccessControl.Service.AccessPoint");
-                    cfg.SetDisplayName("Access Point Manager");
-                    cfg.SetDescription("This service is responsible for access points management");
-                });
         }
 
         /// <summary>

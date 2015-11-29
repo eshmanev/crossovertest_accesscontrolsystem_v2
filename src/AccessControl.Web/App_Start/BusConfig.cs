@@ -19,7 +19,7 @@ namespace AccessControl.Web
             var busControl = Bus.Factory.CreateUsingRabbitMq(
                 cfg =>
                 {
-                    cfg.UseBsonSerializer();
+                    cfg.UseJsonSerializer();
                     cfg.Host(
                         new Uri(rabbitMqConfig.Url),
                         h =>

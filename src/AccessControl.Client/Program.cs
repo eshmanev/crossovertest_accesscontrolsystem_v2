@@ -16,7 +16,8 @@ namespace AccessControl.Client
     {
         public static void Main()
         {
-            CreateService().Run(
+            ServiceRunner.Run<ClientServiceControl>(
+                ConfigureService,
                 cfg =>
                 {
                     cfg.SetServiceName("AccessControl.AccessPointClient");
@@ -25,9 +26,9 @@ namespace AccessControl.Client
                 });
         }
 
-        public static ServiceRunner<ClientServiceControl> CreateService()
+        public static void ConfigureService(ServiceBuilder<ClientServiceControl> builder)
         {
-            return new ServiceRunner<ClientServiceControl>()
+            builder
                 .ConfigureContainer(
                     cfg =>
                     {

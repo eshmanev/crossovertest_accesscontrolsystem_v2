@@ -82,8 +82,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IRegisterAccessPoint> context)
         {
-            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager) &&
-                !Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
                 context.Respond(new VoidResult("Not authorized"));
                 return;
@@ -117,8 +116,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <exception cref="System.NotImplementedException"></exception>
         public Task Consume(ConsumeContext<IUnregisterAccessPoint> context)
         {
-            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager) &&
-                !Thread.CurrentPrincipal.IsInRole(WellKnownRoles.ClientService))
+            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
                 return context.RespondAsync(new VoidResult("Not authorized"));
             }

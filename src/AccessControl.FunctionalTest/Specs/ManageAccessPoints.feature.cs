@@ -19,20 +19,20 @@ namespace AccessControl.FunctionalTest.Specs
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "1.9.0.77")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("ManageAccessRights")]
-    public partial class ManageAccessRightsFeature
+    [NUnit.Framework.DescriptionAttribute("ManageAccessPoints")]
+    public partial class ManageAccessPointsFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "ManageAccessRights.feature"
+#line 1 "ManageAccessPoints.feature"
 #line hidden
         
         [NUnit.Framework.TestFixtureSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ManageAccessRights", "Test access rights management", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "ManageAccessPoints", "Test access points management", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -95,7 +95,11 @@ this.FeatureBackground();
                         "TestPoint",
                         "This is an access point for test purposes"});
 #line 8
- testRunner.Given("The following access point is registered", ((string)(null)), table1, "Given ");
+ testRunner.When("I register a new access point", ((string)(null)), table1, "When ");
+#line 11
+ testRunner.And("I get a list of registered access points", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 12
+ testRunner.Then("The result should contain an access point with name \"TestPoint\"`", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

@@ -14,7 +14,9 @@ namespace AccessControl.Service.LDAP
     {
         public static void Main()
         {
-            CreateService().Run(
+
+            ServiceRunner.Run<BusServiceControl>(
+                ConfigureService,
                 cfg =>
                 {
                     cfg.SetServiceName("AccessControl.Service.LDAP");
@@ -22,9 +24,9 @@ namespace AccessControl.Service.LDAP
                 });
         }
 
-        public static ServiceRunner<BusServiceControl> CreateService()
+        public static void  ConfigureService(ServiceBuilder<BusServiceControl> builder)
         {
-            return new ServiceRunner()
+            builder
                 .ConfigureContainer(
                     cfg =>
                     {

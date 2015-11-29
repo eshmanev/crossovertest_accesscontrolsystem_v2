@@ -1,42 +1,128 @@
-﻿using AccessControl.Client;
+﻿using System;
+using AccessControl.Client;
 using AccessControl.Service;
+using Microsoft.Practices.ObjectBuilder2;
+using Microsoft.Practices.Unity;
 using TechTalk.SpecFlow;
+using Topshelf;
+using Topshelf.Builders;
+using Topshelf.HostConfigurators;
+using Topshelf.Hosts;
+using Topshelf.Runtime;
+using Topshelf.Runtime.Windows;
+using ServiceBuilder = Topshelf.Builders.ServiceBuilder;
 
 namespace AccessControl.FunctionalTest.Steps
 {
     [Binding]
     public class CommonSteps
     {
-        private ServiceRunner<BusServiceControl> _accessPointService;
-        private ServiceRunner<BusServiceControl> _ldapService;
-        private ServiceRunner<ClientServiceControl> _clientService;
+        private static TestHost _host;
+        private static BusServiceControl _accessPointService;
+        private static BusServiceControl _ldapService;
+        private static ClientServiceControl _clientService;
 
-        [AfterFeature]
-        public static void Cleanup()
+        [BeforeFeature()]
+        public static void StartServices()
         {
-            //_accessPointService.Run();
+            _accessPointService = Run<BusServiceControl>(
+               Service.AccessPoint.Program.ConfigureService,
+               cfg => cfg.SetServiceName("Test.Service.AccessPoint"));
+
+            _ldapService = Run<BusServiceControl>(
+                Service.LDAP.Program.ConfigureService,
+                cfg => cfg.SetServiceName("Test.Service.LDAP"));
+
+            _clientService = Run<ClientServiceControl>(
+                Client.Program.ConfigureService,
+                cfg => cfg.SetServiceName("Test.Service.Client"));
+
+            var builder = new TestBuilder(new WindowsHostEnvironment(new HostConfiguratorImpl()), new WindowsHostSettings());
+            _host = (TestHost) builder.Build(
+                new TestServiceBuilder(
+                                      _accessPointService,
+                                      _ldapService,
+                                      _clientService));
+            _host.Run();
         }
 
-        [Given(@"I have started the AccessPoint service")]
-        public void GivenIHaveStartedTheAccessPointService()
+        [AfterFeature()]
+        public static void StopServices()
         {
-            _accessPointService = AccessControl.Service.AccessPoint.Program.CreateService();
-            _accessPointService.Run(cfg => cfg.SetServiceName("Test.Service.AccessPoint"));
+            _accessPointService.Stop(_host);
+            _ldapService.Stop(_host);
+            _clientService.Stop(_host);
         }
 
-        [Given(@"I have started the LDAP service")]
-        public void GivenIHaveStartedTheLDAPService()
+        public static T Run<T>(Action<ServiceBuilder<T>> configureService, Action<HostConfigurator> configureHost) where T : class, ServiceControl
         {
-            _ldapService = AccessControl.Service.LDAP.Program.CreateService();
-            _ldapService.Run(cfg => cfg.SetServiceName("Test.Service.LDAP"));
+            var builder = new ServiceBuilder<T>();
+            configureService(builder);
+            var tuple = builder.Build();
+            var serviceControl = tuple.Item1.Resolve<T>();
+            return serviceControl;
         }
 
-        [Given(@"I have started the Client service")]
-        public void GivenIHaveStartedTheClientService()
+        private class TestServiceBuilder : ServiceBuilder
         {
-            _clientService = AccessControl.Client.Program.CreateService();
-            _clientService.Run(cfg => cfg.SetServiceName("Test.Service.Client"));
+            private readonly ServiceControl[] _serviceControl;
+
+            public TestServiceBuilder(params ServiceControl[] serviceControl)
+            {
+                _serviceControl = serviceControl;
+            }
+
+            public ServiceHandle Build(HostSettings settings)
+            {
+                return new TestHandle(_serviceControl);
+            }
         }
 
+        private class TestHandle : ServiceHandle
+        {
+            private readonly ServiceControl[] _serviceControl;
+
+            public TestHandle(params ServiceControl[] serviceControl)
+            {
+                _serviceControl = serviceControl;
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public bool Start(HostControl hostControl)
+            {
+                _serviceControl.ForEach(x => x.Start(hostControl));
+                return true;
+            }
+
+            public bool Pause(HostControl hostControl)
+            {
+                return false;
+            }
+
+            public bool Continue(HostControl hostControl)
+            {
+                return false;
+            }
+
+            public bool Stop(HostControl hostControl)
+            {
+                return false;
+            }
+
+            public void Shutdown(HostControl hostControl)
+            {
+            }
+
+            public void SessionChanged(HostControl hostControl, SessionChangedArguments arguments)
+            {
+            }
+
+            public void CustomCommand(HostControl hostControl, int command)
+            {
+            }
+        }
     }
 }

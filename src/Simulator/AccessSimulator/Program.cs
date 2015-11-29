@@ -30,7 +30,7 @@ namespace AccessSimulator
             var busControl = Bus.Factory.CreateUsingRabbitMq(
                 cfg =>
                 {
-                    cfg.UseBsonSerializer();
+                    cfg.UseJsonSerializer();
                     var host = cfg.Host(
                         new Uri(ConfigurationManager.AppSettings["RabbitMqUrl"]),
                         h =>

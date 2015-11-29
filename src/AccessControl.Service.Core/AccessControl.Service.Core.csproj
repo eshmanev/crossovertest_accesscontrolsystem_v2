@@ -107,9 +107,10 @@
     <Compile Include="Security\RoleBasedDataFetcher.cs" />
     <Compile Include="Security\ServicePrincipal.cs" />
     <Compile Include="Security\ServiceIdentity.cs" />
-    <Compile Include="ServiceRunner.cs" />
+    <Compile Include="ServiceBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BusServiceControl.cs" />
+    <Compile Include="ServiceRunner.cs" />
     <Compile Include="UnityExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
