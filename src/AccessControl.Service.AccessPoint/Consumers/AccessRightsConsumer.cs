@@ -28,37 +28,27 @@ namespace AccessControl.Service.AccessPoint.Consumers
                                         IConsumer<IDenyUserAccess>,
                                         IConsumer<IDenyUserGroupAccess>
     {
-        private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
-        private readonly IRepository<AccessRightsBase> _accessRightsRepository;
         private readonly IBus _bus;
         private readonly IRequestClient<IListUsersInGroup, IListUsersInGroupResult> _listUsersInGroupRequest;
-        private readonly IRepository<Data.Entities.User> _userRepository;
+        private readonly IDatabaseContext _databaseContext;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccessRightsConsumer" /> class.
         /// </summary>
         /// <param name="bus">The bus.</param>
         /// <param name="listUsersInGroupRequest">The list users in group request.</param>
-        /// <param name="accessPointRepository">The access point repository.</param>
-        /// <param name="accessRightsRepository">The access rights repository.</param>
-        /// <param name="userRepository">The user repository.</param>
+        /// <param name="databaseContext">The database context.</param>
         public AccessRightsConsumer(IBus bus,
                                     IRequestClient<IListUsersInGroup, IListUsersInGroupResult> listUsersInGroupRequest,
-                                    IRepository<Data.Entities.AccessPoint> accessPointRepository,
-                                    IRepository<AccessRightsBase> accessRightsRepository,
-                                    IRepository<Data.Entities.User> userRepository)
+                                    IDatabaseContext databaseContext)
         {
             Contract.Requires(bus != null);
             Contract.Requires(listUsersInGroupRequest != null);
-            Contract.Requires(accessPointRepository != null);
-            Contract.Requires(accessRightsRepository != null);
-            Contract.Requires(userRepository != null);
+            Contract.Requires(databaseContext != null);
 
             _bus = bus;
             _listUsersInGroupRequest = listUsersInGroupRequest;
-            _accessPointRepository = accessPointRepository;
-            _accessRightsRepository = accessRightsRepository;
-            _userRepository = userRepository;
+            _databaseContext = databaseContext;
         }
 
         /// <summary>
@@ -163,11 +153,11 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public Task Consume(ConsumeContext<IListAccessRights> context)
         {
             var accessPointFetcher = RoleBasedDataFetcher.Create(
-                _accessPointRepository.GetAll,
-                manager => _accessPointRepository.Filter(x => x.ManagedBy == manager));
+                _databaseContext.AccessPoints.GetAll,
+                manager => _databaseContext.AccessPoints.Filter(x => x.ManagedBy == manager));
             var accessPoints = accessPointFetcher.Execute();
             var accessPointIds = accessPoints.Select(x => x.AccessPointId).ToArray();
-            var accessRights = _accessRightsRepository.Filter(x => x.AccessRules.Any(rule => accessPointIds.Contains(rule.AccessPoint.AccessPointId)));
+            var accessRights = _databaseContext.AccessRights.Filter(x => x.AccessRules.Any(rule => accessPointIds.Contains(rule.AccessPoint.AccessPointId)));
 
             var visitor = new ConvertAccessRightsVisitor();
             accessRights.ForEach(x => x.Accept(visitor));
@@ -176,20 +166,20 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
         private string FindUserHash(string userName)
         {
-            var hashEntity = _userRepository.Filter(x => x.UserName == userName).SingleOrDefault();
+            var hashEntity = _databaseContext.Users.Filter(x => x.UserName == userName).SingleOrDefault();
             return hashEntity?.BiometricHash;
         }
 
         private UserAccessRights GetUserAccessRights(string userName)
         {
-            return _accessRightsRepository.Filter(x => x is UserAccessRights && ((UserAccessRights) x).UserName == userName)
+            return _databaseContext.AccessRights.Filter(x => x is UserAccessRights && ((UserAccessRights) x).UserName == userName)
                                           .Cast<UserAccessRights>()
                                           .FirstOrDefault();
         }
 
         private UserGroupAccessRights GetUserGroupAccessRights(string userGroupName)
         {
-            return _accessRightsRepository.Filter(x => x is UserGroupAccessRights && ((UserGroupAccessRights) x).UserGroupName == userGroupName)
+            return _databaseContext.AccessRights.Filter(x => x is UserGroupAccessRights && ((UserGroupAccessRights) x).UserGroupName == userGroupName)
                                           .Cast<UserGroupAccessRights>()
                                           .FirstOrDefault();
         }
@@ -202,7 +192,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return false;
             }
 
-            var accessPoint = _accessPointRepository.GetById(accessPointId);
+            var accessPoint = _databaseContext.AccessPoints.GetById(accessPointId);
             if (accessPoint == null)
             {
                 response = new VoidResult($"Access point {accessPointId} is not registered.");
@@ -212,12 +202,13 @@ namespace AccessControl.Service.AccessPoint.Consumers
             accessRights.AddAccessRule(new PermanentAccessRule {AccessPoint = accessPoint});
             if (accessRights.Id == 0)
             {
-                _accessRightsRepository.Insert(accessRights);
+                _databaseContext.AccessRights.Insert(accessRights);
             }
             else
             {
-                _accessRightsRepository.Update(accessRights);
+                _databaseContext.AccessRights.Update(accessRights);
             }
+            _databaseContext.Commit();
 
             response = new VoidResult();
             return true;
@@ -244,13 +235,14 @@ namespace AccessControl.Service.AccessPoint.Consumers
             accessRights.RemoveAccessRule(accessRule);
             if (accessRights.AccessRules.Any())
             {
-                _accessRightsRepository.Update(accessRights);
+                _databaseContext.AccessRights.Update(accessRights);
             }
 
             else
             {
-                _accessRightsRepository.Delete(accessRights);
+                _databaseContext.AccessRights.Delete(accessRights);
             }
+            _databaseContext.Commit();
 
             response = new VoidResult();
             return true;

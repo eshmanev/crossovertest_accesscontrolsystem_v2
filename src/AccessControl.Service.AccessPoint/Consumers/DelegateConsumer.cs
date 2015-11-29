@@ -19,25 +19,25 @@ namespace AccessControl.Service.AccessPoint.Consumers
     public class DelegateConsumer : IConsumer<IListDelegatedUsers>, IConsumer<IGrantManagementRights>, IConsumer<IRevokeManagementRights>
     {
         private readonly IBus _bus;
-        private readonly IRepository<DelegatedRights> _delegatedRightsRepository;
+        private readonly IDatabaseContext _databaseContext;
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="DelegateConsumer" /> class.
         /// </summary>
         /// <param name="bus">The bus.</param>
-        /// <param name="delegatedRightsRepository">The delegated rights repository.</param>
+        /// <param name="databaseContext">The database context.</param>
         /// <param name="findUserRequest">The find user request.</param>
         public DelegateConsumer(IBus bus,
-                                IRepository<DelegatedRights> delegatedRightsRepository,
+                                IDatabaseContext databaseContext,
                                 IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest)
         {
             Contract.Requires(bus != null);
-            Contract.Requires(delegatedRightsRepository != null);
+            Contract.Requires(databaseContext != null);
             Contract.Requires(findUserRequest != null);
 
             _bus = bus;
-            _delegatedRightsRepository = delegatedRightsRepository;
+            _databaseContext = databaseContext;
             _findUserRequest = findUserRequest;
         }
 
@@ -61,7 +61,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return;
             }
 
-            var entity = _delegatedRightsRepository
+            var entity = _databaseContext.DelegatedRights
                 .Filter(x => x.Grantor == Thread.CurrentPrincipal.UserName() && x.Grantee == context.Message.UserName)
                 .SingleOrDefault();
 
@@ -72,7 +72,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
 
             entity = new DelegatedRights {Grantor = Thread.CurrentPrincipal.UserName(), Grantee = userResult.User.UserName};
-            _delegatedRightsRepository.Insert(entity);
+            _databaseContext.DelegatedRights.Insert(entity);
+            _databaseContext.Commit();
 
             await _bus.Publish(new ManagementRightsGranted(entity.Grantor, entity.Grantee));
             await context.RespondAsync(new VoidResult());
@@ -93,7 +94,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
             else
             {
-                userNames = _delegatedRightsRepository.Filter(x => x.Grantor == Thread.CurrentPrincipal.UserName()).Select(x => x.Grantee);
+                userNames = _databaseContext.DelegatedRights.Filter(x => x.Grantor == Thread.CurrentPrincipal.UserName()).Select(x => x.Grantee);
             }
 
             return context.RespondAsync(ListCommand.DelegatedUsersResult(userNames.ToArray()));
@@ -111,13 +112,14 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return context.RespondAsync(new VoidResult("Not authorized"));
             }
 
-            var entity = _delegatedRightsRepository
+            var entity = _databaseContext.DelegatedRights
                 .Filter(x => x.Grantor == Thread.CurrentPrincipal.UserName() && x.Grantee == context.Message.UserName)
                 .SingleOrDefault();
 
             if (entity != null)
             {
-                _delegatedRightsRepository.Delete(entity);
+                _databaseContext.DelegatedRights.Delete(entity);
+                _databaseContext.Commit();
                 _bus.Publish(new ManagementRightsRevoked(entity.Grantor, entity.Grantee));
             }
 

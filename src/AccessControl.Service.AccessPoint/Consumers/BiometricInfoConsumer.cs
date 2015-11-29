@@ -23,8 +23,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
     {
         private readonly IBus _bus;
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
+        private readonly IDatabaseContext _databaseContext;
         private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
-        private readonly IRepository<User> _userRepository;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="BiometricInfoConsumer" /> class.
@@ -32,21 +32,21 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <param name="bus">The bus.</param>
         /// <param name="listUsersRequest">The list users request.</param>
         /// <param name="findUserRequest">The find user request.</param>
-        /// <param name="userRepository">The user repository.</param>
+        /// <param name="databaseContext">The database context.</param>
         public BiometricInfoConsumer(IBus bus,
                                      IRequestClient<IListUsers, IListUsersResult> listUsersRequest,
                                      IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest,
-                                     IRepository<User> userRepository)
+                                     IDatabaseContext databaseContext)
         {
             Contract.Requires(bus != null);
             Contract.Requires(listUsersRequest != null);
-            Contract.Requires(userRepository != null);
+            Contract.Requires(databaseContext != null);
             Contract.Requires(findUserRequest != null);
 
             _bus = bus;
             _listUsersRequest = listUsersRequest;
             _findUserRequest = findUserRequest;
-            _userRepository = userRepository;
+            _databaseContext = databaseContext;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return;
             }
 
-            var entity = _userRepository.Filter(x => x.BiometricHash == context.Message.BiometricHash).SingleOrDefault();
+            var entity = _databaseContext.Users.Filter(x => x.BiometricHash == context.Message.BiometricHash).SingleOrDefault();
             if (entity == null)
             {
                 context.Respond(new FindUserByBiometricsResult(null));
@@ -91,7 +91,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             var requestResult = await _listUsersRequest.Request(ListCommand.WithoutParameters);
             var users = requestResult.Users.ToList();
             var userNames = users.Select(x => x.UserName).ToList();
-            var entities = _userRepository.Filter(x => userNames.Contains(x.UserName)).ToDictionary(x => x.UserName);
+            var entities = _databaseContext.Users.Filter(x => userNames.Contains(x.UserName)).ToDictionary(x => x.UserName);
             var userBiometrics = users
                 .Select(
                     x =>
@@ -124,7 +124,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return;
             }
 
-            var duplicated = _userRepository
+            var duplicated = _databaseContext.Users
                 .Filter(x => x.BiometricHash == context.Message.BiometricHash && x.UserName != context.Message.UserName)
                 .Any();
 
@@ -135,19 +135,20 @@ namespace AccessControl.Service.AccessPoint.Consumers
             }
 
             string oldHash;
-            var entity = _userRepository.Filter(x => x.UserName == context.Message.UserName).SingleOrDefault();
+            var entity = _databaseContext.Users.Filter(x => x.UserName == context.Message.UserName).SingleOrDefault();
             if (entity != null)
             {
                 oldHash = entity.BiometricHash;
                 entity.BiometricHash = context.Message.BiometricHash;
-                _userRepository.Update(entity);
+                _databaseContext.Users.Update(entity);
             }
             else
             {
                 oldHash = null;
                 entity = new User {UserName = context.Message.UserName, BiometricHash = context.Message.BiometricHash};
-                _userRepository.Insert(entity);
+                _databaseContext.Users.Insert(entity);
             }
+            _databaseContext.Commit();
 
             await _bus.Publish(new UserBiometricUpdated(entity.UserName, oldHash, entity.BiometricHash));
             await context.RespondAsync(new VoidResult());

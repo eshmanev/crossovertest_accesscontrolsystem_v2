@@ -18,31 +18,21 @@ namespace AccessControl.Service.AccessPoint.Consumers
     public class LoggingConsumer : IConsumer<IAccessAttempted>, IConsumer<IListLogs>
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(LoggingConsumer));
-        private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
+        private readonly IDatabaseContext _databaseContext;
         private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
-        private readonly IRepository<Data.Entities.LogEntry> _logRepository;
-        private readonly IRepository<Data.Entities.User> _userRepository;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="LoggingConsumer" /> class.
         /// </summary>
-        /// <param name="logRepository">The log repository.</param>
-        /// <param name="userRepository">The user repository.</param>
-        /// <param name="accessPointRepository">The access point repository.</param>
+        /// <param name="databaseContext">The database context.</param>
         /// <param name="listUsersRequest">The list users request.</param>
-        public LoggingConsumer(IRepository<Data.Entities.LogEntry> logRepository,
-                               IRepository<Data.Entities.User> userRepository,
-                               IRepository<Data.Entities.AccessPoint> accessPointRepository,
+        public LoggingConsumer(IDatabaseContext databaseContext,
                                IRequestClient<IListUsers, IListUsersResult> listUsersRequest)
         {
-            Contract.Requires(logRepository != null);
-            Contract.Requires(userRepository != null);
+            Contract.Requires(databaseContext != null);
             Contract.Requires(listUsersRequest != null);
-            Contract.Requires(accessPointRepository != null);
 
-            _logRepository = logRepository;
-            _userRepository = userRepository;
-            _accessPointRepository = accessPointRepository;
+            _databaseContext = databaseContext;
             _listUsersRequest = listUsersRequest;
         }
 
@@ -60,14 +50,14 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return Task.FromResult(false);
             }
 
-            var accessPoint = _accessPointRepository.GetById(context.Message.AccessPointId);
+            var accessPoint = _databaseContext.AccessPoints.GetById(context.Message.AccessPointId);
             if (accessPoint == null)
             {
                 Log.Warn("Invalid access point attempted. AccessPointId: " + context.Message.AccessPointId);
                 return Task.FromResult(false);
             }
 
-            var user = _userRepository.Filter(x => x.BiometricHash == context.Message.BiometricHash).SingleOrDefault();
+            var user = _databaseContext.Users.Filter(x => x.BiometricHash == context.Message.BiometricHash).SingleOrDefault();
             var entry = new Data.Entities.LogEntry
             {
                 AccessPoint = accessPoint,
@@ -76,7 +66,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 CreatedUtc = context.Message.CreatedUtc,
                 Failed = context.Message.Failed
             };
-            _logRepository.Insert(entry);
+            _databaseContext.Logs.Insert(entry);
+            _databaseContext.Commit();
             return Task.FromResult(true);
         }
 
@@ -92,7 +83,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             {
                 var usersResult = await _listUsersRequest.Request(ListCommand.WithoutParameters);
                 var users = usersResult.Users.ToDictionary(x => x.UserName);
-                var entities = _logRepository.Filter(
+                var entities = _databaseContext.Logs.Filter(
                     x => x.CreatedUtc >= context.Message.FromDateUtc &&
                          x.CreatedUtc <= context.Message.ToDateUtc);
 

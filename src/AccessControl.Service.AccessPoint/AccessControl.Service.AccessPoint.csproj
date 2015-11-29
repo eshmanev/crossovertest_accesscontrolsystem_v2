@@ -102,7 +102,7 @@
     <Compile Include="Consumers\LogsConsumer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitOfWorkConsumerFactory.cs" />
+    <Compile Include="DbContextConsumerFactory.cs" />
     <Compile Include="Helpers\ConvertAccessRightsVisitor.cs" />
   </ItemGroup>
   <ItemGroup>

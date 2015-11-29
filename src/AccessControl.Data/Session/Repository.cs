@@ -14,15 +14,15 @@ namespace AccessControl.Data.Session
     public class Repository<T> : IRepository<T>
         where T : class
     {
-        private readonly ISessionHolder _sessionHolder;
+        private readonly IDatabaseContext _databaseContext;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="Repository{T}" /> class.
         /// </summary>
-        public Repository(ISessionHolder sessionHolder)
+        public Repository(IDatabaseContext databaseContext)
         {
-            Contract.Requires(sessionHolder != null);
-            _sessionHolder = sessionHolder;
+            Contract.Requires(databaseContext != null);
+            _databaseContext = databaseContext;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace AccessControl.Data.Session
         /// <returns>An entity or null.</returns>
         public T GetById(object id)
         {
-            return _sessionHolder.GetSession().Get<T>(id);
+            return _databaseContext.GetSession().Get<T>(id);
         }
 
         /// <summary>
@@ -79,8 +79,8 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Insert(T entity)
         {
-            _sessionHolder.DemandTransaction();
-            _sessionHolder.GetSession().SaveOrUpdate(entity);
+            _databaseContext.DemandTransaction();
+            _databaseContext.GetSession().SaveOrUpdate(entity);
         }
 
         /// <summary>
@@ -89,8 +89,8 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Update(T entity)
         {
-            _sessionHolder.DemandTransaction();
-            _sessionHolder.GetSession().Update(entity);
+            _databaseContext.DemandTransaction();
+            _databaseContext.GetSession().Update(entity);
         }
 
         /// <summary>
@@ -99,13 +99,13 @@ namespace AccessControl.Data.Session
         /// <param name="entity">The entity.</param>
         public void Delete(T entity)
         {
-            _sessionHolder.DemandTransaction();
-            _sessionHolder.GetSession().Delete(entity);
+            _databaseContext.DemandTransaction();
+            _databaseContext.GetSession().Delete(entity);
         }
 
         private TResult Query<TResult>(Func<IQueryable<T>, TResult> action)
         {
-            var query = _sessionHolder.GetSession().Query<T>().Cacheable();
+            var query = _databaseContext.GetSession().Query<T>().Cacheable();
             return action(query);
         }
     }

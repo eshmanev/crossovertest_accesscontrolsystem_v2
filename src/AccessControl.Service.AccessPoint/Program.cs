@@ -89,7 +89,7 @@ namespace AccessControl.Service.AccessPoint
         private static void Consumer<T>(this IReceiveEndpointConfigurator configurator, IUnityContainer container, Action<IConsumerConfigurator<T>> configure = null)
             where T : class, IConsumer
         {
-            var consumerFactory = new UnitOfWorkConsumerFactory<T>(container);
+            var consumerFactory = new DbContextConsumerFactory<T>(container);
             configurator.Consumer(consumerFactory, configure);
         }
     }

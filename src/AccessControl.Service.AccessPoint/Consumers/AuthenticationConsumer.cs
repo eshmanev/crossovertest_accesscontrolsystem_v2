@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Security;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Data;
-using AccessControl.Data.Entities;
 using AccessControl.Service.Security;
 using MassTransit;
 
@@ -18,25 +16,25 @@ namespace AccessControl.Service.AccessPoint.Consumers
     {
         private readonly IRequestClient<ICheckCredentials, ICheckCredentialsResult> _checkCredentialsRequest;
         private readonly IEncryptor _encryptor;
-        private readonly IRepository<DelegatedRights> _delegatedRightsRepository;
+        private readonly IDatabaseContext _databaseContext;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AuthenticationConsumer" /> class.
         /// </summary>
         /// <param name="checkCredentialsRequest">The check credentials request.</param>
         /// <param name="encryptor">The encryptor.</param>
-        /// <param name="delegatedRightsRepository">The delegated rights repository.</param>
+        /// <param name="databaseContext">The database context.</param>
         public AuthenticationConsumer(IRequestClient<ICheckCredentials, ICheckCredentialsResult> checkCredentialsRequest,
                                       IEncryptor encryptor,
-                                      IRepository<DelegatedRights> delegatedRightsRepository)
+                                      IDatabaseContext databaseContext)
         {
             Contract.Requires(checkCredentialsRequest != null);
             Contract.Requires(encryptor != null);
-            Contract.Requires(delegatedRightsRepository != null);
+            Contract.Requires(databaseContext != null);
 
             _checkCredentialsRequest = checkCredentialsRequest;
             _encryptor = encryptor;
-            _delegatedRightsRepository = delegatedRightsRepository;
+            _databaseContext = databaseContext;
         }
 
         /// <summary>
@@ -57,7 +55,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
             var roles = new List<string>();
 
             // select delegated privileges
-            var delegatedRights = _delegatedRightsRepository.Filter(x => x.Grantee == user.UserName);
+            var delegatedRights = _databaseContext.DelegatedRights.Filter(x => x.Grantee == user.UserName);
             var onBehalfOf = delegatedRights.Select(x => x.Grantor).ToArray();
 
 

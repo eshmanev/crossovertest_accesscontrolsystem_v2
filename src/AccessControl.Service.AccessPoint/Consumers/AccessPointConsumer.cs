@@ -23,21 +23,20 @@ namespace AccessControl.Service.AccessPoint.Consumers
                                        IConsumer<IListAccessPoints>,
                                        IConsumer<IFindAccessPointById>
     {
-        private readonly IRepository<Data.Entities.AccessPoint> _accessPointRepository;
+        private readonly IDatabaseContext _databaseContext;
         private readonly IRequestClient<IValidateDepartment, IVoidResult> _validateDepartmentRequest;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccessPointConsumer" /> class.
         /// </summary>
-        /// <param name="accessPointRepository">The access point repository.</param>
+        /// <param name="databaseContext">The database context.</param>
         /// <param name="validateDepartmentRequest">The validate department request.</param>
-        public AccessPointConsumer(IRepository<Data.Entities.AccessPoint> accessPointRepository,
-                                   IRequestClient<IValidateDepartment, IVoidResult> validateDepartmentRequest)
+        public AccessPointConsumer(IDatabaseContext databaseContext, IRequestClient<IValidateDepartment, IVoidResult> validateDepartmentRequest)
         {
-            Contract.Requires(accessPointRepository != null);
+            Contract.Requires(databaseContext != null);
             Contract.Requires(validateDepartmentRequest != null);
 
-            _accessPointRepository = accessPointRepository;
+            _databaseContext = databaseContext;
             _validateDepartmentRequest = validateDepartmentRequest;
         }
 
@@ -55,7 +54,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return context.RespondAsync(new FindAccessPointByIdResult(null));
             }
 
-            var accessPoint = _accessPointRepository.GetById(context.Message.AccessPointId);
+            var accessPoint = _databaseContext.AccessPoints.GetById(context.Message.AccessPointId);
             return context.RespondAsync(new FindAccessPointByIdResult(accessPoint != null ? ConvertAccessPoint(accessPoint) : null));
         }
 
@@ -67,8 +66,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public Task Consume(ConsumeContext<IListAccessPoints> context)
         {
             var fetcher = RoleBasedDataFetcher.Create(
-                _accessPointRepository.GetAll,
-                manager => _accessPointRepository.Filter(x => x.ManagedBy == manager));
+                _databaseContext.AccessPoints.GetAll,
+                manager => _databaseContext.AccessPoints.Filter(x => x.ManagedBy == manager));
 
             var entities = fetcher.Execute();
             var accessPoints = entities.Select(ConvertAccessPoint).ToArray();
@@ -104,7 +103,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 Department = context.Message.AccessPoint.Department,
                 ManagedBy = Thread.CurrentPrincipal.UserName()
             };
-            _accessPointRepository.Insert(accessPoint);
+            _databaseContext.AccessPoints.Insert(accessPoint);
+            _databaseContext.Commit();
             context.Respond(new VoidResult());
         }
 
@@ -121,10 +121,11 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return context.RespondAsync(new VoidResult("Not authorized"));
             }
 
-            var accessPoint = _accessPointRepository.GetById(context.Message.AccessPointId);
+            var accessPoint = _databaseContext.AccessPoints.GetById(context.Message.AccessPointId);
             if (accessPoint != null)
             {
-                _accessPointRepository.Delete(accessPoint);
+                _databaseContext.AccessPoints.Delete(accessPoint);
+                _databaseContext.Commit();
             }
             return context.RespondAsync(new VoidResult());
         }

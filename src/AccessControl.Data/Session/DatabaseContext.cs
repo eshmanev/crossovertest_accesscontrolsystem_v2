@@ -1,23 +1,67 @@
-﻿using NHibernate;
+﻿using System;
+using System.Collections.Generic;
+using AccessControl.Data.Entities;
+using NHibernate;
 
 namespace AccessControl.Data.Session
 {
-    public class SessionHolder : ISessionHolder
+    public class DatabaseContext : IDatabaseContext
     {
+        private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
         private readonly ISessionFactoryHolder _sessionFactoryHolder;
         private ISession _session;
         private ITransaction _transaction;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SessionHolder" /> class.
+        ///     Initializes a new instance of the <see cref="DatabaseContext" /> class.
         /// </summary>
         /// <param name="sessionFactoryHolder">The session factory holder.</param>
-        public SessionHolder(ISessionFactoryHolder sessionFactoryHolder)
+        public DatabaseContext(ISessionFactoryHolder sessionFactoryHolder)
         {
             _sessionFactoryHolder = sessionFactoryHolder;
         }
 
         private bool IsInTransaction => _transaction != null && _transaction.IsActive;
+
+        /// <summary>
+        ///     Gets or sets the access points.
+        /// </summary>
+        /// <value>
+        ///     The access points.
+        /// </value>
+        public IRepository<AccessPoint> AccessPoints => GetRepository<AccessPoint>();
+
+        /// <summary>
+        ///     Gets or sets the access rights.
+        /// </summary>
+        /// <value>
+        ///     The access rights.
+        /// </value>
+        public IRepository<AccessRightsBase> AccessRights => GetRepository<AccessRightsBase>();
+
+        /// <summary>
+        ///     Gets or sets the delegated rights.
+        /// </summary>
+        /// <value>
+        ///     The delegated rights.
+        /// </value>
+        public IRepository<DelegatedRights> DelegatedRights => GetRepository<DelegatedRights>();
+
+        /// <summary>
+        ///     Gets or sets the logs.
+        /// </summary>
+        /// <value>
+        ///     The logs.
+        /// </value>
+        public IRepository<LogEntry> Logs => GetRepository<LogEntry>();
+
+        /// <summary>
+        ///     Gets or sets the users.
+        /// </summary>
+        /// <value>
+        ///     The users.
+        /// </value>
+        public IRepository<User> Users => GetRepository<User>();
 
         /// <summary>
         ///     Demands the transaction.
@@ -87,6 +131,19 @@ namespace AccessControl.Data.Session
             }
 
             _session.Transaction.Dispose();
+        }
+
+        private IRepository<T> GetRepository<T>()
+            where T : class
+        {
+            var type = typeof(T);
+            object repository;
+            if (!_repositories.TryGetValue(type, out repository))
+            {
+                repository = new Repository<T>(this);
+                _repositories.Add(type, repository);
+            }
+            return (IRepository<T>) repository;
         }
     }
 }
