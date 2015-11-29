@@ -9,7 +9,7 @@ namespace AccessControl.Data.Mappings
         {
             Table("AccessRights");
             Id(x => x.Id).GeneratedBy.HiLo("AccessRights");
-            HasMany(x => x.AccessRules).Inverse().KeyColumn("AccessRightsId").Cascade.AllDeleteOrphan();
+            HasMany(x => x.AccessRules).Inverse().Cascade.AllDeleteOrphan();
             DiscriminateSubClassesOnColumn("AccessRightsType");
         }
     }

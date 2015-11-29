@@ -13,6 +13,8 @@ namespace AccessControl.Data.Mappings
             Map(x => x.Site);
             Map(x => x.Department);
             Map(x => x.ManagedBy).Index("IDX_ManagedBy");
+            HasMany(x => x.AccessRules).Inverse().Cascade.DeleteOrphan();
+            HasMany(x => x.Logs).Inverse().Cascade.DeleteOrphan();
         }    
     }
 }

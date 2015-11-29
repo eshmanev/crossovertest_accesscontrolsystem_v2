@@ -79,7 +79,7 @@ namespace AccessControl.Service.Notifications.Consumers
             {
                 var body = new StringBuilder();
                 body.AppendLine($"Dear {findManagerResult.User.DisplayName},");
-                body.AppendLine($"An access violation occurred.");
+                body.AppendLine($"You have received this email because an access violation occurred.");
 
                 if (accessPoint == null)
                 {
@@ -99,7 +99,7 @@ namespace AccessControl.Service.Notifications.Consumers
             if (!string.IsNullOrWhiteSpace(findManagerResult.User.PhoneNumber))
             {
                 var body = new StringBuilder();
-                body.AppendLine("An access violation occurred.");
+                body.AppendLine("Access violation occurred.");
                 if (accessPoint == null)
                 {
                     body.AppendLine($"Unknown access point, ID={context.Message.AccessPointId}");

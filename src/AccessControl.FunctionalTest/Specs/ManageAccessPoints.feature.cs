@@ -73,10 +73,10 @@ namespace AccessControl.FunctionalTest.Specs
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Allow user access")]
-        public virtual void AllowUserAccess()
+        [NUnit.Framework.DescriptionAttribute("Register a new access point")]
+        public virtual void RegisterANewAccessPoint()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Allow user access", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Register a new access point", ((string[])(null)));
 #line 7
 this.ScenarioSetup(scenarioInfo);
 #line 4
@@ -100,6 +100,40 @@ this.FeatureBackground();
  testRunner.And("I get a list of registered access points", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 12
  testRunner.Then("The result should contain an access point with name \"TestPoint\"`", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Unregister an access point")]
+        public virtual void UnregisterAnAccessPoint()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unregister an access point", ((string[])(null)));
+#line 14
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Site",
+                        "Department",
+                        "AccessPointId",
+                        "Name",
+                        "Description"});
+            table2.AddRow(new string[] {
+                        "OU=USA,DC=Evriqum,DC=RU",
+                        "Top Management",
+                        "00FB8A36-B9A0-42AC-9F95-C785F74A14B7",
+                        "TestPoint",
+                        "This is an access point for test purposes"});
+#line 15
+ testRunner.Given("I have the following access point", ((string)(null)), table2, "Given ");
+#line 18
+ testRunner.When("I unregister the access point with ID = \"00FB8A36-B9A0-42AC-9F95-C785F74A14B7\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 19
+ testRunner.And("I get a list of registered access points", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 20
+ testRunner.Then("The result should not contain an access point with name \"TestPoint\"`", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

@@ -70,18 +70,6 @@ namespace AccessControl.FunctionalTest.Specs
 #line 5
  testRunner.Given("I\'m a Manager", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Allow user access")]
-        public virtual void AllowUserAccess()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Allow user access", ((string[])(null)));
-#line 7
-this.ScenarioSetup(scenarioInfo);
-#line 4
-this.FeatureBackground();
-#line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Site",
                         "Department",
@@ -94,8 +82,61 @@ this.FeatureBackground();
                         "00FB8A36-B9A0-42AC-9F95-C785F74A14B7",
                         "TestPoint",
                         "This is an access point for test purposes"});
-#line 8
- testRunner.Given("The following access point is registered", ((string)(null)), table1, "Given ");
+#line 6
+ testRunner.And("I have the following access point", ((string)(null)), table1, "And ");
+#line 9
+ testRunner.And("My employee has the following biometric hash \"testhash12345\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Allow user access")]
+        public virtual void AllowUserAccess()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Allow user access", ((string[])(null)));
+#line 11
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line 12
+ testRunner.When("I grant access rights to access point with ID = \"00FB8A36-B9A0-42AC-9F95-C785F74A" +
+                    "14B7\" for my employee", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 13
+ testRunner.And("My employee tries to access the access point with ID = \"00FB8A36-B9A0-42AC-9F95-C" +
+                    "785F74A14B7\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 14
+ testRunner.Then("The access should be allowed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 15
+ testRunner.And("A successful log entry should be created with my employee and access point \"TestP" +
+                    "oint\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Deny user access")]
+        public virtual void DenyUserAccess()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Deny user access", ((string[])(null)));
+#line 17
+this.ScenarioSetup(scenarioInfo);
+#line 4
+this.FeatureBackground();
+#line 18
+ testRunner.When("I deny access rights to access point with ID = \"00FB8A36-B9A0-42AC-9F95-C785F74A1" +
+                    "4B7\" for my employee", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 19
+ testRunner.And("My employee tries to access the access point with ID = \"00FB8A36-B9A0-42AC-9F95-C" +
+                    "785F74A14B7\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 20
+ testRunner.Then("The access should be denied", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 21
+ testRunner.And("A failed log entry should be created with my employee and access point \"TestPoint" +
+                    "\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 22
+ testRunner.And("I should be notified by email", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 23
+ testRunner.And("I should be notified by sms", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             this.ScenarioCleanup();
         }

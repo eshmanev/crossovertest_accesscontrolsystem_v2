@@ -9,9 +9,10 @@ namespace AccessControl.Data.Mappings
         {
             Table("AccessRule");
             Id(x => x.Id).GeneratedBy.HiLo("AccessRule");
-            References(x => x.AccessPoint).Column("AccessPointId").Not.Nullable();
-            References(x => x.AccessRights).Column("AccessRightsId").Not.Nullable();
+            References(x => x.AccessPoint).Column("AccessPointId").ForeignKey("FK_AccessRule_AccessPoint");
+            References(x => x.AccessRights).Column("AccessRightsId").ForeignKey("FK_AccessRule_AccessRights");
             DiscriminateSubClassesOnColumn("RuleType");
+            
         }
     }
 }

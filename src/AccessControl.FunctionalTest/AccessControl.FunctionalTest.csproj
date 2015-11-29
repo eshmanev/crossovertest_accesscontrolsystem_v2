@@ -33,6 +33,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging, Version=3.3.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.3.0\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.3.0\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MassTransit, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b8e0e9f2f1e657fa, processorArchitecture=MSIL">
       <HintPath>..\packages\MassTransit.3.0.15\lib\net45\MassTransit.dll</HintPath>
       <Private>True</Private>
@@ -76,6 +84,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -92,10 +102,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="BusControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rows\AccessPointRow.cs" />
     <Compile Include="Rows\Transformations.cs" />
+    <Compile Include="Service References\AccessCheckServiceProxy\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Services\ReceivedEmail.cs" />
+    <Compile Include="Services\ReceivedSms.cs" />
+    <Compile Include="Services\TestNotificationService.cs" />
     <Compile Include="Specs\ManageAccessPoints.feature.cs">
       <DependentUpon>ManageAccessPoints.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -106,13 +125,27 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ManageAccessRights.feature</DependentUpon>
     </Compile>
+    <Compile Include="Steps\AccessRightsSteps.cs" />
     <Compile Include="Steps\AuthenticationSteps.cs" />
+    <Compile Include="Steps\BiometricSteps.cs" />
+    <Compile Include="Steps\NotificationSteps.cs" />
     <Compile Include="Steps\CommonSteps.cs" />
     <Compile Include="Steps\AccessPointSteps.cs" />
+    <Compile Include="Steps\LogSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService.wsdl" />
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Specs\ManageAccessPoints.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ManageAccessPoints.feature.cs</LastGenOutput>
@@ -122,7 +155,9 @@
       <LastGenOutput>ManageAccessRights.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Client\AccessControl.Client.csproj">
       <Project>{e4802918-79cf-42a4-bedf-805c33ba8f6f}</Project>
@@ -148,6 +183,24 @@
       <Project>{e2c63043-31f8-471a-b669-f11e62b8fde1}</Project>
       <Name>AccessControl.Service.Notifications</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\AccessCheckServiceProxy\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\AccessCheckService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AccessCheckServiceProxy\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

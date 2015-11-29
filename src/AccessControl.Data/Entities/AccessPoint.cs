@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace AccessControl.Data.Entities
 {
@@ -54,5 +56,9 @@ namespace AccessControl.Data.Entities
         /// The managed by.
         /// </value>
         public virtual string ManagedBy { get; set; }
+
+        // NHibernate workaround. Cascade delete does not work without this properties.
+        protected internal virtual IList<AccessRuleBase> AccessRules { get; set; }
+        protected internal virtual IList<LogEntry> Logs { get; set; }
     }
 }
