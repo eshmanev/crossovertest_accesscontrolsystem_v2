@@ -1,0 +1,72 @@
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildProjectDirectory)\msbuild\MSBuild.Community.Tasks.Targets"/>
+
+  <PropertyGroup>
+    <SrcFolder>$(MSBuildProjectDirectory)\..\src</SrcFolder>
+    <BuildFolder>$(MSBuildProjectDirectory)\temp</BuildFolder>
+    <ArtifactsFolder>$(MSBuildProjectDirectory)\..\artifacts</ArtifactsFolder>
+  </PropertyGroup>
+
+  <Target Name="Build">
+    <CallTarget Targets="Clean"/>
+    <CallTarget Targets="Compile"/>
+    <CallTarget Targets="Package"/>
+    <RemoveDir Directories="$(BuildFolder)" />
+  </Target>
+
+  <Target Name="Clean">
+    <MSBuild Projects="$(SrcFolder)\AccessControlSystem.sln" Targets="Clean" />
+    <RemoveDir Directories="$(BuildFolder)" ContinueOnError="true"/>
+    <RemoveDir Directories="$(ArtifactsFolder)" />
+  </Target>
+
+  <Target Name="Compile">
+    <MSBuild Projects="$(SrcFolder)\AccessControl.Service.AccessPoint\AccessControl.Service.AccessPoint.csproj"
+        Targets="Build"
+        Properties="Configuration=Release;OutputPath=$(BuildFolder)\AccessControl.Service.AccessPoint" />
+
+    <MSBuild Projects="$(SrcFolder)\AccessControl.Service.LDAP\AccessControl.Service.LDAP.csproj"
+        Targets="Build"
+        Properties="Configuration=Release;OutputPath=$(BuildFolder)\AccessControl.Service.LDAP" />
+
+    <MSBuild Projects="$(SrcFolder)\AccessControl.Service.Notifications\AccessControl.Service.Notifications.csproj"
+        Targets="Build"
+        Properties="Configuration=Release;OutputPath=$(BuildFolder)\AccessControl.Service.Notifications" />
+
+    <MSBuild Projects="$(SrcFolder)\AccessControl.Web\AccessControl.Web.csproj"
+        Targets="Build"
+        Properties="Configuration=Release;OutputPath=$(BuildFolder)\AccessControl.Web" />
+
+    <MSBuild Projects="$(SrcFolder)\AccessControl.Client\AccessControl.Client.csproj"
+        Targets="Build"
+        Properties="Configuration=Release;OutputPath=$(BuildFolder)\AccessControl.Client" />
+
+    <MSBuild Projects="$(SrcFolder)\Simulator\AccessSimulator\AccessSimulator.csproj"
+        Targets="Build"
+        Properties="Configuration=Release;OutputPath=$(BuildFolder)\AccessSimulator" />
+
+  </Target>
+
+  <Target Name="Package">
+    <CallTarget Targets="Zip"/>
+  </Target>
+
+  <Target Name="Zip">
+    <ItemGroup>
+      <AccessPoint Include="$(BuildFolder)\AccessControl.Service.AccessPoint\**\*.*"/>
+      <LDAP Include="$(BuildFolder)\AccessControl.Service.LDAP\**\*.*"/>
+      <Notifications Include="$(BuildFolder)\AccessControl.Service.Notifications\**\*.*"/>
+      <Web Include="$(BuildFolder)\AccessControl.Web\_PublishedWebsites\AccessControl.Web\**\*.*"/>
+      <Client Include="$(BuildFolder)\AccessControl.Client\**\*.*"/>
+      <Simulator Include="$(BuildFolder)\AccessSimulator\**\*.*"/>
+    </ItemGroup>
+
+    <MakeDir Directories="$(ArtifactsFolder)"/>
+    <Zip Files="@(AccessPoint)" WorkingDirectory="$(BuildFolder)\AccessControl.Service.AccessPoint" ZipFileName="$(ArtifactsFolder)\AccessControl.Service.AccessPoint.zip" />
+    <Zip Files="@(LDAP)"  WorkingDirectory="$(BuildFolder)\AccessControl.Service.LDAP" ZipFileName="$(ArtifactsFolder)\AccessControl.Service.LDAP.zip" />
+    <Zip Files="@(Notifications)" WorkingDirectory="$(BuildFolder)\AccessControl.Service.Notifications" ZipFileName="$(ArtifactsFolder)\AccessControl.Service.Notifications.zip" />
+    <Zip Files="@(Web)" WorkingDirectory="$(BuildFolder)\AccessControl.Web\_PublishedWebsites\AccessControl.Web" ZipFileName="$(ArtifactsFolder)\AccessControl.Web.zip" />
+    <Zip Files="@(Client)" WorkingDirectory="$(BuildFolder)\AccessControl.Client" ZipFileName="$(ArtifactsFolder)\AccessControl.Client.zip" />
+    <Zip Files="@(Simulator)" WorkingDirectory="$(BuildFolder)\AccessSimulator" ZipFileName="$(ArtifactsFolder)\AccessSimulator.zip" />
+  </Target>
+</Project>
