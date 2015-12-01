@@ -1,0 +1,24 @@
+Implement,UserName,FirstName,LastName,Mail,Phone,Department,Manager,UserGroup,Password,PasswordNeverExpires,Enabled,TargetOU,Description
+Yes,bill.gates,Bill,Gates,bill.gates@evriqum.ru,111-11-11,Top Management,,Chairmen,Test123,true,true,OU=Head Office,CEO
+Yes,steve.wozniak,Steve,Wozniak,steve.wozniak@evriqum.ru,222-22-22,Top Management,bill.gates,Top Managers,Test123,true,true,OU=Head Office,
+Yes,sergey.brin,Sergey,Brin,sergey.brin@evriqum.ru,333-33-33,Top Management,bill.gates,Top Managers,Test123,true,true,OU=Head Office,
+Yes,jack.ma,Jack,Ma,jack.ma@evriqum.ru,444-44-44,Top Management,bill.gates,Top Managers,Test123,true,true,OU=Head Office,
+Yes,larry.page,Larry,Page,larry.page@evriqum.ru,555-55-55,Top Management,bill.gates,Top Managers,Test123,true,true,OU=Head Office,
+Yes,drew.houston,Drew,Houston,drew.houston@evriqum.ru,666-66-66,Top Management,bill.gates,Top Managers,Test123,true,true,OU=Head Office,
+Yes,daniel.craig,Daniel,Craig,daniel.craig@evriqum.ru,777-77-77,Drama Theater,steve.wozniak,European Actors 1,Test123,true,true,OU=European Actors,
+Yes,ewan.mcgregor,Ewan,McGregor,ewan.mcgregor@evriqum.ru,888-88-88,Drama Theater,steve.wozniak,European Actors 1,Test123,true,true,OU=European Actors,
+Yes,colin.farrell,Colin,Farrell,colin.farrell@evriqum.ru,999-99-99,Drama Theater,steve.wozniak,European Actors 1,Test123,true,true,OU=European Actors,
+Yes,liam.neeson,Liam,Neeson,liam.neeson@evriqum.ru,123-12-12,Drama Theater,steve.wozniak,European Actors 2,Test123,true,true,OU=European Actors,
+Yes,vincent.cassel,Vincent,Cassel,vincent.cassel@evriqum.ru,124-13-13,Drama Theater,steve.wozniak,European Actors 2,Test123,true,true,OU=European Actors,
+Yes,jackie.chan,Jackie,Chan,jackie.chan@evriqum.ru,125-14-14,KungFu Theater,jack.ma,Chinese Actors 1,Test123,true,true,OU=Chinese Actors,
+Yes,jet.li,Jet,Li,jet.li@evriqum.ru,126-15-15,KungFu Theater,jack.ma,Chinese Actors 1,Test123,true,true,OU=Chinese Actors,
+Yes,andy.lao,Andy,Lao,andy.lao@evriqum.ru,127-16-16,KungFu Theater,jack.ma,Chinese Actors 1,Test123,true,true,OU=Chinese Actors,
+Yes,gong.li,Gong,Li,gong.li@evriqum.ru,128-17-17,KungFu Theater,jack.ma,Chinese Actors 2,Test123,true,true,OU=Chinese Actors,
+Yes,donnie.yen,Donnie,Yen,donnie.yen@evriqum.ru,129-18-18,KungFu Theater,jack.ma,Chinese Actors 2,Test123,true,true,OU=Chinese Actors,
+Yes,stephen.chow,Stephen,Chow,stephen.chow@evriqum.ru,130-19-19,KungFu Theater,jack.ma,Chinese Actors 2,Test123,true,true,OU=Chinese Actors,
+Yes,client1,Client Service 1,,contact@evriqum.ru,999-99-99,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 1
+Yes,client2,Client Service 2,,contact@evriqum.ru,999-99-100,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 2
+Yes,client3,Client Service 3,,contact@evriqum.ru,999-99-101,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 3
+Yes,client4,Client Service 4,,contact@evriqum.ru,999-99-102,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 4
+Yes,client5,Client Service 5,,contact@evriqum.ru,999-99-103,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 5
+Yes,ldapservice,LDAP Service,,contact@evriqum.ru,999-99-104,Security,Administrator,Access Control Servers,Test123,true,true,OU=Access Control Services,LDAP Service

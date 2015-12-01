@@ -29,14 +29,15 @@ INSTALLATION
 1.5. Open port 5672 on RabbitMQ server. RabbitMQ uses this port for messaging by default.
 2. Здесь необходимо описать куда и как ставить сервисы
 
-OPTIONAL STEP. To enable RabbitMQ management tool you should execute the following commands.
+
+Optional steps.
+ - To enable RabbitMQ management tool you should execute the following commands.
      rabbitmq-plugins.bat enable rabbitmq_management
      rabbitmq-service.bat stop
      rabbitmq-service.bat install
      rabbitmq-service.bat start
      
-     When it is done RabbitMQ management tool will be accessible on http://your-server-ip-address:15672 (ensure that the port is not blocked by firewall)
-
+   When it is done RabbitMQ management tool will be accessible on http://your-server-ip-address:15672 (ensure that the port is not blocked by firewall)
 
 
 --------------------------------------------------------------------------------------------------------------
@@ -56,7 +57,6 @@ CONFIGURATION
      client4     | Test123   | Client access service uses this user to be authenticated within the system (optional)
      client5     | Test123   | Client access service uses this user to be authenticated within the system (optional)
 
-   NOTE: Optionally you can update configuration files mentioned above with different credentials from the LDAP directory.
 
 1.2. Create the following user group in the LDAP directory:
 
@@ -64,8 +64,18 @@ CONFIGURATION
      --------------------------------------------------------------------
      Access Control Clients | client1, client2, client3, client4, client5
 
-   NOTE: Client service require this group to be authorized fetching user names and user groups from the LDAP directory.
-   It would be nice to create a manageable mappings between LDAP users and the system roles, but this is out of the scope of the current task at the moment.
+
+NOTES:
+ - You can create a temporary organizational structure in your Active Directory using a PowerShell script. 
+   To achieve it, copy .\scripts\ldap_users.ps1 and .\scripts\import_create_ad_users.csv files to your server.
+   Then run .\scripts\ldap_users.ps1 using Active Directory Module for Windows PowerShell.
+   This script will create 4 organizational units: Head Office, European Actors, Chinese Actors and Client Services and add some users and user groups to them. 
+
+ - Optionally you can update configuration files mentioned above with different credentials from the LDAP directory, but for testing purposes
+   PowerShell script is a best choise.
+
+ - Client services require Access Control Clients group to be authorized for fetching user names and user groups from the LDAP directory.
+   It would be nice to create a manageable mappings between LDAP users and the system roles, but this is out of the scope of the current task.
 
 2. Open the file AccessControl.Services.LDAP\app.config, navigate to the section <ldap ldapPath="...." /> and pick valid address of the LDAP directory server.
 3. Create a new SQL Server database.

@@ -77,7 +77,7 @@ namespace AccessControl.FunctionalTest.Specs
                         "Name",
                         "Description"});
             table1.AddRow(new string[] {
-                        "OU=USA,DC=Evriqum,DC=RU",
+                        "OU=Head Office,DC=Evriqum,DC=RU",
                         "Top Management",
                         "00FB8A36-B9A0-42AC-9F95-C785F74A14B7",
                         "TestPoint",
