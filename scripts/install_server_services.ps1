@@ -6,8 +6,8 @@ $ldapUserName = AskParameter -message "Enter the LDAP directory username" -error
 $ldapPassword = AskParameter -message "Enter the LDAP directory password" -error "LDAP password is required"
 # RabbitMQ parameters
 $rabbitAddress = AskParameter -message "Enter the RabbitMQ server address (Example: rabbitmq://192.168.1.201)" -error "RabbitMQ server address is required"
-$rabbitUserName = AskParameter -message "Enter the RabbitMQ username (Example: rabbitmq://192.168.1.201)" -error "RabbitMQ username is required"
-$rabbitPassword = AskParameter -message "Enter the RabbitMQ password (Example: rabbitmq://192.168.1.201)" -error "RabbitMQ password is required"
+$rabbitUserName = AskParameter -message "Enter the RabbitMQ username" -error "RabbitMQ username is required"
+$rabbitPassword = AskParameter -message "Enter the RabbitMQ password" -error "RabbitMQ password is required"
 # Database parameters
 $connectionString = AskParameter -message "Enter the database connection string (Example: 'Data Source=.\SQLEXPRESS;Initial Catalog=AccessControlSystem;Integrated Security=True')" -error "Connection string is required"
 

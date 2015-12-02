@@ -3,13 +3,10 @@
 function ModifyConfigAppSettings($file, $user, $password)
 {
   $config = LoadConfig -file $file
-
   $node = $config.SelectSingleNode("configuration/appSettings/add[@key='LDAPUserName']")
   $node.Attributes["value"].Value = $user
-
   $node = $config.SelectSingleNode("configuration/appSettings/add[@key='LDAPPassword']")
   $node.Attributes["value"].Value = $user
-
   $config.Save($file)
 }
 
@@ -19,8 +16,8 @@ $password = AskParameter -message "Enter the client service password" -error "Cl
 
 # RabbitMQ parameters
 $rabbitAddress = AskParameter -message "Enter the RabbitMQ server address (Example: rabbitmq://192.168.1.201)" -error "RabbitMQ server address is required"
-$rabbitUserName = AskParameter -message "Enter the RabbitMQ username (Example: rabbitmq://192.168.1.201)" -error "RabbitMQ username is required"
-$rabbitPassword = AskParameter -message "Enter the RabbitMQ password (Example: rabbitmq://192.168.1.201)" -error "RabbitMQ password is required"
+$rabbitUserName = AskParameter -message "Enter the RabbitMQ username" -error "RabbitMQ username is required"
+$rabbitPassword = AskParameter -message "Enter the RabbitMQ password" -error "RabbitMQ password is required"
 
 # Do work
 Unzip "AccessControl.Client.zip" ".\AccessControl.Client"
