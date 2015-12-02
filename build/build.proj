@@ -78,8 +78,11 @@
 
     <!-- copy scripts -->
     <ItemGroup>
-      <Scripts Include="$(ScriptFolder)\install_server_services.ps1;
-                        $(ScriptFolder)\uninstall_server_services.ps1"/>
+      <Scripts Include="$(ScriptFolder)\common.ps1;
+                        $(ScriptFolder)\install_server_services.ps1;
+                        $(ScriptFolder)\uninstall_server_services.ps1;
+                        $(ScriptFolder)\install_client_services.ps1;
+                        $(ScriptFolder)\uninstall_client_services.ps1;"/>
     </ItemGroup>
     <Copy SourceFiles="@(Scripts)" DestinationFiles="@(Scripts->'$(ArtifactsFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
