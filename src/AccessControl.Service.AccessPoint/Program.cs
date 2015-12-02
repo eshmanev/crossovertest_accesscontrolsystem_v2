@@ -30,7 +30,6 @@ namespace AccessControl.Service.AccessPoint
                 host =>
                 {
                     host.SetServiceName("AccessControl.Service.AccessPoint");
-                    host.SetDisplayName("Access Point Manager");
                     host.SetDescription("This service is responsible for access points management");
                 });
         }

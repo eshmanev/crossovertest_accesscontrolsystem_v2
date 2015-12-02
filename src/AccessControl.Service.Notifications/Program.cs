@@ -23,7 +23,7 @@ namespace AccessControl.Service.Notifications
                 cfg =>
                 {
                     cfg.SetServiceName("AccessControl.Service.Notifications");
-                    cfg.SetDescription("Processes notifications");
+                    cfg.SetDescription("Processes access control notifications");
                 });
         }
 

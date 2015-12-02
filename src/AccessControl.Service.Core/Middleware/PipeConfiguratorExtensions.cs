@@ -13,7 +13,7 @@ namespace AccessControl.Service.Middleware
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="configurator"></param>
-        public static void UseExceptionLogger<T>(this IPipeConfigurator<T> configurator)
+        public static void UseUnhandledExceptionLogger<T>(this IPipeConfigurator<T> configurator)
             where T : class, PipeContext
         {
             configurator.AddPipeSpecification(new GenericPipeSpecification<T>(new ExceptionLoggerFilter<T>()));

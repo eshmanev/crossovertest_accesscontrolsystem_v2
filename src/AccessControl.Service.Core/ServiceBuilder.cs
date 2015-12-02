@@ -3,6 +3,7 @@ using System.Configuration;
 using AccessControl.Service.Configuration;
 using AccessControl.Service.Middleware;
 using MassTransit;
+using MassTransit.Log4NetIntegration;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Practices.Unity;
 using Topshelf;
@@ -47,7 +48,8 @@ namespace AccessControl.Service
             _busControl = Bus.Factory.CreateUsingRabbitMq(
                 cfg =>
                 {
-                    cfg.UseExceptionLogger();
+                    cfg.UseLog4Net();
+                    cfg.UseUnhandledExceptionLogger();
                     cfg.UseJsonSerializer();
                     // binary messages cannot be scheduled
                     // cfg.UseBsonSerializer();

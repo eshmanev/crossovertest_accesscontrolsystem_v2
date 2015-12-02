@@ -2,6 +2,8 @@ using System;
 using Topshelf;
 using Topshelf.HostConfigurators;
 using Topshelf.Unity;
+using MassTransit.Log4NetIntegration;
+
 
 namespace AccessControl.Service
 {
@@ -35,11 +37,10 @@ namespace AccessControl.Service
                         recovery =>
                         {
                             recovery.RestartService(0);
-                            recovery.OnCrashOnly();
                             recovery.SetResetPeriod(10);
                         });
-                    
-                    
+
+                    cfg.StartAutomatically();
                     cfg.UseUnityContainer(tuple.Item1);
                     cfg.Service<T>(
                         s =>
