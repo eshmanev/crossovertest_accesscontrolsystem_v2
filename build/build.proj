@@ -52,6 +52,13 @@
   </Target>
 
   <Target Name="Zip">
+    <!-- copy Roslyn -->
+    <ItemGroup>
+      <Roslyn Include="$(BuildFolder)\AccessControl.Web\roslyn\**\*.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(Roslyn)" DestinationFiles="@(Roslyn->'$(BuildFolder)\AccessControl.Web\_PublishedWebsites\AccessControl.Web\bin\roslyn\%(RecursiveDir)%(Filename)%(Extension)')" />
+
+    <!-- zip artifacts -->
     <ItemGroup>
       <AccessPoint Include="$(BuildFolder)\AccessControl.Service.AccessPoint\**\*.*"/>
       <LDAP Include="$(BuildFolder)\AccessControl.Service.LDAP\**\*.*"/>
@@ -60,7 +67,6 @@
       <Client Include="$(BuildFolder)\AccessControl.Client\**\*.*"/>
       <Simulator Include="$(BuildFolder)\AccessSimulator\**\*.*"/>
     </ItemGroup>
-
     <MakeDir Directories="$(ArtifactsFolder)"/>
     <Zip Files="@(AccessPoint)" WorkingDirectory="$(BuildFolder)\AccessControl.Service.AccessPoint" ZipFileName="$(ArtifactsFolder)\AccessControl.Service.AccessPoint.zip" />
     <Zip Files="@(LDAP)"  WorkingDirectory="$(BuildFolder)\AccessControl.Service.LDAP" ZipFileName="$(ArtifactsFolder)\AccessControl.Service.LDAP.zip" />

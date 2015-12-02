@@ -38,8 +38,8 @@ namespace AccessControl.Service
                             recovery.OnCrashOnly();
                             recovery.SetResetPeriod(10);
                         });
-
-                    cfg.AddCommandLineDefinition("config", c => { });
+                    
+                    
                     cfg.UseUnityContainer(tuple.Item1);
                     cfg.Service<T>(
                         s =>

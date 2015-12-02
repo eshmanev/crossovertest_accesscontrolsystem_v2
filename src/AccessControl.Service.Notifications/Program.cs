@@ -9,6 +9,7 @@ using AccessControl.Service.Security;
 using MassTransit;
 using MassTransit.QuartzIntegration;
 using Microsoft.Practices.Unity;
+using Quartz;
 using Quartz.Impl;
 
 namespace AccessControl.Service.Notifications
@@ -36,8 +37,12 @@ namespace AccessControl.Service.Notifications
                            .RegisterRequestClient<IFindUserByBiometrics, IFindUserByBiometricsResult>(WellKnownQueues.AccessControl)
                            .RegisterRequestClient<IFindAccessPointById, IFindAccessPointByIdResult>(WellKnownQueues.AccessControl);
 
-                        var scheduler = new StdSchedulerFactory().GetScheduler();
-                        cfg.RegisterInstance(scheduler);
+                        //var scheduler = new StdSchedulerFactory().GetScheduler();
+                        //cfg.RegisterInstance(scheduler);
+                        cfg.RegisterType<IScheduler>(
+                            new ContainerControlledLifetimeManager(),
+                            new InjectionFactory(c => new StdSchedulerFactory().GetScheduler()));
+
                         cfg.RegisterType<INotificationService, NotificationService>();
                     })
                 .ConfigureBus(

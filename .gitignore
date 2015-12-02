@@ -6,3 +6,4 @@ obj
 *.user
 docs/WS2012.pem
 docs/~$$visio.~vsdx
+artifacts/

@@ -27,7 +27,14 @@ INSTALLATION
      Those commands will delete guest access and add a user, which is configured in web.config files.
      NOTE: If you use a different username/password, you will have to change web.config files accordingly.
 1.5. Open port 5672 on RabbitMQ server. RabbitMQ uses this port for messaging by default.
-2. Здесь необходимо описать куда и как ставить сервисы
+2. Run build\ClickToBuild.cmd
+3. Copy the files listed below from the artifacts folder to your server which is responsible for access control management and unzip them:
+     AccessControl.Service.AccessPoint.zip
+     AccessControl.Service.LDAP.zip
+     AccessControl.Service.Notifications.zip
+
+4. Copy AccessControl.Client.zip from the artifacts folder to your server which connected to vendor software and unzip it
+
 
 
 Optional steps.
@@ -89,8 +96,12 @@ NOTES:
 --------------------------------------------------------------------------------------------------------------
 TROUBLESHOOTING
 --------------------------------------------------------------------------------------------------------------
-You may face a problem with WCF services, because Windows can block an URL if it has not been added to the access control list.
+1. You may face a problem with WCF services, because Windows can block an URL if it has not been added to the access control list.
 To fix the issue execute the following commands:
 
-netsh http add urlacl url=http://+:9981/AccessCheckService user=<your user name>
-netsh http add urlacl url=http://+:9981/AccessPointRegistry user=<your user name>
+   netsh http add urlacl url=http://+:9981/AccessCheckService user=<your user name>
+   netsh http add urlacl url=http://+:9981/AccessPointRegistry user=<your user name>
+
+
+2. If you have a problem with IIS and ASP.NET 4.5. Execute the following command
+   dism /online /enable-feature /all /featurename:IIS-ASPNET45
