@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <SrcFolder>$(MSBuildProjectDirectory)\..\src</SrcFolder>
+    <ScriptFolder>$(MSBuildProjectDirectory)\..\scripts</ScriptFolder>
     <BuildFolder>$(MSBuildProjectDirectory)\temp</BuildFolder>
     <ArtifactsFolder>$(MSBuildProjectDirectory)\..\artifacts</ArtifactsFolder>
   </PropertyGroup>
@@ -74,5 +75,12 @@
     <Zip Files="@(Web)" WorkingDirectory="$(BuildFolder)\AccessControl.Web\_PublishedWebsites\AccessControl.Web" ZipFileName="$(ArtifactsFolder)\AccessControl.Web.zip" />
     <Zip Files="@(Client)" WorkingDirectory="$(BuildFolder)\AccessControl.Client" ZipFileName="$(ArtifactsFolder)\AccessControl.Client.zip" />
     <Zip Files="@(Simulator)" WorkingDirectory="$(BuildFolder)\AccessSimulator" ZipFileName="$(ArtifactsFolder)\AccessSimulator.zip" />
+
+    <!-- copy scripts -->
+    <ItemGroup>
+      <Scripts Include="$(ScriptFolder)\install_server_services.ps1;
+                        $(ScriptFolder)\uninstall_server_services.ps1"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(Scripts)" DestinationFiles="@(Scripts->'$(ArtifactsFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>
