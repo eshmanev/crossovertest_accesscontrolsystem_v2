@@ -25,6 +25,7 @@ namespace AccessControl.Service.AccessPoint
         /// </summary>
         public static void Main()
         {
+            log4net.Config.XmlConfigurator.Configure();
             ServiceRunner.Run<BusServiceControl>(
                 ConfigureService,
                 host =>

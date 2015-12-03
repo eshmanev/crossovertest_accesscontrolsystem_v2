@@ -4,6 +4,7 @@ using AccessControl.Service.Configuration;
 using AccessControl.Service.Middleware;
 using MassTransit;
 using MassTransit.Log4NetIntegration;
+using MassTransit.Log4NetIntegration.Logging;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Practices.Unity;
 using Topshelf;
@@ -45,6 +46,7 @@ namespace AccessControl.Service
         public ServiceBuilder<T> ConfigureBus(Action<IRabbitMqBusFactoryConfigurator, IRabbitMqHost, IUnityContainer> preConfig, Action<IBusControl> postConfig = null)
         {
             var configuration = _container.Resolve<IServiceConfig>();
+            
             _busControl = Bus.Factory.CreateUsingRabbitMq(
                 cfg =>
                 {

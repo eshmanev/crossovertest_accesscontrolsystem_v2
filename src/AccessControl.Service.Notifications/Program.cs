@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Configuration;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Search;
 using AccessControl.Service.Configuration;
 using AccessControl.Service.Middleware;
+using AccessControl.Service.Notifications.Configuration;
 using AccessControl.Service.Notifications.Consumers;
 using AccessControl.Service.Notifications.Services;
 using AccessControl.Service.Security;
@@ -18,6 +20,7 @@ namespace AccessControl.Service.Notifications
     {
         public static void Main()
         {
+            log4net.Config.XmlConfigurator.Configure();
             ServiceRunner.Run<NotificationServiceControl>(
                 ConfigureService,
                 cfg =>
@@ -33,17 +36,19 @@ namespace AccessControl.Service.Notifications
                 .ConfigureContainer(
                     cfg =>
                     {
-                        cfg.RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
-                           .RegisterRequestClient<IFindUserByBiometrics, IFindUserByBiometricsResult>(WellKnownQueues.AccessControl)
-                           .RegisterRequestClient<IFindAccessPointById, IFindAccessPointByIdResult>(WellKnownQueues.AccessControl);
+                        cfg
+                            .RegisterInstance((INotificationConfig)ConfigurationManager.GetSection("notification"))
+                            .RegisterType<INotificationService, NotificationService>()
+                            .RegisterType<IScheduleFactory, ScheduleFactory>()
+                            .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
+                            .RegisterRequestClient<IFindUserByBiometrics, IFindUserByBiometricsResult>(WellKnownQueues.AccessControl)
+                            .RegisterRequestClient<IFindAccessPointById, IFindAccessPointByIdResult>(WellKnownQueues.AccessControl);
 
                         //var scheduler = new StdSchedulerFactory().GetScheduler();
                         //cfg.RegisterInstance(scheduler);
                         cfg.RegisterType<IScheduler>(
                             new ContainerControlledLifetimeManager(),
                             new InjectionFactory(c => new StdSchedulerFactory().GetScheduler()));
-
-                        cfg.RegisterType<INotificationService, NotificationService>();
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>
@@ -60,6 +65,7 @@ namespace AccessControl.Service.Notifications
                                 e.Consumer(() => container.Resolve<RedeliveryConsumer>());
                                 e.Consumer(() => container.Resolve<ScheduleMessageConsumer>());
                                 e.Consumer(() => container.Resolve<CancelScheduledMessageConsumer>());
+                                e.Consumer(() => container.Resolve<DailyReportConsumer>());
                             });
                     },
                     bus =>

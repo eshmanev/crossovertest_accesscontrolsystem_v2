@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
@@ -167,14 +168,25 @@ namespace AccessControl.Service.LDAP.Services
         /// <returns></returns>
         public bool CheckCredentials(string userName, string password)
         {
+            //using (PrincipalContext pc = new PrincipalContext(ContextType.Domain, "YOURDOMAIN", usr, pwd))
+            //{
+            //    // validate the credentials
+            //    bool isValid = pc.ValidateCredentials("myuser", "mypassword");
+            //}
+
             try
             {
                 var entry = new DirectoryEntry(_config.LdapPath, userName, password);
                 // ReSharper disable once UnusedVariable
                 var nativeObject = entry.NativeObject;
-                return true;
+
+                var search = new DirectorySearcher(entry) {Filter = "(SAMAccountName=" + userName + ")"};
+                search.PropertiesToLoad.Add("cn");
+                var result = search.FindOne();
+
+                return result != null;
             }
-            catch (DirectoryServicesCOMException)
+            catch (Exception)
             {
                 return false;
             }

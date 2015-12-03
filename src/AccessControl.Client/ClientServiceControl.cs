@@ -7,7 +7,6 @@ using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service;
 using AccessControl.Service.Security;
-using log4net;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
@@ -21,7 +20,6 @@ namespace AccessControl.Client
         private readonly IBusControl _busControl;
         private readonly IUnityContainer _container;
         private UnityServiceHost[] _wcfHosts;
-        private static readonly ILog Log = LogManager.GetLogger(typeof(ClientServiceControl));
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ClientServiceControl" /> class.
@@ -83,7 +81,7 @@ namespace AccessControl.Client
             }
             catch (Exception e)
             {
-                Log.Error("An error occurred while authenticating client", e);
+                LogError("An error occurred while authenticating client", e);
             }
         }
 

@@ -16,6 +16,7 @@ namespace AccessControl.Client
     {
         public static void Main()
         {
+            log4net.Config.XmlConfigurator.Configure();
             ServiceRunner.Run<ClientServiceControl>(
                 ConfigureService,
                 cfg =>

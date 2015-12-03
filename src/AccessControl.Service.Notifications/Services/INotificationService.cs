@@ -10,10 +10,11 @@ namespace AccessControl.Service.Notifications.Services
         /// <summary>
         ///     Sends an email to the specified email address.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="emailAddress">The email address.</param>
         /// <param name="subject">The subject.</param>
         /// <param name="body">The body.</param>
-        void SendEmail(string emailAddress, string subject, string body);
+        void SendEmail(string name, string emailAddress, string subject, string body);
 
         /// <summary>
         ///     Sends a short message to the specified phone number.

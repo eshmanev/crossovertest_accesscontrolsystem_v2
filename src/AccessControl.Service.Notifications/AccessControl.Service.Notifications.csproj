@@ -97,7 +97,12 @@
       <HintPath>..\packages\RabbitMQ.Client.3.5.6\lib\net40\RabbitMQ.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RestSharp, Version=105.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.2\lib\net452\RestSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -109,18 +114,39 @@
       <HintPath>..\packages\Topshelf.3.2.0\lib\net40-full\Topshelf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.4.4.1\lib\3.5\Twilio.Api.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeContracts\INotificationConfigContract.cs" />
     <Compile Include="CodeContracts\INotificationServiceContract.cs" />
+    <Compile Include="CodeContracts\IReportSettingsContract.cs" />
+    <Compile Include="CodeContracts\ISmtpSettingsContract.cs" />
+    <Compile Include="CodeContracts\ITwilioSettingsContract.cs" />
+    <Compile Include="Configuration\INotificationConfig.cs" />
+    <Compile Include="Configuration\IReportSettings.cs" />
+    <Compile Include="Configuration\ISmtpSettings.cs" />
+    <Compile Include="Configuration\ITwilioSettings.cs" />
+    <Compile Include="Configuration\NotificationConfig.cs" />
+    <Compile Include="Configuration\ReportElement.cs" />
+    <Compile Include="Configuration\SmtpElement.cs" />
+    <Compile Include="Configuration\TwilioElement.cs" />
     <Compile Include="Consumers\NotificationConsumer.cs" />
     <Compile Include="Consumers\RedeliveryConsumer.cs" />
+    <Compile Include="Messages\GenerateDailyReport.cs" />
     <Compile Include="Messages\RedeliverEmalMessage.cs" />
     <Compile Include="Messages\RedeliverSmsMessage.cs" />
     <Compile Include="NotificationServiceControl.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Consumers\DailyReportConsumer.cs" />
     <Compile Include="Services\INotificationService.cs" />
+    <Compile Include="Services\IScheduleFactory.cs" />
     <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Services\ScheduleFactory.cs" />
+    <Compile Include="Services\SmsException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AccessControl.Contracts\AccessControl.Contracts.csproj">

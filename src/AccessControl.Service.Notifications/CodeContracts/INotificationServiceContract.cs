@@ -11,8 +11,9 @@ namespace AccessControl.Service.Notifications.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class INotificationServiceContract : INotificationService
     {
-        public void SendEmail(string emailAddress, string subject, string body)
+        public void SendEmail(string name, string emailAddress, string subject, string body)
         {
+            Contract.Requires(!string.IsNullOrWhiteSpace(name));
             Contract.Requires(!string.IsNullOrWhiteSpace(emailAddress));
             Contract.Requires(!string.IsNullOrWhiteSpace(subject));
             Contract.Requires(!string.IsNullOrWhiteSpace(body));

@@ -93,7 +93,7 @@ namespace AccessControl.Service.Notifications.Consumers
                 }
                 body.AppendLine("User: " + (user.DisplayName ?? user.UserName));
                 body.AppendLine("Best regards.");
-                SendEmail(context, findManagerResult.User.Email, "Access violation occurred", body.ToString());
+                SendEmail(context, findManagerResult.User.DisplayName, findManagerResult.User.Email, "Access violation occurred", body.ToString());
             }
 
             if (!string.IsNullOrWhiteSpace(findManagerResult.User.PhoneNumber))
@@ -131,7 +131,7 @@ namespace AccessControl.Service.Notifications.Consumers
             body.AppendLine($"Dear {findUserResult.User.DisplayName},");
             body.AppendLine("You are granted management and monitoring rights of the Access Control System");
             body.AppendLine("Best regards.");
-            SendEmail(context, findUserResult.User.Email, "Management rights granted", body.ToString());
+            SendEmail(context, findUserResult.User.DisplayName, findUserResult.User.Email, "Management rights granted", body.ToString());
         }
 
         /// <summary>
@@ -151,14 +151,14 @@ namespace AccessControl.Service.Notifications.Consumers
             body.AppendLine($"Dear {findUserResult.User.DisplayName},");
             body.AppendLine("You are revoked management and monitoring rights of the Access Control System");
             body.AppendLine("Best regards.");
-            SendEmail(context, findUserResult.User.Email, "Management rights revoked", body.ToString());
+            SendEmail(context, findUserResult.User.DisplayName, findUserResult.User.Email, "Management rights revoked", body.ToString());
         }
 
-        private void SendEmail(ConsumeContext context, string recipient, string subject, string body)
+        private void SendEmail(ConsumeContext context, string name, string emailAddress, string subject, string body)
         {
             try
             {
-                _notificationService.SendEmail(recipient, subject, body);
+                _notificationService.SendEmail(name, emailAddress, subject, body);
             }
             catch (Exception ex)
             {
@@ -167,7 +167,7 @@ namespace AccessControl.Service.Notifications.Consumers
                     DateTime.Now.AddTicks(RedeliveryConsumer.RedeliveryInterval.Ticks),
                     new RedeliverEmailMessage
                     {
-                        EmailAddress = recipient,
+                        EmailAddress = emailAddress,
                         Subject = subject,
                         Body = body
                     });

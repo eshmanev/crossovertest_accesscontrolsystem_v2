@@ -9,7 +9,7 @@ $rabbitAddress = AskParameter -message "Enter the RabbitMQ server address (Examp
 $rabbitUserName = AskParameter -message "Enter the RabbitMQ username" -error "RabbitMQ username is required"
 $rabbitPassword = AskParameter -message "Enter the RabbitMQ password" -error "RabbitMQ password is required"
 # Database parameters
-$connectionString = AskParameter -message "Enter the database connection string (Example: 'Data Source=.\SQLEXPRESS;Initial Catalog=AccessControlSystem;Integrated Security=True')" -error "Connection string is required"
+$connectionString = AskParameter -message "Enter the database connection string (Example: 'Data Source=.\SQLEXPRESS;Initial Catalog=AccessControlSystem;User Id=test;Password=test')" -error "Connection string is required"
 
 # Do work
 Unzip "AccessControl.Service.LDAP.zip" ".\AccessControl.Service.LDAP"

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AccessControl.Service.Notifications.Messages;
 using AccessControl.Service.Notifications.Services;
 using MassTransit;
+using MassTransit.Scheduling;
 
 namespace AccessControl.Service.Notifications.Consumers
 {
@@ -31,7 +32,7 @@ namespace AccessControl.Service.Notifications.Consumers
         {
             try
             {
-                _notificationService.SendEmail(context.Message.EmailAddress, context.Message.Subject, context.Message.Body);
+                _notificationService.SendEmail(context.Message.Name, context.Message.EmailAddress, context.Message.Subject, context.Message.Body);
                 return Task.FromResult(true);
             }
             catch

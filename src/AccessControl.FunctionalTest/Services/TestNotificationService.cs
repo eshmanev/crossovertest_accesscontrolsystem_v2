@@ -19,7 +19,7 @@ namespace AccessControl.FunctionalTest.Services
 
         public ConcurrentBag<ReceivedSms> Sms { get; }
 
-        public void SendEmail(string emailAddress, string subject, string body)
+        public void SendEmail(string name, string emailAddress, string subject, string body)
         {
             Emails.Add(new ReceivedEmail {EmailAddress = emailAddress, Subject = subject, Body = body});
         }

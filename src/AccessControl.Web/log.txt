@@ -1,0 +1,20 @@
+2015-12-02 16:52:45,895 [5] ERROR AccessControl.Web.Services.ApplicationSignInManager - An error occurred while authentication
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Security.IAuthenticateUser request faulted: При установлении соединения с SQL Server произошла ошибка, связанная с сетью или с определенным экземпляром. Сервер не найден или недоступен. Убедитесь, что имя экземпляра указано правильно и что на SQL Server разрешены удаленные соединения. (provider: SQL Network Interfaces, error: 26 - Ошибка при обнаружении указанного сервера или экземпляра)
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.ApplicationSignInManager.<PasswordSignInAsync>d__5.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\ApplicationSignInManager.cs:строка 51
+2015-12-03 00:11:31,327 [7] ERROR AccessControl.Web.Services.ApplicationSignInManager - An error occurred while authentication
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Security.IAuthenticateUser request faulted: При установлении соединения с SQL Server произошла ошибка, связанная с сетью или с определенным экземпляром. Сервер не найден или недоступен. Убедитесь, что имя экземпляра указано правильно и что на SQL Server разрешены удаленные соединения. (provider: SQL Network Interfaces, error: 26 - Ошибка при обнаружении указанного сервера или экземпляра)
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.ApplicationSignInManager.<PasswordSignInAsync>d__5.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\ApplicationSignInManager.cs:строка 51

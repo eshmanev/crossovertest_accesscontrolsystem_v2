@@ -14,7 +14,7 @@ namespace AccessControl.Service.LDAP
     {
         public static void Main()
         {
-
+            log4net.Config.XmlConfigurator.Configure();
             ServiceRunner.Run<BusServiceControl>(
                 ConfigureService,
                 cfg =>

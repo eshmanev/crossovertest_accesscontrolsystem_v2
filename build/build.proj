@@ -76,14 +76,15 @@
     <Zip Files="@(Client)" WorkingDirectory="$(BuildFolder)\AccessControl.Client" ZipFileName="$(ArtifactsFolder)\AccessControl.Client.zip" />
     <Zip Files="@(Simulator)" WorkingDirectory="$(BuildFolder)\AccessSimulator" ZipFileName="$(ArtifactsFolder)\AccessSimulator.zip" />
 
-    <!-- copy scripts -->
+    <!-- copy scripts and cookie -->
     <ItemGroup>
-      <Scripts Include="$(ScriptFolder)\common.ps1;
-                        $(ScriptFolder)\install_server_services.ps1;
-                        $(ScriptFolder)\uninstall_server_services.ps1;
-                        $(ScriptFolder)\install_client_services.ps1;
-                        $(ScriptFolder)\uninstall_client_services.ps1;"/>
+      <CopyFiles Include="$(ScriptFolder)\common.ps1;
+                          $(ScriptFolder)\install_server_services.ps1;
+                          $(ScriptFolder)\uninstall_server_services.ps1;
+                          $(ScriptFolder)\install_client_services.ps1;
+                          $(ScriptFolder)\uninstall_client_services.ps1;
+                          $(MSBuildProjectDirectory)\.erlang.cookie"/>
     </ItemGroup>
-    <Copy SourceFiles="@(Scripts)" DestinationFiles="@(Scripts->'$(ArtifactsFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(CopyFiles)" DestinationFiles="@(CopyFiles->'$(ArtifactsFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>
