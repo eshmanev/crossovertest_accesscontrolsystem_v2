@@ -13,7 +13,6 @@
 <table class="table table-hover table-bordered">
     <thead>
     <tr>
-        <th>Site</th>
         <th>Department</th>
         <th>Access Point ID</th>
         <td>Name</td>
@@ -24,7 +23,6 @@
     @foreach (var accessPoint in Model.AccessPoints)
     {
         <tr>
-            <td>@accessPoint.Site</td>
             <td>@accessPoint.Department</td>
             <td>@accessPoint.AccessPointId</td>
             <td>@accessPoint.Name</td>

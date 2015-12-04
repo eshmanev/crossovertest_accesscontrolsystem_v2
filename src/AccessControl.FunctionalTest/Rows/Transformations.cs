@@ -1,4 +1,5 @@
 ﻿using AccessControl.Contracts.Helpers;
+using AccessControl.Contracts.Impl.Dto;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -11,7 +12,7 @@ namespace AccessControl.FunctionalTest.Rows
         public AccessPoint Row(Table table)
         {
             var row = table.CreateInstance<AccessPointRow>();
-            return new AccessPoint(row.AccessPointId, row.Site, row.Department, row.Name) {Description = row.Description};
+            return new AccessPoint(row.AccessPointId, row.Department, row.Name) {Description = row.Description};
         }
     }
 }

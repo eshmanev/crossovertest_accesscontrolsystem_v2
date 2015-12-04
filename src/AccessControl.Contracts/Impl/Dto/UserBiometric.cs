@@ -7,11 +7,10 @@ namespace AccessControl.Contracts.Impl.Dto
         /// <summary>
         ///     Initializes a new instance of the <see cref="UserBiometric" /> class.
         /// </summary>
-        /// <param name="site">The site.</param>
         /// <param name="userName">Name of the user.</param>
         /// <param name="userGroups">The user groups.</param>
-        public UserBiometric(string site, string userName, string[] userGroups)
-            : base(site, userName, userGroups)
+        public UserBiometric(string userName, string[] userGroups)
+            : base(userName, userGroups)
         {
         }
 

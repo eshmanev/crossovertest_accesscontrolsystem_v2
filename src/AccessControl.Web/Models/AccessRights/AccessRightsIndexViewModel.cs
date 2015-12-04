@@ -18,12 +18,6 @@ namespace AccessControl.Web.Models.AccessRights
             return user != null ? user.DisplayName : userName;
         }
 
-        public string GetSite(Guid accessPointId)
-        {
-            var accessPoint = Editor.AccessPoints.FirstOrDefault(x => x.AccessPointId == accessPointId);
-            return accessPoint != null ? accessPoint.Site : "Unknown site";
-        }
-
         public string GetDepartment(Guid accessPointId)
         {
             var accessPoint = Editor.AccessPoints.FirstOrDefault(x => x.AccessPointId == accessPointId);

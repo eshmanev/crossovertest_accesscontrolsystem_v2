@@ -34,14 +34,6 @@ namespace AccessControl.Data.Entities
         public virtual string Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the site.
-        /// </summary>
-        /// <value>
-        /// The site.
-        /// </value>
-        public virtual string Site { get; set; }
-
-        /// <summary>
         /// Gets or sets the department.
         /// </summary>
         /// <value>

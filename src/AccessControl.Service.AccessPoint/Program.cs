@@ -2,10 +2,8 @@
 using System.Configuration;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Commands.Security;
-using AccessControl.Contracts.Dto;
 using AccessControl.Data;
 using AccessControl.Data.Configuration;
 using AccessControl.Data.Session;
@@ -53,7 +51,7 @@ namespace AccessControl.Service.AccessPoint
                             .RegisterRequestClient<ICheckCredentials, ICheckCredentialsResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
-                            .RegisterRequestClient<IValidateDepartment, IVoidResult>(WellKnownQueues.Ldap);
+                            .RegisterRequestClient<IListDepartments, IListDepartmentsResult>(WellKnownQueues.Ldap);
                     })
                 .ConfigureBus(
                     (cfg, host, container) =>

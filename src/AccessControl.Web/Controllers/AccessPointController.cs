@@ -1,15 +1,12 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.Linq;
+﻿using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
+using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Web.Models.AccessPoint;
-using AccessControl.Web.Services;
 using MassTransit;
 
 namespace AccessControl.Web.Controllers
@@ -50,7 +47,7 @@ namespace AccessControl.Web.Controllers
                 return View(model);
             }
 
-            var accessPoint = new AccessPoint(model.Editor.AccessPointId, model.Editor.Site, model.Editor.Department, model.Editor.Name) {Description = model.Editor.Description};
+            var accessPoint = new AccessPoint(model.Editor.AccessPointId, model.Editor.Department, model.Editor.Name) {Description = model.Editor.Description};
             var result = await _registerAccessPointRequest.Request(new RegisterAccessPoint(accessPoint));
             if (!result.Succeded)
             {
@@ -69,12 +66,7 @@ namespace AccessControl.Web.Controllers
             await Task.WhenAll(accessPointsTask, departmentsTask);
 
             model.AccessPoints = accessPointsTask.Result.AccessPoints;
-            model.Editor.SiteDepartments = departmentsTask
-                .Result
-                .Departments
-                .GroupBy(x => Tuple.Create(x.Site, x.SiteName))
-                .Select(x => Tuple.Create(x.Key.Item1, x.Key.Item2, x.Select(t => t.DepartmentName).ToArray()))
-                .ToList();
+            model.Editor.AvailableDepartments = departmentsTask.Result.Departments;
         }
     }
 }

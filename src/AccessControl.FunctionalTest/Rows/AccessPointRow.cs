@@ -6,7 +6,6 @@ namespace AccessControl.FunctionalTest.Rows
     {
         public Guid AccessPointId { get; set; }
         public string Department { get; set; }
-        public string Site { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }

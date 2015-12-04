@@ -85,7 +85,6 @@ namespace AccessControl.Contracts.Impl.Dto
                 DisplayName = user.DisplayName;
                 Email = user.Email;
                 PhoneNumber = user.PhoneNumber;
-                Site = user.Site;
                 UserName = user.UserName;
                 Groups = user.Groups;
                 IsManager = user.IsManager;
@@ -147,14 +146,6 @@ namespace AccessControl.Contracts.Impl.Dto
             ///     The phone number.
             /// </value>
             public string PhoneNumber { get; set; }
-
-            /// <summary>
-            ///     Gets the site.
-            /// </summary>
-            /// <value>
-            ///     The site.
-            /// </value>
-            public string Site { get; set; }
 
             /// <summary>
             ///     Gets the name of the user.

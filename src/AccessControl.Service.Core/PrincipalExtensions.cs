@@ -23,11 +23,6 @@ namespace AccessControl.Service
             return principal.Cast()?.DecryptedTicket.OnBehalfOf ?? new string[0];
         }
 
-        public static string Site(this IPrincipal principal)
-        {
-            return principal.Cast()?.DecryptedTicket.User.Site;
-        }
-
         public static string UserName(this IPrincipal principal)
         {
             return principal.Cast()?.DecryptedTicket.User.UserName;

@@ -66,14 +66,6 @@ namespace AccessControl.Contracts.Dto
         string PhoneNumber { get; }
 
         /// <summary>
-        ///     Gets the site.
-        /// </summary>
-        /// <value>
-        ///     The site.
-        /// </value>
-        string Site { get; }
-
-        /// <summary>
         ///     Gets the name of the user.
         /// </summary>
         /// <value>

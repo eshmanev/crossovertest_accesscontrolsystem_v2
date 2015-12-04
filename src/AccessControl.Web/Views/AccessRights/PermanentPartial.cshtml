@@ -7,7 +7,6 @@
     foreach (var item in Model.Rules)
     {
         <tr>
-            <td>@Model.Owner.GetSite(item.AccessPointId)</td>
             <td>@Model.Owner.GetDepartment(item.AccessPointId)</td>
             <td>@Model.Owner.GetName(item.AccessPointId)</td>
             <td>@Html.ActionLink("deny", "Deny", new { userOrGroupName = Model.Identity, accessPointId = item.AccessPointId, group = Model.IsGroup })</td>

@@ -156,7 +156,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
         private IUserBiometric ConvertUser(IUser user, string biometricHash)
         {
-            return new UserBiometric(user.Site, user.UserName, user.Groups)
+            return new UserBiometric(user.UserName, user.Groups)
             {
                 Department = user.Department,
                 PhoneNumber = user.PhoneNumber,

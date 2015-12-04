@@ -13,7 +13,6 @@
 <table id="userHashTable" class="table table-bordered table-responsive table-hover">
     <thead>
     <tr>
-        <th>Site</th>
         <th>Department</th>
         <th>Login</th>
         <th>Name</th>
@@ -26,7 +25,6 @@
     @foreach (var user in Model)
     {
         <tr>
-            <td>@user.Site</td>
             <td>@user.Department</td>
             <td id="userName">@user.UserName</td>
             <td>@user.DisplayName</td>

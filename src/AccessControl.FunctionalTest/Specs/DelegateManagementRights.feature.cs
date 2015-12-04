@@ -71,13 +71,11 @@ namespace AccessControl.FunctionalTest.Specs
  testRunner.Given("I\'m a Manager", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Site",
                         "Department",
                         "AccessPointId",
                         "Name",
                         "Description"});
             table1.AddRow(new string[] {
-                        "OU=Head Office,DC=Evriqum,DC=RU",
                         "Top Management",
                         "00FB8A36-B9A0-42AC-9F95-C785F74A14B7",
                         "TestPoint",

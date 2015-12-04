@@ -87,7 +87,6 @@ namespace AccessControl.Service.Notifications.Consumers
                 }
                 else
                 {
-                    body.AppendLine("Site: " + accessPoint.Site);
                     body.AppendLine("Department: " + accessPoint.Department);
                     body.AppendLine("Access Point: " + accessPoint.Name);
                 }

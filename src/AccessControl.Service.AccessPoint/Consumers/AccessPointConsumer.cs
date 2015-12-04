@@ -24,20 +24,20 @@ namespace AccessControl.Service.AccessPoint.Consumers
                                        IConsumer<IFindAccessPointById>
     {
         private readonly IDatabaseContext _databaseContext;
-        private readonly IRequestClient<IValidateDepartment, IVoidResult> _validateDepartmentRequest;
+        private readonly IRequestClient<IListDepartments, IListDepartmentsResult> _listDepartmentsRequest;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccessPointConsumer" /> class.
         /// </summary>
         /// <param name="databaseContext">The database context.</param>
-        /// <param name="validateDepartmentRequest">The validate department request.</param>
-        public AccessPointConsumer(IDatabaseContext databaseContext, IRequestClient<IValidateDepartment, IVoidResult> validateDepartmentRequest)
+        /// <param name="listDepartmentsRequest">The list departments request.</param>
+        public AccessPointConsumer(IDatabaseContext databaseContext, IRequestClient<IListDepartments, IListDepartmentsResult> listDepartmentsRequest)
         {
             Contract.Requires(databaseContext != null);
-            Contract.Requires(validateDepartmentRequest != null);
+            Contract.Requires(listDepartmentsRequest != null);
 
             _databaseContext = databaseContext;
-            _validateDepartmentRequest = validateDepartmentRequest;
+            _listDepartmentsRequest = listDepartmentsRequest;
         }
 
         /// <summary>
@@ -87,8 +87,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 return;
             }
 
-            var result = await _validateDepartmentRequest.Request(new ValidateDepartment(context.Message.AccessPoint.Site, context.Message.AccessPoint.Department));
-            if (!result.Succeded)
+            var result = await _listDepartmentsRequest.Request(ListCommand.WithoutParameters);
+            var departmentExists = result.Departments.Any(x => x.DepartmentName == context.Message.AccessPoint.Department);
+            if (!departmentExists)
             {
                 context.Respond(result);
                 return;
@@ -99,7 +100,6 @@ namespace AccessControl.Service.AccessPoint.Consumers
                 AccessPointId = context.Message.AccessPoint.AccessPointId,
                 Name = context.Message.AccessPoint.Name,
                 Description = context.Message.AccessPoint.Description,
-                Site = context.Message.AccessPoint.Site,
                 Department = context.Message.AccessPoint.Department,
                 ManagedBy = Thread.CurrentPrincipal.UserName()
             };
@@ -132,7 +132,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
 
         private IAccessPoint ConvertAccessPoint(Data.Entities.AccessPoint entity)
         {
-            return new Contracts.Helpers.AccessPoint(entity.AccessPointId, entity.Site, entity.Department, entity.Name)
+            return new Contracts.Impl.Dto.AccessPoint(entity.AccessPointId, entity.Department, entity.Name)
             {
                 Description = entity.Description
             };

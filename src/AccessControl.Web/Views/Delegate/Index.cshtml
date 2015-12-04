@@ -20,7 +20,6 @@
         <tr>
             <td><span class="@(user.IsDelegated ? null : "sr-only") glyphicon glyphicon-bookmark text-success" aria-hidden="true"></span></td>
             <td>@user.User.DisplayName</td>
-            <td>@user.User.Site</td>
             <td>@user.User.Department</td>
             <td>
                 @Html.ActionLink("Grant rights", "Grant", new {userName = user.User.UserName}, new {@class = "grant-button"}) |

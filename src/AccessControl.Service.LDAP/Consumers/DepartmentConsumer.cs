@@ -2,16 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Impl.Commands;
-using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Service.LDAP.Services;
 using AccessControl.Service.Security;
 using MassTransit;
 
 namespace AccessControl.Service.LDAP.Consumers
 {
-    internal class DepartmentConsumer : IConsumer<IValidateDepartment>, IConsumer<IListDepartments>
+    internal class DepartmentConsumer : IConsumer<IListDepartments>
     {
         private readonly ILdapService _ldapService;
 
@@ -35,17 +33,6 @@ namespace AccessControl.Service.LDAP.Consumers
             var fetcher = RoleBasedDataFetcher.Create(_ldapService.ListDepartments, _ldapService.FindDepartmentsByManager);
             var departments = fetcher.Execute();
             return context.RespondAsync(ListCommand.DepartmentsResult(departments.ToArray()));
-        }
-
-        /// <summary>
-        ///     Validates the specified department.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        public Task Consume(ConsumeContext<IValidateDepartment> context)
-        {
-            var departmentExists = _ldapService.ValidateDepartment(context.Message.Site, context.Message.Department);
-            return context.RespondAsync(departmentExists ? new VoidResult() : new VoidResult("Invalid site or department specified"));
         }
     }
 }

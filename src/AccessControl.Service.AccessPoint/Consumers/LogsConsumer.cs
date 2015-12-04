@@ -92,9 +92,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                     IUser user;
                     users.TryGetValue(entity.UserName, out user);
 
-                    var accessPoint = new Contracts.Helpers.AccessPoint(
+                    var accessPoint = new Contracts.Impl.Dto.AccessPoint(
                         entity.AccessPoint.AccessPointId,
-                        entity.AccessPoint.Site,
                         entity.AccessPoint.Department,
                         entity.AccessPoint.Name)
                     {

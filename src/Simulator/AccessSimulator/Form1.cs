@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessSimulator.AccessCheckServiceProxy;
 using MassTransit;
@@ -38,11 +36,11 @@ namespace AccessSimulator
             }
 
             var accessPoint = ((CacheItem) accessPointCombo.SelectedItem);
-            var userHash = ((CacheItem)userCombo.SelectedItem).Id;
+            var userHash = ((CacheItem) userCombo.SelectedItem).Id;
             var proxy = new AccessCheckServiceClient();
             try
             {
-                if (proxy.TryPass(new CheckAccess { AccessPointId = new Guid(accessPoint.Id), UserHash = userHash }))
+                if (proxy.TryPass(new CheckAccess {AccessPointId = new Guid(accessPoint.Id), UserHash = userHash}))
                 {
                     MessageBox.Show("Welcome to " + accessPoint.Name, "Authorized", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -55,7 +53,6 @@ namespace AccessSimulator
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-           
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -68,8 +65,8 @@ namespace AccessSimulator
             messageLabel.Show();
             messageLabel.Text = "Loading data...";
             Enabled = false;
-            CacheItem[] accessPoints = new CacheItem[0];
-            CacheItem[] users = new CacheItem[0];
+            var accessPoints = new CacheItem[0];
+            var users = new CacheItem[0];
             try
             {
                 accessPointCombo.SelectedItem = null;
@@ -87,8 +84,9 @@ namespace AccessSimulator
                                                        x => new CacheItem
                                                        {
                                                            Id = x.AccessPointId.ToString(),
-                                                           Name = $"{x.Name} - {SiteName(x.Site)}/{x.Department}"
+                                                           Name = $"{x.Department} / {x.Name}"
                                                        })
+                                                   .OrderBy(x => x.Name)
                                                    .ToArray();
 
                 users = listBiometricsTask.Result.Users
@@ -97,8 +95,9 @@ namespace AccessSimulator
                                               x => new CacheItem
                                               {
                                                   Id = x.BiometricHash,
-                                                  Name = $"{x.DisplayName} - {SiteName(x.Site)}/{x.Department}"
+                                                  Name = $"{x.Department} - {x.DisplayName}"
                                               })
+                                          .OrderBy(x => x.Name)
                                           .ToArray();
 
                 // save cache
@@ -112,14 +111,15 @@ namespace AccessSimulator
             finally
             {
                 // update UI
-                Invoke(new MethodInvoker(
-                    () =>
-                    {
-                        accessPointCombo.Items.AddRange(accessPoints.Cast<object>().ToArray());
-                        userCombo.Items.AddRange(users.Cast<object>().ToArray());
-                        Enabled = true;
-                        messageLabel.Hide();
-                    }));
+                Invoke(
+                    new MethodInvoker(
+                        () =>
+                        {
+                            accessPointCombo.Items.AddRange(accessPoints.Cast<object>().ToArray());
+                            userCombo.Items.AddRange(users.Cast<object>().ToArray());
+                            Enabled = true;
+                            messageLabel.Hide();
+                        }));
             }
         }
 

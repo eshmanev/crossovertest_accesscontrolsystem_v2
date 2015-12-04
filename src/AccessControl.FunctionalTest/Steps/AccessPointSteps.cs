@@ -5,6 +5,7 @@ using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
+using AccessControl.Contracts.Impl.Dto;
 using Shouldly;
 using TechTalk.SpecFlow;
 

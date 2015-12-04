@@ -20,7 +20,6 @@ namespace AccessControl.Web.Models.Account
             UserName = claimIdentity.FindFirstValue("UserName");
             DisplayName = claimIdentity.FindFirstValue("DisplayName");
             Department = claimIdentity.FindFirstValue("Department");
-            Site = claimIdentity.FindFirstValue("Site");
             Email = claimIdentity.FindFirstValue("Email");
             PhoneNumber = claimIdentity.FindFirstValue("PhoneNumber");
             ServiceTicket = claimIdentity.FindFirstValue("ServiceTicket");
@@ -32,7 +31,6 @@ namespace AccessControl.Web.Models.Account
             DisplayName = user.DisplayName;
             Email = user.Email;
             PhoneNumber = user.PhoneNumber;
-            Site = user.Site;
             Department = user.Department;
         }
 
@@ -43,8 +41,6 @@ namespace AccessControl.Web.Models.Account
         public string Email { get; set; }
 
         public string PhoneNumber { get; set; }
-
-        public string Site { get; set; }
 
         public string Department { get; set; }
 
@@ -63,9 +59,6 @@ namespace AccessControl.Web.Models.Account
 
             if (!string.IsNullOrWhiteSpace(Department))
                 userIdentity.AddClaim(new Claim("Department", Department));
-
-            if (!string.IsNullOrWhiteSpace(Site))
-                userIdentity.AddClaim(new Claim("Site", Site));
 
             if (!string.IsNullOrWhiteSpace(Email))
                 userIdentity.AddClaim(new Claim("Email", Email));

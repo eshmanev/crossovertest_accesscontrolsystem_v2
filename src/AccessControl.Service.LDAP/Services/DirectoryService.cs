@@ -264,15 +264,8 @@ namespace AccessControl.Service.LDAP.Services
 
         private IDepartment ConvertDepartment(SearchResult result)
         {
-            var siteDistinguished = result.GetDirectoryEntry().Parent.GetProperty("distinguishedName");
-            var site = result.GetDirectoryEntry().Parent.GetProperty("name");
             var department = result.GetProperty("department");
-            if (string.IsNullOrWhiteSpace(siteDistinguished) || string.IsNullOrWhiteSpace(site) || string.IsNullOrWhiteSpace(department))
-            {
-                return null;
-            }
-
-            return new Department(siteDistinguished, site, department);
+            return new Department(department);
         }
 
         private IUser ConvertUser(SearchResult result)
@@ -280,7 +273,7 @@ namespace AccessControl.Service.LDAP.Services
             var userName = result.GetProperty("samaccountname");
             var managerName = result.GetProperty("manager");
             var manager = managerName != null ? FindUserByDistinguishedName(managerName) : null;
-            return new User(result.GetDirectoryEntry().Parent.GetProperty("distinguishedName"), userName, GetUserGroupsCore(userName).ToArray())
+            return new User(userName, GetUserGroupsCore(userName).ToArray())
             {
                 DisplayName = result.GetProperty("displayname") ?? userName,
                 PhoneNumber = result.GetProperty("telephonenumber"),

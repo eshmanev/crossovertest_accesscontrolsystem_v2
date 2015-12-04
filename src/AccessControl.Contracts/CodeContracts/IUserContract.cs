@@ -10,15 +10,6 @@ namespace AccessControl.Contracts.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class IUserContract : IUser
     {
-        public string Site
-        {
-            get
-            {
-                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
-                return null;
-            }
-        }
-
         public string UserName
         {
             get

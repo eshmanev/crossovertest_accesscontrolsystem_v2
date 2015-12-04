@@ -11,6 +11,5 @@ namespace AccessControl.Contracts.Dto
         string Department { get; }
         string Description { get; }
         string Name { get; }
-        string Site { get; }
     }
 }

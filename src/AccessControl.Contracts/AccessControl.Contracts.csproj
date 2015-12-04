@@ -92,7 +92,6 @@
     <Compile Include="CodeContracts\IUserGroupAccessRightsContract.cs" />
     <Compile Include="CodeContracts\IUserGroupContract.cs" />
     <Compile Include="CodeContracts\IUserRemovedFromGroupContract.cs" />
-    <Compile Include="CodeContracts\IValidateDepartmentContract.cs" />
     <Compile Include="CodeContracts\IVoidResultContract.cs" />
     <Compile Include="CodeContracts\IValidationFaultContract.cs" />
     <Compile Include="CodeContracts\IValidationPropertyErrorContract.cs" />
@@ -117,7 +116,6 @@
     <Compile Include="Commands\Lists\IListDepartmentsResult.cs" />
     <Compile Include="Commands\Lists\IListUserGroups.cs" />
     <Compile Include="Commands\Lists\IListUserGroupsResult.cs" />
-    <Compile Include="Commands\Management\IValidateDepartment.cs" />
     <Compile Include="Commands\Management\IGrantManagementRights.cs" />
     <Compile Include="Commands\Management\IRevokeManagementRights.cs" />
     <Compile Include="Commands\Management\IUnregisterAccessPoint.cs" />
@@ -182,7 +180,6 @@
     <Compile Include="Impl\Commands\FindUserByNameResult.cs" />
     <Compile Include="Impl\Dto\UserBiometric.cs" />
     <Compile Include="Impl\Dto\UserGroup.cs" />
-    <Compile Include="Impl\Commands\ValidateDepartment.cs" />
     <Compile Include="Impl\Dto\ValidationFault.cs" />
     <Compile Include="Commands\Management\IUpdateUserBiometric.cs" />
     <Compile Include="Dto\IUser.cs" />

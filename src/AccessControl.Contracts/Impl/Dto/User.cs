@@ -8,16 +8,13 @@ namespace AccessControl.Contracts.Impl.Dto
         /// <summary>
         ///     Initializes a new instance of the <see cref="User" /> class.
         /// </summary>
-        /// <param name="site">The site.</param>
         /// <param name="userName">Name of the user.</param>
         /// <param name="groups">The groups.</param>
-        public User(string site, string userName, string[] groups)
+        public User(string userName, string[] groups)
         {
-            Contract.Requires(!string.IsNullOrWhiteSpace(site));
             Contract.Requires(!string.IsNullOrWhiteSpace(userName));
             Contract.Requires(groups != null);
             UserName = userName;
-            Site = site;
             Groups = groups;
         }
 
@@ -76,14 +73,6 @@ namespace AccessControl.Contracts.Impl.Dto
         ///     The phone number.
         /// </value>
         public string PhoneNumber { get; set; }
-
-        /// <summary>
-        ///     Gets the site.
-        /// </summary>
-        /// <value>
-        ///     The site.
-        /// </value>
-        public string Site { get; }
 
         /// <summary>
         ///     Gets the department.

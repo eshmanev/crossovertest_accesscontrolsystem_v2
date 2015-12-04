@@ -7,16 +7,6 @@ namespace AccessControl.Contracts.Dto
     public interface IDepartment
     {
         /// <summary>
-        /// Gets the site.
-        /// </summary>
-        string SiteName { get; }
-
-        /// <summary>
-        /// Gets the site distinguished name.
-        /// </summary>
-        string Site { get; }
-
-        /// <summary>
         /// Gets the department's name.
         /// </summary>
         string DepartmentName { get; }
