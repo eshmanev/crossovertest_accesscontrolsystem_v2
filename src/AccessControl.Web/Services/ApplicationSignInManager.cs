@@ -2,7 +2,6 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands.Security;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Web.Models.Account;
 using log4net;
@@ -39,29 +38,28 @@ namespace AccessControl.Web.Services
         public override async Task<SignInStatus> PasswordSignInAsync(string userName, string password, bool isPersistent, bool shouldLockout)
         {
             if (UserManager == null)
+            {
                 return SignInStatus.Failure;
-
-            var user = await UserManager.FindByNameAsync(userName);
-            if (user == null)
-                return SignInStatus.Failure;
+            }
 
             var message = new AuthenticateUser(userName, password);
             try
             {
                 var result = await _authenticateRequest.Request(message);
                 if (!result.Authenticated)
+                {
                     return SignInStatus.Failure;
+                }
 
-                user.ServiceTicket = result.Ticket;
+                var user = new ApplicationUser(result.User) {ServiceTicket = result.Ticket};
+                await SignInAsync(user, isPersistent, false);
+                return SignInStatus.Success;
             }
             catch (Exception e)
             {
                 Log.Error("An error occurred while authentication", e);
                 return SignInStatus.Failure;
             }
-            
-            await SignInAsync(user, isPersistent, false);
-            return SignInStatus.Success;
         }
     }
 }

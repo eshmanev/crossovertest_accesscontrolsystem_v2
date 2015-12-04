@@ -10,6 +10,14 @@ namespace AccessControl.Contracts.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class ICheckCredentialsContract : ICheckCredentials
     {
+        public string Domain {
+            get
+            {
+                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+                return null;
+            }
+        }
+
         public string UserName
         {
             get

@@ -2,10 +2,13 @@
 
 namespace AccessControl.Service.LDAP.Configuration
 {
-    public class LdapConfig : ConfigurationSection, ILdapConfig
+    internal class DirectoryConfigElement : ConfigurationElement, IDirectoryConfig
     {
-        [ConfigurationProperty("ldapPath", IsRequired = true)]
-        public string LdapPath => (string) base["ldapPath"];
+        [ConfigurationProperty("domain", IsRequired = true)]
+        public string DomainName => (string)base["domain"];
+
+        [ConfigurationProperty("url", IsRequired = true)]
+        public string Url => (string) base["url"];
 
         [ConfigurationProperty("userName", IsRequired = false)]
         public string UserName => (string)base["userName"];
@@ -16,9 +19,9 @@ namespace AccessControl.Service.LDAP.Configuration
         public string CombinePath(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
-                return LdapPath;
+                return Url;
 
-            return LdapPath.EndsWith("/") ? LdapPath + path : $"{LdapPath}/{path}";
+            return Url.EndsWith("/") ? Url + path : $"{Url}/{path}";
         }
     }
 }

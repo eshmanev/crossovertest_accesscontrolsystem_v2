@@ -16,9 +16,9 @@ Yes,andy.lao,Andy,Lao,andy.lao@evriqum.ru,127-16-16,KungFu Theater,jack.ma,Chine
 Yes,gong.li,Gong,Li,gong.li@evriqum.ru,128-17-17,KungFu Theater,jack.ma,Chinese Actors 2,Test123,true,true,OU=Chinese Actors,
 Yes,donnie.yen,Donnie,Yen,donnie.yen@evriqum.ru,129-18-18,KungFu Theater,jack.ma,Chinese Actors 2,Test123,true,true,OU=Chinese Actors,
 Yes,stephen.chow,Stephen,Chow,stephen.chow@evriqum.ru,130-19-19,KungFu Theater,jack.ma,Chinese Actors 2,Test123,true,true,OU=Chinese Actors,
-Yes,client1,Client Service 1,,contact@evriqum.ru,999-99-99,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 1
-Yes,client2,Client Service 2,,contact@evriqum.ru,999-99-100,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 2
-Yes,client3,Client Service 3,,contact@evriqum.ru,999-99-101,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 3
-Yes,client4,Client Service 4,,contact@evriqum.ru,999-99-102,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 4
-Yes,client5,Client Service 5,,contact@evriqum.ru,999-99-103,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 5
-Yes,ldapservice,LDAP Service,,contact@evriqum.ru,999-99-104,Security,Administrator,Access Control Servers,Test123,true,true,OU=Access Control Services,LDAP Service
+Yes,client1,Client Service 1,,client1@evriqum.ru,999-99-99,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 1
+Yes,client2,Client Service 2,,client2@evriqum.ru,999-99-100,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 2
+Yes,client3,Client Service 3,,client3@evriqum.ru,999-99-101,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 3
+Yes,client4,Client Service 4,,client4@evriqum.ru,999-99-102,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 4
+Yes,client5,Client Service 5,,client5@evriqum.ru,999-99-103,Security,Administrator,Access Control Clients,Test123,true,true,OU=Access Control Services,Access Point Client Service 5
+Yes,ldapservice,LDAP Service,,client6@evriqum.ru,999-99-104,Security,Administrator,Access Control Servers,Test123,true,true,OU=Access Control Services,LDAP Service

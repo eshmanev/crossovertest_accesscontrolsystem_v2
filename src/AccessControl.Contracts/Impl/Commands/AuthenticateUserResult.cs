@@ -1,4 +1,6 @@
-﻿using AccessControl.Contracts.Commands.Security;
+﻿using System.Diagnostics.Contracts;
+using AccessControl.Contracts.Commands.Security;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Impl.Commands
 {
@@ -11,10 +13,12 @@ namespace AccessControl.Contracts.Impl.Commands
         /// </summary>
         /// <param name="authenticated">if set to <c>true</c> [authenticated].</param>
         /// <param name="ticket">The ticket.</param>
-        public AuthenticateUserResult(bool authenticated, string ticket)
+        /// <param name="user">The user, if any.</param>
+        public AuthenticateUserResult(bool authenticated, string ticket, IUser user)
         {
             Authenticated = authenticated;
             Ticket = ticket;
+            User = user;
         }
 
         /// <summary>
@@ -34,22 +38,33 @@ namespace AccessControl.Contracts.Impl.Commands
         public string Ticket { get; }
 
         /// <summary>
+        ///     Gets the authenticated user, if any.
+        /// </summary>
+        /// <value>
+        ///     The user.
+        /// </value>
+        public IUser User { get; }
+
+        /// <summary>
         ///     Creates failed authentication result.
         /// </summary>
         /// <returns></returns>
         public static IAuthenticateUserResult Failed()
         {
-            return new AuthenticateUserResult(false, null);
+            return new AuthenticateUserResult(false, null, null);
         }
 
         /// <summary>
         ///     Creates successfull authentication result with the specified AUTH ticket.
         /// </summary>
         /// <param name="ticket">The ticket.</param>
+        /// <param name="user">The authenticated user.</param>
         /// <returns></returns>
-        public static IAuthenticateUserResult Success(string ticket)
+        public static IAuthenticateUserResult Success(string ticket, IUser user)
         {
-            return new AuthenticateUserResult(true, ticket);
+            Contract.Requires(!string.IsNullOrWhiteSpace(ticket));
+            Contract.Requires(user != null);
+            return new AuthenticateUserResult(true, ticket, user);
         }
     }
 }

@@ -26,6 +26,16 @@ namespace AccessControl.Web.Models.Account
             ServiceTicket = claimIdentity.FindFirstValue("ServiceTicket");
         }
 
+        public ApplicationUser(Contracts.Dto.IUser user)
+        {
+            UserName = user.UserName;
+            DisplayName = user.DisplayName;
+            Email = user.Email;
+            PhoneNumber = user.PhoneNumber;
+            Site = user.Site;
+            Department = user.Department;
+        }
+
         public string Id => UserName;
 
         public string UserName { get; set; }

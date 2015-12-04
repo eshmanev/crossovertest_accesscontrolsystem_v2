@@ -17,15 +17,18 @@ namespace AccessControl.Contracts.Impl.Dto
         /// <summary>
         ///     Initializes a new instance of the <see cref="Ticket" /> class.
         /// </summary>
+        /// <param name="domain">The domain.</param>
         /// <param name="user">The user.</param>
         /// <param name="roles">The roles.</param>
         /// <param name="onBehalfOf">The names of managers who delegated their management rights to the user.</param>
-        public Ticket(IUser user, string[] roles, string[] onBehalfOf)
+        public Ticket(string domain, IUser user, string[] roles, string[] onBehalfOf)
         {
+            Contract.Requires(!string.IsNullOrWhiteSpace(domain));
             Contract.Requires(user != null);
             Contract.Requires(roles != null);
             Contract.Requires(onBehalfOf != null);
 
+            Domain = domain;
             User = new UserInfo(user);
             Roles = roles;
             OnBehalfOf = onBehalfOf;
@@ -38,6 +41,14 @@ namespace AccessControl.Contracts.Impl.Dto
         ///     The user.
         /// </value>
         public UserInfo User { get; set; }
+
+        /// <summary>
+        ///     Gets the domain for the authenticated user.
+        /// </summary>
+        /// <value>
+        ///     The domain.
+        /// </value>
+        public string Domain { get; set; }
 
         /// <summary>
         ///     Gets the roles.

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Commands.Security
 {
@@ -24,5 +25,13 @@ namespace AccessControl.Contracts.Commands.Security
         ///     The ticket.
         /// </value>
         string Ticket { get; }
+
+        /// <summary>
+        ///     Gets the authenticated user, if any.
+        /// </summary>
+        /// <value>
+        ///     The user.
+        /// </value>
+        IUser User { get; }
     }
 }

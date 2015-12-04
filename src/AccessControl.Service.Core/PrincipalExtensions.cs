@@ -8,6 +8,11 @@ namespace AccessControl.Service
     /// </summary>
     public static class PrincipalExtensions
     {
+        public static string Domain(this IPrincipal principal)
+        {
+            return principal.Cast()?.DecryptedTicket.Domain;
+        }
+
         public static string Department(this IPrincipal principal)
         {
             return principal.Cast()?.DecryptedTicket.User.Department;

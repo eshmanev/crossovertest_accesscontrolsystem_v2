@@ -7,34 +7,11 @@ namespace AccessControl.Service.LDAP.Configuration
     public interface ILdapConfig
     {
         /// <summary>
-        ///     Gets the LDAP server path.
+        ///     Gets the directories.
         /// </summary>
         /// <value>
-        ///     The LDAP path.
+        ///     The directories.
         /// </value>
-        string LdapPath { get; }
-
-        /// <summary>
-        ///     Gets the LDAP server password.
-        /// </summary>
-        /// <value>
-        ///     The password.
-        /// </value>
-        string Password { get; }
-
-        /// <summary>
-        ///     Gets the LDAP server user name.
-        /// </summary>
-        /// <value>
-        ///     The name of the user.
-        /// </value>
-        string UserName { get; }
-
-        /// <summary>
-        ///     Combines the LDAP server path with the specified path.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        /// <returns></returns>
-        string CombinePath(string path);
+        IDirectoryConfigCollection Directories { get; }
     }
 }

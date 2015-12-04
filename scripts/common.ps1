@@ -89,7 +89,7 @@ function InstallAndRun($servicePath)
   try
   {
     $fullPath = [System.IO.Path]::GetFullPath($servicePath)
-    & $fullPath "install" "--networkservice"
+    & $fullPath "install" "--localservice"
     & $fullPath "start"
   }
   catch
@@ -149,8 +149,16 @@ function ModifyConfigRabbit($file, $url, $user, $password, $nodePath)
 function ModifyConfigLDAP($file, $url, $user, $password)
 {
   $config = LoadConfig -file $file
-  $node = $config.SelectSingleNode('configuration/ldap')
-  $node.Attributes["ldapPath"].Value = $url
+  $node = $config.SelectSingleNode('configuration/ldap/directories/add')
+
+  # capitalize protocol name; otherwise it may lead ComException
+  if ($url.ToLower().StartsWith("ldap://"))
+  {
+      $url = $url.Remove(0, 4);
+      $url = "LDAP" + $url;
+  }
+
+  $node.Attributes["url"].Value = $url.ToUpper()
   $node.Attributes["userName"].Value = $user
   $node.Attributes["password"].Value = $password
   $config.Save($file)

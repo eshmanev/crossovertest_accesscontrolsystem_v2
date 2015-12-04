@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Commands.Security;
+using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.CodeContracts
 {
@@ -12,5 +13,6 @@ namespace AccessControl.Contracts.CodeContracts
     {
         public bool Authenticated => false;
         public string Ticket => null;
+        public IUser User => null;
     }
 }

@@ -10,22 +10,6 @@ namespace AccessControl.Service.LDAP.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class ILdapConfigContract : ILdapConfig
     {
-        public string LdapPath
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<string>() != null);
-                return null;
-            }
-        }
-
-        public string UserName => null;
-        public string Password => null;
-
-        public string CombinePath(string path)
-        {
-            Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
-            return null;
-        }
+        public IDirectoryConfigCollection Directories => null;
     }
 }
