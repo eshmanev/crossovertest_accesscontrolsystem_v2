@@ -151,8 +151,7 @@ namespace AccessControl.Service.LDAP.Services
                     searcher.SearchScope = SearchScope.Subtree;
 
                     return searcher.FindAll().Cast<SearchResult>()
-                                   .Select(x => new UserGroup(x.GetProperty("name")))
-                                   .Cast<IUserGroup>()
+                                   .Select(ConvertUserGroup)
                                    .ToArray();
                 }
             }
@@ -172,8 +171,7 @@ namespace AccessControl.Service.LDAP.Services
                     searcher.SearchScope = SearchScope.Subtree;
 
                     return searcher.FindAll().Cast<SearchResult>()
-                                   .Select(x => new UserGroup(x.GetProperty("name")))
-                                   .Cast<IUserGroup>()
+                                   .Select(ConvertUserGroup)
                                    .ToArray();
                 }
             }
@@ -256,6 +254,12 @@ namespace AccessControl.Service.LDAP.Services
                     return departments.Distinct();
                 }
             }
+        }
+
+        private IUserGroup ConvertUserGroup(SearchResult result)
+        {
+            // TODO. обрати внимание. Сверху остался метод new UserGroup(x)!
+            return new UserGroup(result.GetProperty("name"));
         }
 
         private IDepartment ConvertDepartment(SearchResult result)
