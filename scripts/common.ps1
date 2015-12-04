@@ -112,13 +112,25 @@ function StopAndUninstall($servicePath)
   }
 }
 
-function AskParameter($message, $error)
+function AskParameter($message, $default)
 {
+  if ($default)
+  {
+    $message = $message + " (default: " + $default + " )"
+  }
+
   $value = Read-Host -Prompt $message
   if (!$value)
   {
-    Write-Host "[ERROR]`t " + $error
-    Exit 1
+    if (!$default)
+    {
+        Write-Host "[ERROR]`t Value is required"
+        Exit 1
+    }
+    else
+    {
+        $value = $default
+    }
   }
   return $value
 }
@@ -158,7 +170,7 @@ function ModifyConfigLDAP($file, $url, $user, $password)
       $url = "LDAP" + $url;
   }
 
-  $node.Attributes["url"].Value = $url.ToUpper()
+  $node.Attributes["url"].Value = $url
   $node.Attributes["userName"].Value = $user
   $node.Attributes["password"].Value = $password
   $config.Save($file)

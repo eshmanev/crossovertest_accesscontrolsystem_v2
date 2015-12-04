@@ -6,18 +6,18 @@ function ModifyConfigAppSettings($file, $user, $password)
   $node = $config.SelectSingleNode("configuration/appSettings/add[@key='LDAPUserName']")
   $node.Attributes["value"].Value = $user
   $node = $config.SelectSingleNode("configuration/appSettings/add[@key='LDAPPassword']")
-  $node.Attributes["value"].Value = $user
+  $node.Attributes["value"].Value = $password
   $config.Save($file)
 }
 
 # LDAP parameters
-$userName = AskParameter -message "Enter the client service user name" -error "Client service user name is required"
-$password = AskParameter -message "Enter the client service password" -error "Client service password is required"
+$userName = AskParameter -message "Enter client service user name" -default "evriqum\client1"
+$password = AskParameter -message "Enter client service password" -default "Test123"
 
 # RabbitMQ parameters
-$rabbitAddress = AskParameter -message "Enter the RabbitMQ server address (Example: rabbitmq://192.168.1.201)" -error "RabbitMQ server address is required"
-$rabbitUserName = AskParameter -message "Enter the RabbitMQ username" -error "RabbitMQ username is required"
-$rabbitPassword = AskParameter -message "Enter the RabbitMQ password" -error "RabbitMQ password is required"
+$rabbitAddress = AskParameter -message "Enter RabbitMQ server address" -default "rabbitmq://192.168.1.220"
+$rabbitUserName = AskParameter -message "Enter RabbitMQ username" -default "evgeny"
+$rabbitPassword = AskParameter -message "Enter RabbitMQ password" -default "Test123"
 
 # Do work
 Unzip "AccessControl.Client.zip" ".\AccessControl.Client"
