@@ -32,7 +32,7 @@
 
     function onSiteChanged() {
         var site = $("#siteSelector option:selected").text();
-        var departments = $("input[site=" + site + "]").val();
+        var departments = $("input[site='" + site + "']").val();
 
         clearDepartments();
         fillDepartments(departments);
