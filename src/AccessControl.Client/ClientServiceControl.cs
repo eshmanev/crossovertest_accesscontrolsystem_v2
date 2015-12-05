@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using AccessControl.Client.Data;
 using AccessControl.Client.Services;
 using AccessControl.Client.Vendor;
@@ -43,12 +44,9 @@ namespace AccessControl.Client
         public override bool Start(HostControl hostControl)
         {
             // start service bus
-            var result = base.Start(hostControl);
-
-            AuthenticateClient();
-            UpdatePermissions();
-            StartWcfServices();
-
+            var result = base.Start(hostControl) && StartWcfServices();
+            if (result)
+                ConnectAsync();
             return result;
         }
 
@@ -59,18 +57,23 @@ namespace AccessControl.Client
         /// <returns></returns>
         public override bool Stop(HostControl hostControl)
         {
-            StopWcfServices();
-            return base.Stop(hostControl);
+            return StopWcfServices() && base.Stop(hostControl);
         }
 
-        private void AuthenticateClient()
+        private async void ConnectAsync()
+        {
+            await AuthenticateClient();
+            await UpdatePermissions();
+        }
+
+        private async Task AuthenticateClient()
         {
             var credentials = _container.Resolve<IClientCredentials>();
             var authenticateRequest = _container.Resolve<IRequestClient<IAuthenticateUser, IAuthenticateUserResult>>();
 
             try
             {
-                var result = authenticateRequest.Request(new AuthenticateUser(credentials.LdapUserName, credentials.LdapPassword)).Result;
+                var result = await authenticateRequest.Request(new AuthenticateUser(credentials.LdapUserName, credentials.LdapPassword));
                 if (!result.Authenticated)
                 {
                     return;
@@ -85,21 +88,39 @@ namespace AccessControl.Client
             }
         }
 
-        private void StartWcfServices()
+        private bool StartWcfServices()
         {
-            _wcfHosts = new[]
+            try
             {
-                new UnityServiceHost(_container, typeof(AccessCheckService)),
-            };
-            _wcfHosts.ForEach(x => x.Open());
+                _wcfHosts = new[]
+                {
+                    new UnityServiceHost(_container, typeof(AccessCheckService)),
+                };
+                _wcfHosts.ForEach(x => x.Open());
+                return true;
+            }
+            catch (Exception e)
+            {
+                LogFatal("An error occurred while starting WCF services", e);
+                return false;
+            }
         }
 
-        private void StopWcfServices()
+        private bool StopWcfServices()
         {
-            _wcfHosts?.ForEach(x => x.Close());
+            try
+            {
+                _wcfHosts?.ForEach(x => x.Close());
+                return true;
+            }
+            catch (Exception e)
+            {
+                LogFatal("An error occurred while stopping WCF services", e);
+                return false;
+            }
         }
 
-        private async void UpdatePermissions()
+        private async Task UpdatePermissions()
         {
             var service = _container.Resolve<IAccessPermissionService>();
             var accessPermissions = _container.Resolve<IAccessPermissionCollection>();

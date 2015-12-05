@@ -10,6 +10,21 @@ function ModifyConfigAppSettings($file, $user, $password)
   $config.Save($file)
 }
 
+function AllowWcfUrl($url)
+{
+  $cmd = "netsh http delete urlacl " + $url
+  Invoke-Expression -command $cmd
+
+  $cmd = "netsh http add urlacl " + $url + " user=""Local Service"""
+  Invoke-Expression -command $cmd
+}
+
+AllowWcfUrl -url http://+:9981/AccessCheckService
+if ($LASTEXITCODE -ne 0)
+{
+    Exit;
+}
+
 # LDAP parameters
 $userName = AskParameter -message "Enter client service user name" -default "evriqum\client1"
 $password = AskParameter -message "Enter client service password" -default "Test123"
