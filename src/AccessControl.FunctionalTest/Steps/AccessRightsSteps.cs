@@ -22,9 +22,7 @@ namespace AccessControl.FunctionalTest.Steps
         [When(@"I grant access rights to access point with ID = ""(.*)"" for my employee")]
         public void WhenIGrantAccessRightsToAccessPointWithIDForMyEmployee(Guid accessPointId)
         {
-            var result = Bus.Request<IListUsers, IListUsersResult>(WellKnownQueues.Ldap, ListCommand.WithoutParameters);
-            var employee = result.Users.Single(x => x.UserName.Contains(AppSettings.ManagedUserName));
-            Bus.Request<IAllowUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, employee.UserName));
+            Bus.Request<IAllowUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, AppSettings.ManagedUserName));
 
             // this is just to ensure that all necessary events are delivered and processed
             Thread.Sleep(1000);
@@ -33,9 +31,7 @@ namespace AccessControl.FunctionalTest.Steps
         [When(@"I deny access rights to access point with ID = ""(.*)"" for my employee")]
         public void WhenIDenyAccessRightsToAccessPointWithIDForMyEmployee(Guid accessPointId)
         {
-            var result = Bus.Request<IListUsers, IListUsersResult>(WellKnownQueues.Ldap, ListCommand.WithoutParameters);
-            var employee = result.Users.Single(x => x.UserName.Contains(AppSettings.ManagedUserName));
-            Bus.Request<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, employee.UserName));
+            Bus.Request<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, AppSettings.ManagedUserName));
 
             // this is just to ensure that all necessary events are delivered and processed
             Thread.Sleep(1000);

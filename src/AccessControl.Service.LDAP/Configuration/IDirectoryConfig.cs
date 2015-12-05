@@ -10,7 +10,15 @@ namespace AccessControl.Service.LDAP.Configuration
     public interface IDirectoryConfig
     {
         /// <summary>
-        ///     Gets the name of the domain.
+        /// Gets the domain name alias.
+        /// </summary>
+        /// <value>
+        /// The short name.
+        /// </value>
+        string Alias { get; }
+
+        /// <summary>
+        ///     Gets the domain name.
         /// </summary>
         /// <value>
         ///     The name of the domain.

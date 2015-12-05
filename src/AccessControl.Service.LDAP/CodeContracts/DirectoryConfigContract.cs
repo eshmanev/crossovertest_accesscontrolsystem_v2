@@ -10,6 +10,15 @@ namespace AccessControl.Service.LDAP.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class DirectoryConfigContract : IDirectoryConfig
     {
+        public string Alias
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
+                return null;
+            }
+        }
+
         public string DomainName {
             get
             {

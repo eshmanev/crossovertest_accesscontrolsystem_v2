@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Threading;
 using AccessControl.Contracts.Dto;
 using AccessControl.Service.LDAP.Configuration;
@@ -42,13 +44,14 @@ namespace AccessControl.Service.LDAP.Services
             if (string.IsNullOrWhiteSpace(domain))
                 return EmptyDirectoryService.Instance;
 
-            return _directoryServices.GetOrAdd(
-                    domain,
-                    x =>
-                    {
-                        var directoryConfig = _config.Directories[x];
-                        return directoryConfig != null ? new DirectoryService(directoryConfig) as ILdapService : EmptyDirectoryService.Instance;
-                    });
+            var directoryConfig = _config.Directories.FirstOrDefault(
+                x => string.Equals(x.DomainName, domain, StringComparison.InvariantCultureIgnoreCase) ||
+                     string.Equals(x.Alias, domain, StringComparison.InvariantCultureIgnoreCase));
+
+            if (directoryConfig == null)
+                return EmptyDirectoryService.Instance;
+
+            return _directoryServices.GetOrAdd(directoryConfig.DomainName, x => new DirectoryService(directoryConfig));
         }
 
         public bool CheckCredentials(string userName, string password, out IUser user)

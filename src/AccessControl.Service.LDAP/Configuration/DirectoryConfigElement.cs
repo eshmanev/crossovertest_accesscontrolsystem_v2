@@ -4,6 +4,9 @@ namespace AccessControl.Service.LDAP.Configuration
 {
     internal class DirectoryConfigElement : ConfigurationElement, IDirectoryConfig
     {
+        [ConfigurationProperty("alias", IsRequired = true)]
+        public string Alias => (string)base["alias"];
+
         [ConfigurationProperty("domain", IsRequired = true)]
         public string DomainName => (string)base["domain"];
 
