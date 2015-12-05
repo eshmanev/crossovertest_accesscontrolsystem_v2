@@ -52,6 +52,7 @@
     <Compile Include="CodeContracts\IFindUserByBiometricsContract.cs" />
     <Compile Include="CodeContracts\IFindUserGroupByNameContract.cs" />
     <Compile Include="CodeContracts\IFindUserGroupByNameResultContract.cs" />
+    <Compile Include="Commands\Ping.cs" />
     <Compile Include="Commands\Search\IFindAccessPointById.cs" />
     <Compile Include="Commands\Search\IFindAccessPointByIdResult.cs" />
     <Compile Include="Commands\Search\IFindUserByBiometricsResult.cs" />

@@ -98,6 +98,7 @@
     <Compile Include="Configuration\IRabbitMqConfig.cs" />
     <Compile Include="Configuration\ISecurityConfig.cs" />
     <Compile Include="Configuration\RabbitMqElement.cs" />
+    <Compile Include="Consumers\PingConsumer.cs" />
     <Compile Include="PrincipalExtensions.cs" />
     <Compile Include="Security\BusControlExtensions.cs" />
     <Compile Include="Security\EncryptedTicketPropagator.cs" />

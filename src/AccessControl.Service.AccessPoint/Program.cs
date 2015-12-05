@@ -63,6 +63,7 @@ namespace AccessControl.Service.AccessPoint
                             WellKnownQueues.AccessControl,
                             e =>
                             {
+                                e.ReceivePing();
                                 e.Consumer<AuthenticationConsumer>(container);
                                 e.Consumer<AccessPointConsumer>(container);
                                 e.Consumer<BiometricInfoConsumer>(container);

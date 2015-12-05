@@ -24,7 +24,6 @@ namespace AccessControl.Client.Services
         ///     Updates the specified access permissions from server.
         /// </summary>
         /// <param name="accessPermissions">The access permissions.</param>
-        /// <returns>true if update completes successfully, otherwise, false.</returns>
-        Task<bool> Update(IAccessPermissionCollection accessPermissions);
+        Task Update(IAccessPermissionCollection accessPermissions);
     }
 }

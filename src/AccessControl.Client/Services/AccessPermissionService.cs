@@ -76,63 +76,53 @@ namespace AccessControl.Client.Services
             }
         }
 
-        public async Task<bool> Update(IAccessPermissionCollection accessPermissions)
+        public async Task Update(IAccessPermissionCollection accessPermissions)
         {
             // NOTE: this is temporary quick solution
             // Normally it should be replaced with an implementation of partial updates based on MS Sync Framework
-            try
+            var biometricInfo = await _listUsersBiometricRequest.Request(ListCommand.WithoutParameters);
+            var biometricInfoMap = biometricInfo.Users.ToDictionary(x => x.UserName);
+            Func<string, UserHash> getHash = x =>
+                                             {
+                                                 var hash = biometricInfoMap.ContainsKey(x) ? biometricInfoMap[x].BiometricHash : null;
+                                                 return new UserHash(x, hash);
+                                             };
+
+            // add user permissions
+            var accessRights = await _listAccessRightsRequest.Request(ListCommand.WithoutParameters);
+            foreach (var userAccessRights in accessRights.UserAccessRights)
             {
-                var biometricInfo = await _listUsersBiometricRequest.Request(ListCommand.WithoutParameters);
-                var biometricInfoMap = biometricInfo.Users.ToDictionary(x => x.UserName);
-                Func<string, UserHash> getHash = x =>
-                {
-                    var hash = biometricInfoMap.ContainsKey(x) ? biometricInfoMap[x].BiometricHash : null;
-                    return new UserHash(x, hash);
-                };
+                var userName = userAccessRights.UserName;
+                var userHash = getHash(userName);
 
-                // add user permissions
-                var accessRights = await _listAccessRightsRequest.Request(ListCommand.WithoutParameters);
-                foreach (var userAccessRights in accessRights.UserAccessRights)
-                {
-                    var userName = userAccessRights.UserName;
-                    var userHash = getHash(userName);
+                userAccessRights.PermanentAccessRules.ForEach(
+                    rule =>
+                    {
+                        var permission = new PermanentUserAccess(rule.AccessPointId, userHash);
+                        accessPermissions.AddOrUpdatePermission(permission);
+                    });
 
-                    userAccessRights.PermanentAccessRules.ForEach(
-                        rule =>
-                        {
-                            var permission = new PermanentUserAccess(rule.AccessPointId, userHash);
-                            accessPermissions.AddOrUpdatePermission(permission);
-                        });
-
-                    userAccessRights.ScheduledAccessRules.ForEach(
-                        rule =>
-                        {
-                            var permission = new ScheduledUserAccess(rule.AccessPointId, userHash, rule.FromTimeUtc, rule.ToTimeUtc);
-                            accessPermissions.AddOrUpdatePermission(permission);
-                        });
-                }
-
-                // add user group permissions
-                foreach (var groupRights in accessRights.UserGroupAccessRights)
-                {
-                    var groupName = groupRights.UserGroupName;
-                    var usersInGroupResult = await _listUsersInGroupRequest.Request(ListCommand.ListUsersInGroup(groupName));
-                    var userHashes = usersInGroupResult.Users.Select(x => getHash(x.UserName)).ToArray();
-
-                    groupRights.PermanentAccessRules.ForEach(
-                        rule =>
-                        {
-                            var permission = new PermanentGroupAccess(rule.AccessPointId, groupName, userHashes);
-                            accessPermissions.AddOrUpdatePermission(permission);
-                        });
-                }
-
-                return true;
+                userAccessRights.ScheduledAccessRules.ForEach(
+                    rule =>
+                    {
+                        var permission = new ScheduledUserAccess(rule.AccessPointId, userHash, rule.FromTimeUtc, rule.ToTimeUtc);
+                        accessPermissions.AddOrUpdatePermission(permission);
+                    });
             }
-            catch (Exception e)
+
+            // add user group permissions
+            foreach (var groupRights in accessRights.UserGroupAccessRights)
             {
-                Log.Error("An error occurred while updating access permissions", e);
-                return false;
+                var groupName = groupRights.UserGroupName;
+                var usersInGroupResult = await _listUsersInGroupRequest.Request(ListCommand.ListUsersInGroup(groupName));
+                var userHashes = usersInGroupResult.Users.Select(x => getHash(x.UserName)).ToArray();
+
+                groupRights.PermanentAccessRules.ForEach(
+                    rule =>
+                    {
+                        var permission = new PermanentGroupAccess(rule.AccessPointId, groupName, userHashes);
+                        accessPermissions.AddOrUpdatePermission(permission);
+                    });
             }
         }
     }

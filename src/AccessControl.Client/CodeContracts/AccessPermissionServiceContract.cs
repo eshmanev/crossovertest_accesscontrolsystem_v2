@@ -22,10 +22,10 @@ namespace AccessControl.Client.CodeContracts
             Contract.Requires(accessPermissions != null);
         }
 
-        public Task<bool> Update(IAccessPermissionCollection accessPermissions)
+        public Task Update(IAccessPermissionCollection accessPermissions)
         {
             Contract.Requires(accessPermissions != null);
-            Contract.Ensures(Contract.Result<Task<bool>>() != null);
+            Contract.Ensures(Contract.Result<Task>() != null);
             return null;
         }
     }

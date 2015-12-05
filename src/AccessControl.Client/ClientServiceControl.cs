@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
+using System.Timers;
 using AccessControl.Client.Data;
 using AccessControl.Client.Services;
 using AccessControl.Client.Vendor;
+using AccessControl.Contracts;
+using AccessControl.Contracts.Commands;
 using AccessControl.Contracts.Commands.Security;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service;
+using AccessControl.Service.Configuration;
 using AccessControl.Service.Security;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
@@ -18,6 +22,8 @@ namespace AccessControl.Client
 {
     public class ClientServiceControl : BusServiceControl
     {
+        private readonly Timer _timer = new Timer(TimeSpan.FromMinutes(30).TotalMilliseconds);
+        private readonly IRequestClient<Ping, Ping> _ping;
         private readonly IBusControl _busControl;
         private readonly IUnityContainer _container;
         private UnityServiceHost[] _wcfHosts;
@@ -32,9 +38,23 @@ namespace AccessControl.Client
         {
             Contract.Requires(busControl != null);
             Contract.Requires(container != null);
+
             _busControl = busControl;
             _container = container;
+            var rabbitMqConfig = _container.Resolve<IServiceConfig>().RabbitMq;
+            _ping = new MessageRequestClient<Ping, Ping>(
+                _busControl,
+                new Uri(rabbitMqConfig.GetQueueUrl(WellKnownQueues.AccessControl)),
+                TimeSpan.FromSeconds(30));
         }
+
+        /// <summary>
+        ///     Gets a value indicating whether this instance is authenticated.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is authenticated; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsConnected { get; private set; }
 
         /// <summary>
         ///     Starts the specified host control.
@@ -46,7 +66,9 @@ namespace AccessControl.Client
             // start service bus
             var result = base.Start(hostControl) && StartWcfServices();
             if (result)
+            {
                 ConnectAsync();
+            }
             return result;
         }
 
@@ -57,13 +79,17 @@ namespace AccessControl.Client
         /// <returns></returns>
         public override bool Stop(HostControl hostControl)
         {
-            return StopWcfServices() && base.Stop(hostControl);
+            var result = StopWcfServices() && base.Stop(hostControl);
+            if (result)
+                _timer.Stop();
+            return result;
         }
 
         private async void ConnectAsync()
         {
             await AuthenticateClient();
             await UpdatePermissions();
+            StartMonitoring();
         }
 
         private async Task AuthenticateClient()
@@ -76,16 +102,43 @@ namespace AccessControl.Client
                 var result = await authenticateRequest.Request(new AuthenticateUser(credentials.LdapUserName, credentials.LdapPassword));
                 if (!result.Authenticated)
                 {
+                    IsConnected = false;
                     return;
                 }
 
                 // take care of automatical request authentication
                 _busControl.ConnectTicket(result.Ticket);
+                IsConnected = true;
             }
             catch (Exception e)
             {
                 LogError("An error occurred while authenticating client", e);
+                IsConnected = false;
             }
+        }
+
+        private void StartMonitoring()
+        {
+            _timer.Elapsed += async delegate
+                                    {
+                                        if (IsConnected)
+                                        {
+                                            try
+                                            {
+                                                await _ping.Request(new Ping());
+                                            }
+                                            catch
+                                            {
+                                                IsConnected = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            await AuthenticateClient();
+                                            await UpdatePermissions();
+                                        }
+                                    };
+            _timer.Start();
         }
 
         private bool StartWcfServices()
@@ -125,15 +178,16 @@ namespace AccessControl.Client
             var service = _container.Resolve<IAccessPermissionService>();
             var accessPermissions = _container.Resolve<IAccessPermissionCollection>();
 
-            if (await service.Update(accessPermissions))
-            {
-                // save to cache
-                service.Save(accessPermissions);
-            }
-            else
+            if (!IsConnected)
             {
                 // load from cache
                 service.Load(accessPermissions);
+            }
+            else
+            {
+                // update and save to cache
+                await service.Update(accessPermissions);
+                service.Save(accessPermissions);
             }
         }
     }

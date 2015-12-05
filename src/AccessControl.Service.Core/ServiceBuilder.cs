@@ -63,7 +63,7 @@ namespace AccessControl.Service
                             h.Username(configuration.RabbitMq.UserName);
                             h.Password(configuration.RabbitMq.Password);
                         });
-
+                    
                     preConfig(cfg, host, _container);
                 });
 

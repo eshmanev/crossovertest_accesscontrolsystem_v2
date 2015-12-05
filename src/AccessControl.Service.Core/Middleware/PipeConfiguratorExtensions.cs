@@ -1,5 +1,7 @@
+using AccessControl.Service.Consumers;
 using AccessControl.Service.Security;
 using MassTransit;
+using MassTransit.RabbitMqTransport;
 
 namespace AccessControl.Service.Middleware
 {
@@ -23,6 +25,11 @@ namespace AccessControl.Service.Middleware
             where T : class, PipeContext
         {
             configurator.AddPipeSpecification(new GenericPipeSpecification<T>(new TicketFilter<T>(encryptor)));
+        }
+
+        public static void ReceivePing(this IRabbitMqReceiveEndpointConfigurator config)
+        {
+            config.Consumer(() => new PingConsumer());
         }
     }
 }
