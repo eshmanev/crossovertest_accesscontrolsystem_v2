@@ -10,12 +10,12 @@ namespace AccessControl.Contracts.Dto
     public interface ITicket
     {
         /// <summary>
-        ///     Gets the domain for the authenticated user.
+        ///     Gets the name of the user.
         /// </summary>
         /// <value>
-        ///     The domain.
+        ///     The name of the user.
         /// </value>
-        string Domain { get; }
+        string UserName { get; }
 
         /// <summary>
         ///     Gets the roles.
@@ -24,14 +24,6 @@ namespace AccessControl.Contracts.Dto
         ///     The roles.
         /// </value>
         string[] Roles { get; }
-
-        /// <summary>
-        ///     Gets the user.
-        /// </summary>
-        /// <value>
-        ///     The user.
-        /// </value>
-        IUser User { get; }
 
         /// <summary>
         ///     Gets the names of managers who delegated their management rights to the user.

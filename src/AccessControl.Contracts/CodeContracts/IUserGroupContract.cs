@@ -18,5 +18,14 @@ namespace AccessControl.Contracts.CodeContracts
                 return null;
             }
         }
+
+        public string DisplayName
+        {
+            get
+            {
+                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+                return null;
+            }
+        }
     }
 }

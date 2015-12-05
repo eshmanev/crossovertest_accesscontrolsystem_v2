@@ -44,14 +44,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IAuthenticateUser> context)
         {
-            var parts = context.Message.UserName.Split('\\');
-            if (parts.Length != 2)
-            {
-                await context.RespondAsync(AuthenticateUserResult.Failed());
-                return;
-            }
-
-            var checkResult = await _checkCredentialsRequest.Request(new CheckCredentials(parts[0], parts[1], context.Message.Password));
+            var checkResult = await _checkCredentialsRequest.Request(new CheckCredentials(context.Message.UserName, context.Message.Password));
             if (!checkResult.Valid)
             {
                 await context.RespondAsync(AuthenticateUserResult.Failed());
@@ -78,13 +71,13 @@ namespace AccessControl.Service.AccessPoint.Consumers
                But this is postponded, because of time limit.
             */
             var userGroups = user.Groups;
-            if (userGroups.Any(x => x == "Access Control Clients"))
+            if (userGroups.Any(x => x.DisplayName == "Access Control Clients"))
             {
                 roles.Add(WellKnownRoles.ClientService);
             }
 
             // create a ticket
-            var ticket = new Ticket(parts[0], user, roles.ToArray(), onBehalfOf);
+            var ticket = new Ticket(user, roles.ToArray(), onBehalfOf);
             var encryptedTicket = _encryptor.Encrypt(ticket);
             await context.RespondAsync(new AuthenticateUserResult(true, encryptedTicket, user));
         }

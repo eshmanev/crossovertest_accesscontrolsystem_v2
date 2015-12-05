@@ -4,7 +4,6 @@ using System.Diagnostics.Contracts;
 using System.DirectoryServices;
 using System.Linq;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Service.LDAP.Configuration;
 using AccessControl.Service.LDAP.Helpers;
@@ -43,7 +42,27 @@ namespace AccessControl.Service.LDAP.Services
         /// <returns></returns>
         public IEnumerable<IUserGroup> GetUserGroups(string userName)
         {
-            return GetUserGroupsCore(userName).Select(x => new UserGroup(x));
+            var userResult = FindUserByNameCore(userName);
+            if (userResult == null)
+            {
+                return Enumerable.Empty<IUserGroup>();
+            }
+
+            using (var entry = CreateEntry())
+            using (var searcher = new DirectorySearcher(entry))
+            {
+                var groups = new List<IUserGroup>();
+                foreach (var group in userResult.Properties["memberOf"].OfType<string>())
+                {
+                    searcher.Filter = $"(&(objectClass=group)(distinguishedName={group}))";
+                    var groupResult = searcher.FindOne();
+                    if (groupResult != null)
+                    {
+                        groups.Add(ConvertUserGroup(groupResult));
+                    }
+                }
+                return groups;
+            }
         }
 
         /// <summary>
@@ -57,7 +76,7 @@ namespace AccessControl.Service.LDAP.Services
             {
                 using (var searcher = new DirectorySearcher(entry))
                 {
-                    searcher.Filter = $"(&(objectClass=group)(name={userGroupName}))";
+                    searcher.Filter = $"(&(objectClass=group)(name={FromUniqueName(userGroupName)}))";
                     searcher.SearchScope = SearchScope.Subtree;
 
                     var groupResult = searcher.FindOne();
@@ -83,13 +102,11 @@ namespace AccessControl.Service.LDAP.Services
         {
             var manager = FindUserByNameCore(managerName);
             if (manager == null)
-            {
                 return Enumerable.Empty<IUser>();
-            }
 
             using (var entry = CreateEntry())
             {
-                using (var searcher = new DirectorySearcher(entry) {Filter = $"(&(objectClass=user)(manager={manager.GetProperty("distinguishedName")}))"})
+                using (var searcher = new DirectorySearcher(entry) {Filter = $"(&(objectClass=user)(manager={manager.GetProperty("distinguishedname")}))"})
                 {
                     return searcher.FindAll().Cast<SearchResult>().Select(ConvertUser);
                 }
@@ -112,25 +129,6 @@ namespace AccessControl.Service.LDAP.Services
         }
 
         /// <summary>
-        ///     Validates the department.
-        /// </summary>
-        /// <param name="site">The site.</param>
-        /// <param name="department">The department.</param>
-        /// <returns></returns>
-        public bool ValidateDepartment(string site, string department)
-        {
-            var path = _config.CombinePath(site);
-            using (var directoryEntiry = CreateEntry(path))
-            {
-                using (var searcher = new DirectorySearcher(directoryEntiry) {Filter = "(objectClass=user)"})
-                {
-                    searcher.PropertiesToLoad.Add("department");
-                    return searcher.FindAll().Cast<SearchResult>().Any(x => x.GetProperty("department") == department);
-                }
-            }
-        }
-
-        /// <summary>
         ///     Finds the user groups by manager.
         /// </summary>
         /// <param name="managerName">Name of the manager.</param>
@@ -139,15 +137,13 @@ namespace AccessControl.Service.LDAP.Services
         {
             var manager = FindUserByNameCore(managerName);
             if (manager == null)
-            {
                 return Enumerable.Empty<IUserGroup>();
-            }
 
             using (var entry = CreateEntry())
             {
                 using (var searcher = new DirectorySearcher(entry))
                 {
-                    searcher.Filter = $"(&(objectClass=group)(managedby={manager.GetProperty("distinguishedName")}))";
+                    searcher.Filter = $"(&(objectClass=group)(managedby={manager.GetProperty("distinguishedname")}))";
                     searcher.SearchScope = SearchScope.Subtree;
 
                     return searcher.FindAll().Cast<SearchResult>()
@@ -180,12 +176,11 @@ namespace AccessControl.Service.LDAP.Services
         /// <summary>
         ///     Checks the specified credentials.
         /// </summary>
-        /// <param name="domain">Domain name.</param>
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         /// <param name="user">The authenticated user.</param>
         /// <returns></returns>
-        public bool CheckCredentials(string domain, string userName, string password, out IUser user)
+        public bool CheckCredentials(string userName, string password, out IUser user)
         {
             try
             {
@@ -194,8 +189,13 @@ namespace AccessControl.Service.LDAP.Services
                     entry.AuthenticationType = AuthenticationTypes.Secure;
                     // ReSharper disable once UnusedVariable
                     var nativeObject = entry.NativeObject;
-                    user = FindUserByName(userName);
-                    return true;
+                    using (var searcher = new DirectorySearcher(entry) {Filter = $"(sAMAccountName={FromUniqueName(userName)})"})
+                    {
+                        var result = searcher.FindOne();
+                        user = result != null ? ConvertUser(result) : null;
+                    }
+
+                    return user != null;
                 }
             }
             catch
@@ -236,13 +236,11 @@ namespace AccessControl.Service.LDAP.Services
         {
             var manager = FindUserByNameCore(managerName);
             if (manager == null)
-            {
                 return Enumerable.Empty<IDepartment>();
-            }
 
             using (var entry = CreateEntry())
             {
-                using (var searcher = new DirectorySearcher(entry) {Filter = $"(&(objectClass=user)(manager={manager.GetProperty("distinguishedName")}))"})
+                using (var searcher = new DirectorySearcher(entry) {Filter = $"(&(objectClass=user)(manager={manager.GetProperty("distinguishedname")}))"})
                 {
                     searcher.PropertiesToLoad.Add("department");
 
@@ -258,8 +256,7 @@ namespace AccessControl.Service.LDAP.Services
 
         private IUserGroup ConvertUserGroup(SearchResult result)
         {
-            // TODO. обрати внимание. Сверху остался метод new UserGroup(x)!
-            return new UserGroup(result.GetProperty("name"));
+            return new UserGroup(ToUniqueName(result.GetProperty("name")), result.GetProperty("name"));
         }
 
         private IDepartment ConvertDepartment(SearchResult result)
@@ -270,61 +267,39 @@ namespace AccessControl.Service.LDAP.Services
 
         private IUser ConvertUser(SearchResult result)
         {
-            var userName = result.GetProperty("samaccountname");
+            var userName = ToUniqueName(result.GetProperty("sAMAccountName"));
             var managerName = result.GetProperty("manager");
-            var manager = managerName != null ? FindUserByDistinguishedName(managerName) : null;
-            return new User(userName, GetUserGroupsCore(userName).ToArray())
+            var manager = managerName != null ? FindUserByDistinguishedNameCore(managerName) : null;
+            return new User(userName, GetUserGroups(userName).ToArray())
             {
                 DisplayName = result.GetProperty("displayname") ?? userName,
                 PhoneNumber = result.GetProperty("telephonenumber"),
                 Email = result.GetProperty("mail"),
                 Department = result.GetProperty("department"),
                 IsManager = FindUsersByManager(userName).Any(),
-                ManagerName = manager?.GetProperty("samaccountname")
+                ManagerName = ToUniqueName(manager?.GetProperty("sAMAccountName"))
             };
-        }
-
-        private SearchResult FindUserByDistinguishedName(string distinguishedName)
-        {
-            using (var entry = CreateEntry())
-            {
-                using (var searcher = new DirectorySearcher(entry) {Filter = $"(distinguishedName={distinguishedName})"})
-                {
-                    return searcher.FindOne();
-                }
-            }
         }
 
         private SearchResult FindUserByNameCore(string userName)
         {
             using (var entry = CreateEntry())
             {
-                using (var searcher = new DirectorySearcher(entry) {Filter = $"(sAMAccountName={userName})"})
+                using (var searcher = new DirectorySearcher(entry) {Filter = $"(sAMAccountName={FromUniqueName(userName)})"})
                 {
                     return searcher.FindOne();
                 }
             }
         }
 
-        private IEnumerable<string> GetUserGroupsCore(string userName)
+        private SearchResult FindUserByDistinguishedNameCore(string userName)
         {
-            var result = FindUserByNameCore(userName);
-            if (result == null)
+            using (var entry = CreateEntry())
             {
-                yield break;
-            }
-
-            foreach (var property in result.Properties["memberOf"].OfType<string>())
-            {
-                var equalsIndex = property.IndexOf("=", 1, StringComparison.Ordinal);
-                var commaIndex = property.IndexOf(",", 1, StringComparison.Ordinal);
-                if (equalsIndex == -1)
+                using (var searcher = new DirectorySearcher(entry) { Filter = $"(distinguishedName={userName})" })
                 {
-                    continue;
+                    return searcher.FindOne();
                 }
-
-                var groupName = property.Substring((equalsIndex + 1), (commaIndex - equalsIndex) - 1);
-                yield return groupName;
             }
         }
 
@@ -333,20 +308,30 @@ namespace AccessControl.Service.LDAP.Services
             return CreateEntry(_config.Url, _config.UserName, _config.Password);
         }
 
-        private DirectoryEntry CreateEntry(string path)
-        {
-            return CreateEntry(path, _config.UserName, _config.Password);
-        }
-
-        private DirectoryEntry CreateEntry(string userName, string password)
-        {
-            return CreateEntry(_config.Url, userName, password);
-        }
-
         private DirectoryEntry CreateEntry(string path, string userName, string password)
         {
             var entry = new DirectoryEntry(path, userName, password, AuthenticationTypes.Secure);
             return entry;
+        }
+
+        private string ToUniqueName(string name)
+        {
+            if (name == null)
+                return null;
+
+            return $"{_config.DomainName}\\{name}";
+        }
+
+        private string FromUniqueName(string name)
+        {
+            if (name == null)
+                return null;
+
+            var parts = name.Split('\\');
+            if (parts.Length != 2)
+                throw new ArgumentException("Invalid unique name specified");
+
+            return parts[1];
         }
     }
 }

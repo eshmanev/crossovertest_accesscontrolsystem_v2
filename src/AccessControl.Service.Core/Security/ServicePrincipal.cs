@@ -15,7 +15,7 @@ namespace AccessControl.Service.Security
 
             DecryptedTicket = decryptedTicket;
             EncryptedTicket = encryptedTicket;
-            Identity = new ServiceIdentity(decryptedTicket.User.UserName);
+            Identity = new ServiceIdentity(decryptedTicket.UserName);
             _roles = decryptedTicket.Roles;
         }
 

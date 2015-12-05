@@ -22,11 +22,11 @@ namespace AccessControl.Contracts.CodeContracts
         public string DisplayName => null;
         public string Email => null;
 
-        public string[] Groups
+        public IUserGroup[] Groups
         {
             get
             {
-                Contract.Ensures(Contract.Result<string[]>() != null);
+                Contract.Ensures(Contract.Result<IUserGroup[]>() != null);
                 return null;
             }
         }

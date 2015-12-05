@@ -13,5 +13,13 @@ namespace AccessControl.Contracts.Dto
         ///     Gets the group's name.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        ///     Gets the display name.
+        /// </summary>
+        /// <value>
+        ///     The display name.
+        /// </value>
+        string DisplayName { get; }
     }
 }

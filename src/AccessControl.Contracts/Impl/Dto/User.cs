@@ -10,7 +10,7 @@ namespace AccessControl.Contracts.Impl.Dto
         /// </summary>
         /// <param name="userName">Name of the user.</param>
         /// <param name="groups">The groups.</param>
-        public User(string userName, string[] groups)
+        public User(string userName, IUserGroup[] groups)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(userName));
             Contract.Requires(groups != null);
@@ -48,7 +48,7 @@ namespace AccessControl.Contracts.Impl.Dto
         /// <value>
         ///     The groups.
         /// </value>
-        public string[] Groups { get; }
+        public IUserGroup[] Groups { get; }
 
         /// <summary>
         ///     Gets a value indicating whether this user is a manager.

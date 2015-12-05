@@ -39,7 +39,7 @@ namespace AccessControl.Contracts.Dto
         /// <value>
         ///     The groups.
         /// </value>
-        string[] Groups { get; }
+        IUserGroup[] Groups { get; }
 
         /// <summary>
         ///     Gets a value indicating whether this user is a manager.

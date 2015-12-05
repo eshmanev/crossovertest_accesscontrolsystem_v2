@@ -8,7 +8,7 @@ namespace AccessControl.Service.LDAP.Services
     {
         public static readonly ILdapService Instance = new EmptyDirectoryService();
 
-        public bool CheckCredentials(string domain, string userName, string password, out IUser user)
+        public bool CheckCredentials(string userName, string password, out IUser user)
         {
             user = null;
             return false;
@@ -57,11 +57,6 @@ namespace AccessControl.Service.LDAP.Services
         public IEnumerable<IUser> ListUsers()
         {
             return Enumerable.Empty<IUser>();
-        }
-
-        public bool ValidateDepartment(string site, string department)
-        {
-            return false;
         }
     }
 }

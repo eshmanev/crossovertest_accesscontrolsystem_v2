@@ -9,7 +9,7 @@ namespace AccessControl.Contracts.Impl.Dto
         /// </summary>
         /// <param name="userName">Name of the user.</param>
         /// <param name="userGroups">The user groups.</param>
-        public UserBiometric(string userName, string[] userGroups)
+        public UserBiometric(string userName, IUserGroup[] userGroups)
             : base(userName, userGroups)
         {
         }

@@ -4,7 +4,6 @@ namespace AccessControl.FunctionalTest
 {
     public class AppSettings
     {
-        public static string Domain => ConfigurationManager.AppSettings["Domain"];
         public static string TestManagerUserName => ConfigurationManager.AppSettings["TestManagerUserName"];
         public static string TestManagerPassword => ConfigurationManager.AppSettings["TestManagerPassword"];
         public static string TestClientServiceUserName => ConfigurationManager.AppSettings["TestClientServiceUserName"];

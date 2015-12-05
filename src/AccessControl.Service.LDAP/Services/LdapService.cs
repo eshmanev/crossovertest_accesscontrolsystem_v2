@@ -22,9 +22,19 @@ namespace AccessControl.Service.LDAP.Services
         {
             get
             {
-                var domain = Thread.CurrentPrincipal.Domain();
+                var domain = GetDomain(Thread.CurrentPrincipal.UserName());
                 return Get(domain);
             }
+        }
+
+        private string GetDomain(string userName)
+        {
+            var parts = userName.Split('\\');
+            if (parts.Length != 2)
+            {
+                return null;
+            }
+            return parts[0];
         }
 
         private ILdapService Get(string domain)
@@ -41,9 +51,16 @@ namespace AccessControl.Service.LDAP.Services
                     });
         }
 
-        public bool CheckCredentials(string domain, string userName, string password, out IUser user)
+        public bool CheckCredentials(string userName, string password, out IUser user)
         {
-            return Get(domain).CheckCredentials(domain, userName, password, out user);
+            var domain = GetDomain(userName);
+            if (domain == null)
+            {
+                user = null;
+                return false;
+            }
+
+            return Get(domain).CheckCredentials(userName, password, out user);
         }
 
         public IEnumerable<IDepartment> ListDepartments()
@@ -89,11 +106,6 @@ namespace AccessControl.Service.LDAP.Services
         public IEnumerable<IUser> ListUsers()
         {
             return Current.ListUsers();
-        }
-
-        public bool ValidateDepartment(string site, string department)
-        {
-            return Current.ValidateDepartment(site, department);
         }
     }
 }

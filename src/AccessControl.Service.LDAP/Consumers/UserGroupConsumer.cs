@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Contracts.Commands.Lists;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Service.LDAP.Services;
 using AccessControl.Service.Security;
@@ -12,7 +13,7 @@ namespace AccessControl.Service.LDAP.Consumers
     /// <summary>
     ///     Represents a consumer of user groups.
     /// </summary>
-    internal class UserGroupConsumer : IConsumer<IListUserGroups>, IConsumer<IListUsersInGroup>
+    internal class UserGroupConsumer : IConsumer<IListUserGroups>, IConsumer<IListUsersInGroup>, IConsumer<IFindUserGroupByName>
     {
         private readonly ILdapService _ldapService;
 
@@ -56,6 +57,18 @@ namespace AccessControl.Service.LDAP.Consumers
 
             var users = fetcher.Execute();
             return context.RespondAsync(ListCommand.UsersInGroupResult(users.ToArray()));
+        }
+
+        /// <summary>
+        ///     Searches for a group with the given name.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public Task Consume(ConsumeContext<IFindUserGroupByName> context)
+        {
+            var fetcher = RoleBasedDataFetcher.Create(_ldapService.ListUserGroups, manager => _ldapService.FindUserGroupsByManager(manager));
+            var group = fetcher.Execute().SingleOrDefault(x => x.Name == context.Message.UserGroup);
+            return context.RespondAsync(new FindUserGroupByNameResult(group));
         }
     }
 }

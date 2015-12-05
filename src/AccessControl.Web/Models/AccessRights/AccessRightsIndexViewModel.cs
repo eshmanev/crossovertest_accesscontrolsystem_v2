@@ -12,10 +12,16 @@ namespace AccessControl.Web.Models.AccessRights
 
         public EditAccessRightsViewModel Editor { get; set; }
 
-        public string GetDisplayName(string userName)
+        public string GetDisplayUserName(string userName)
         {
             var user = Editor.Users.FirstOrDefault(x => x.UserName == userName);
             return user != null ? user.DisplayName : userName;
+        }
+
+        public string GetDisplayGroupName(string groupName)
+        {
+            var group = Editor.UserGroups.FirstOrDefault(x => x.Name == groupName);
+            return group != null ? group.DisplayName : groupName;
         }
 
         public string GetDepartment(Guid accessPointId)

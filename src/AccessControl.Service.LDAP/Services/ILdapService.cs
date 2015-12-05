@@ -11,12 +11,11 @@ namespace AccessControl.Service.LDAP.Services
         /// <summary>
         ///    Checks the specified credentials.
         /// </summary>
-        /// <param name="domain">Domain name.</param>
         /// <param name="userName">Name of the user.</param>
         /// <param name="password">The password.</param>
         /// <param name="user">The authenticated user.</param>
         /// <returns></returns>
-        bool CheckCredentials(string domain, string userName, string password, out IUser user);
+        bool CheckCredentials(string userName, string password, out IUser user);
 
         /// <summary>
         ///     Lists the departments.
@@ -77,13 +76,5 @@ namespace AccessControl.Service.LDAP.Services
         /// </summary>
         /// <returns></returns>
         IEnumerable<IUser> ListUsers();
-
-        /// <summary>
-        ///     Check if the specified department exists..
-        /// </summary>
-        /// <param name="site">The site.</param>
-        /// <param name="department">The department.</param>
-        /// <returns></returns>
-        bool ValidateDepartment(string site, string department);
     }
 }

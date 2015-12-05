@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.Contracts.Impl.Dto;
@@ -29,6 +30,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
                                         IConsumer<IDenyUserGroupAccess>
     {
         private readonly IBus _bus;
+        private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
+        private readonly IRequestClient<IFindUserGroupByName, IFindUserGroupByNameResult> _findUserGroupRequest;
         private readonly IRequestClient<IListUsersInGroup, IListUsersInGroupResult> _listUsersInGroupRequest;
         private readonly IDatabaseContext _databaseContext;
 
@@ -36,17 +39,25 @@ namespace AccessControl.Service.AccessPoint.Consumers
         ///     Initializes a new instance of the <see cref="AccessRightsConsumer" /> class.
         /// </summary>
         /// <param name="bus">The bus.</param>
+        /// <param name="findUserRequest">The find user request.</param>
+        /// <param name="findUserGroupRequest">The find user group request.</param>
         /// <param name="listUsersInGroupRequest">The list users in group request.</param>
         /// <param name="databaseContext">The database context.</param>
         public AccessRightsConsumer(IBus bus,
+                                    IRequestClient<IFindUserByName,IFindUserByNameResult> findUserRequest,
+                                    IRequestClient<IFindUserGroupByName, IFindUserGroupByNameResult> findUserGroupRequest,
                                     IRequestClient<IListUsersInGroup, IListUsersInGroupResult> listUsersInGroupRequest,
                                     IDatabaseContext databaseContext)
         {
             Contract.Requires(bus != null);
+            Contract.Requires(findUserRequest != null);
+            Contract.Requires(findUserGroupRequest != null);
             Contract.Requires(listUsersInGroupRequest != null);
             Contract.Requires(databaseContext != null);
 
             _bus = bus;
+            _findUserRequest = findUserRequest;
+            _findUserGroupRequest = findUserGroupRequest;
             _listUsersInGroupRequest = listUsersInGroupRequest;
             _databaseContext = databaseContext;
         }
@@ -56,11 +67,19 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public Task Consume(ConsumeContext<IAllowUserAccess> context)
+        public async Task Consume(ConsumeContext<IAllowUserAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
-                return context.RespondAsync(new VoidResult("Not authorized"));
+                await context.RespondAsync(new VoidResult("Not authorized"));
+                return;
+            }
+
+            var userResult = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
+            if (userResult == null)
+            {
+                await context.RespondAsync(new VoidResult("Invalid user name"));
+                return;
             }
 
             var accessRights = GetUserAccessRights(context.Message.UserName) ?? new UserAccessRights {UserName = context.Message.UserName};
@@ -68,9 +87,9 @@ namespace AccessControl.Service.AccessPoint.Consumers
             if (TryAllowPermanentAccess(context.Message.AccessPointId, accessRights, out response))
             {
                 var hash = FindUserHash(context.Message.UserName);
-                _bus.Publish(new PermanentUserAccessAllowed(context.Message.AccessPointId, context.Message.UserName, hash));
+                await _bus.Publish(new PermanentUserAccessAllowed(context.Message.AccessPointId, context.Message.UserName, hash));
             }
-            return context.RespondAsync(response);
+            await context.RespondAsync(response);
         }
 
         /// <summary>
@@ -83,6 +102,13 @@ namespace AccessControl.Service.AccessPoint.Consumers
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
                 await context.RespondAsync(new VoidResult("Not authorized"));
+                return;
+            }
+
+            var groupResult = await _findUserGroupRequest.Request(new FindUserGroupByName(context.Message.UserGroupName));
+            if (groupResult == null)
+            {
+                await context.RespondAsync(new VoidResult("Invalid group name"));
                 return;
             }
 
@@ -108,20 +134,28 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public Task Consume(ConsumeContext<IDenyUserAccess> context)
+        public async Task Consume(ConsumeContext<IDenyUserAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
-                return context.RespondAsync(new VoidResult("Not authorized"));
+                await context.RespondAsync(new VoidResult("Not authorized"));
+                return;
+            }
+
+            var userResult = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
+            if (userResult == null)
+            {
+                await context.RespondAsync(new VoidResult("Invalid user name"));
+                return;
             }
 
             var accessRights = GetUserAccessRights(context.Message.UserName);
             IVoidResult response;
             if (TryDenyPermanentAccess(context.Message.AccessPointId, accessRights, out response))
             {
-                _bus.Publish(new PermanentUserAccessDenied(context.Message.AccessPointId, context.Message.UserName));
+                await _bus.Publish(new PermanentUserAccessDenied(context.Message.AccessPointId, context.Message.UserName));
             }
-            return context.RespondAsync(response);
+            await context.RespondAsync(response);
         }
 
         /// <summary>
@@ -129,20 +163,28 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public Task Consume(ConsumeContext<IDenyUserGroupAccess> context)
+        public async Task Consume(ConsumeContext<IDenyUserGroupAccess> context)
         {
             if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
             {
-                return context.RespondAsync(new VoidResult("Not authorized"));
+                await context.RespondAsync(new VoidResult("Not authorized"));
+                return;
+            }
+
+            var groupResult = await _findUserGroupRequest.Request(new FindUserGroupByName(context.Message.UserGroupName));
+            if (groupResult == null)
+            {
+                await context.RespondAsync(new VoidResult("Invalid group name"));
+                return;
             }
 
             var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
             IVoidResult response;
             if (TryDenyPermanentAccess(context.Message.AccessPointId, accessRights, out response))
             {
-                _bus.Publish(new PermanentUserGroupAccessDenied(context.Message.AccessPointId, context.Message.UserGroupName));
+                await _bus.Publish(new PermanentUserGroupAccessDenied(context.Message.AccessPointId, context.Message.UserGroupName));
             }
-            return context.RespondAsync(response);
+            await context.RespondAsync(response);
         }
 
         /// <summary>

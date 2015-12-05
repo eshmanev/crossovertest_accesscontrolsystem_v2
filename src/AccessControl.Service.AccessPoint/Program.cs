@@ -50,6 +50,7 @@ namespace AccessControl.Service.AccessPoint
                             .RegisterRequestClient<IListUsersInGroup, IListUsersInGroupResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<ICheckCredentials, ICheckCredentialsResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
+                            .RegisterRequestClient<IFindUserGroupByName, IFindUserGroupByNameResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IListUsers, IListUsersResult>(WellKnownQueues.Ldap)
                             .RegisterRequestClient<IListDepartments, IListDepartmentsResult>(WellKnownQueues.Ldap);
                     })

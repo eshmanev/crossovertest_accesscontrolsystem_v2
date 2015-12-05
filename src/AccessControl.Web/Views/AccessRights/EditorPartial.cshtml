@@ -23,7 +23,7 @@
 
             <div class="form-group">
                 <label class="control-label">User Group:</label>
-                @Html.DropDownListFor(x => x.Editor.UserGroupName, new SelectList(Model.Editor.UserGroups, "Name", "Name"), RequiredSelect.Empty, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.Editor.UserGroupName, new SelectList(Model.Editor.UserGroups, "Name", "DisplayName"), RequiredSelect.Empty, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Editor.UserGroupName, "", new { @class = "text-danger" })
             </div>
         </div>

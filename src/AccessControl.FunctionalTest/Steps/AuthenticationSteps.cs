@@ -40,7 +40,7 @@ namespace AccessControl.FunctionalTest.Steps
 
             var url = new Uri(serviceConfig.RabbitMq.GetQueueUrl(WellKnownQueues.AccessControl));
             IRequestClient<IAuthenticateUser, IAuthenticateUserResult> request = new MessageRequestClient<IAuthenticateUser, IAuthenticateUserResult>(Bus.Instance, url, TimeSpan.FromSeconds(30));
-            var result = request.Request(new AuthenticateUser(AppSettings.Domain + "\\" + userName, password)).Result;
+            var result = request.Request(new AuthenticateUser(userName, password)).Result;
             if (!result.Authenticated)
                 throw new SecurityException($"Invalid credentials specified. Please check these settings {userNameKey} and {passwordKey} in the app.config file.");
 

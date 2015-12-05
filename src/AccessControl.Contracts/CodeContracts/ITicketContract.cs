@@ -10,11 +10,11 @@ namespace AccessControl.Contracts.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class ITicketContract : ITicket
     {
-        public string Domain
+        public string UserName
         {
             get
             {
-                Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
+                Contract.Requires(Contract.Result<string>() != null);
                 return null;
             }
         }
@@ -24,15 +24,6 @@ namespace AccessControl.Contracts.CodeContracts
             get
             {
                 Contract.Requires(Contract.Result<string[]>() != null);
-                return null;
-            }
-        }
-
-        public IUser User
-        {
-            get
-            {
-                Contract.Requires(Contract.Result<IUser>() != null);
                 return null;
             }
         }

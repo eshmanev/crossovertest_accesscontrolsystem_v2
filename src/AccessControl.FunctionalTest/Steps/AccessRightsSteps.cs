@@ -5,6 +5,7 @@ using System.Threading;
 using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
+using AccessControl.Contracts.Commands.Search;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Impl.Commands;
 using AccessControl.FunctionalTest.AccessCheckServiceProxy;
@@ -21,8 +22,9 @@ namespace AccessControl.FunctionalTest.Steps
         [When(@"I grant access rights to access point with ID = ""(.*)"" for my employee")]
         public void WhenIGrantAccessRightsToAccessPointWithIDForMyEmployee(Guid accessPointId)
         {
-            var employee = AppSettings.ManagedUserName;
-            Bus.Request<IAllowUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, employee));
+            var result = Bus.Request<IListUsers, IListUsersResult>(WellKnownQueues.Ldap, ListCommand.WithoutParameters);
+            var employee = result.Users.Single(x => x.UserName.Contains(AppSettings.ManagedUserName));
+            Bus.Request<IAllowUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, employee.UserName));
 
             // this is just to ensure that all necessary events are delivered and processed
             Thread.Sleep(1000);
@@ -31,8 +33,9 @@ namespace AccessControl.FunctionalTest.Steps
         [When(@"I deny access rights to access point with ID = ""(.*)"" for my employee")]
         public void WhenIDenyAccessRightsToAccessPointWithIDForMyEmployee(Guid accessPointId)
         {
-            var employee = AppSettings.ManagedUserName;
-            Bus.Request<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, employee));
+            var result = Bus.Request<IListUsers, IListUsersResult>(WellKnownQueues.Ldap, ListCommand.WithoutParameters);
+            var employee = result.Users.Single(x => x.UserName.Contains(AppSettings.ManagedUserName));
+            Bus.Request<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, employee.UserName));
 
             // this is just to ensure that all necessary events are delivered and processed
             Thread.Sleep(1000);
@@ -43,7 +46,7 @@ namespace AccessControl.FunctionalTest.Steps
         {
             // get user's hash
             var result = Bus.Request<IListUsersBiometric, IListUsersBiometricResult>(WellKnownQueues.AccessControl, ListCommand.WithoutParameters);
-            var userHash = result.Users.Single(x => x.UserName == AppSettings.ManagedUserName).BiometricHash;
+            var userHash = result.Users.Single(x => x.UserName.Contains(AppSettings.ManagedUserName)).BiometricHash;
 
             // try access the access point
             var client = new AccessCheckServiceProxy.AccessCheckServiceClient();

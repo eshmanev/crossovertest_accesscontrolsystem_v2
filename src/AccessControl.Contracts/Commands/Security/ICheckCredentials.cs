@@ -10,14 +10,6 @@ namespace AccessControl.Contracts.Commands.Security
     public interface ICheckCredentials
     {
         /// <summary>
-        ///     Gets the domain.
-        /// </summary>
-        /// <value>
-        ///     The domain.
-        /// </value>
-        string Domain { get; }
-
-        /// <summary>
         ///     Gets the name of the user.
         /// </summary>
         /// <value>

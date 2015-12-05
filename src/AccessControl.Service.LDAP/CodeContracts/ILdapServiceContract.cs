@@ -12,7 +12,7 @@ namespace AccessControl.Service.LDAP.CodeContracts
     // ReSharper disable once InconsistentNaming
     internal abstract class ILdapServiceContract : ILdapService
     {
-        public bool CheckCredentials(string domain, string userName, string password, out IUser user)
+        public bool CheckCredentials(string userName, string password, out IUser user)
         {
             user = null;
             return false;
@@ -68,13 +68,6 @@ namespace AccessControl.Service.LDAP.CodeContracts
         {
             Contract.Ensures(Contract.Result<IEnumerable<IUser>>() != null);
             return null;
-        }
-
-        public bool ValidateDepartment(string site, string department)
-        {
-            Contract.Requires(site != null);
-            Contract.Requires(department != null);
-            return false;
         }
 
         public IEnumerable<IUserGroup> FindUserGroupsByManager(string managerName)

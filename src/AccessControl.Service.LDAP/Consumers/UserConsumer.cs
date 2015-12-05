@@ -37,7 +37,7 @@ namespace AccessControl.Service.LDAP.Consumers
         public Task Consume(ConsumeContext<ICheckCredentials> context)
         {
             IUser user;
-            return context.RespondAsync(!_ldapService.CheckCredentials(context.Message.Domain, context.Message.UserName, context.Message.Password, out user) 
+            return context.RespondAsync(!_ldapService.CheckCredentials(context.Message.UserName, context.Message.Password, out user) 
                 ? new CheckCredentialsResult(null) 
                 : new CheckCredentialsResult(user));
         }
