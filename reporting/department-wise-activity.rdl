@@ -1,13 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Report xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:cl="http://schemas.microsoft.com/sqlserver/reporting/2010/01/componentdefinition" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/reportdefinition">
   <AutoRefresh>0</AutoRefresh>
-  <DataSources>
-    <DataSource Name="AccessControlSystemDS">
-      <DataSourceReference>/AccessControlSystemDS</DataSourceReference>
-      <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>e6a12d5a-cffd-4602-a0c1-68c3d818b42a</rd:DataSourceID>
-    </DataSource>
-  </DataSources>
   <DataSets>
     <DataSet Name="DataSet1">
       <Query>
@@ -1198,12 +1191,12 @@
             </Border>
           </Style>
         </PageFooter>
-        <PageHeight>29.7cm</PageHeight>
-        <PageWidth>21cm</PageWidth>
-        <LeftMargin>2cm</LeftMargin>
-        <RightMargin>2cm</RightMargin>
-        <TopMargin>2cm</TopMargin>
-        <BottomMargin>2cm</BottomMargin>
+        <PageHeight>297.00001mm</PageHeight>
+        <PageWidth>210mm</PageWidth>
+        <LeftMargin>20mm</LeftMargin>
+        <RightMargin>20mm</RightMargin>
+        <TopMargin>20mm</TopMargin>
+        <BottomMargin>20mm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>
         <Style />
       </Page>
@@ -1233,6 +1226,5 @@
     </ReportParameter>
   </ReportParameters>
   <rd:ReportUnitType>Mm</rd:ReportUnitType>
-  <rd:ReportServerUrl>http://node-1:8080/ReportServer_SQLSERVER</rd:ReportServerUrl>
   <rd:ReportID>17b84bc1-1668-4325-a453-cb550c6754a3</rd:ReportID>
 </Report>

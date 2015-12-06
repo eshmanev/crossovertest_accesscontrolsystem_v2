@@ -1,7 +1,7 @@
 USE AccessControlSystem
 GO
-DECLARE @AD_UserName varchar(30) = N'domain\username'
-DECLARE @AD_Password varchar(30) = N'password'
+DECLARE @AD_UserName varchar(30) = N'<domain>\<user>'
+DECLARE @AD_Password varchar(30) = N'<password>'
 
 -- Links Active Directory Server
 EXEC master.dbo.sp_addlinkedserver 
@@ -201,7 +201,7 @@ BEGIN
     DECLARE @created DATETIME = GETDATE()
     SELECT
         @created as Created,
-        DU.Department + '\' + @created as RelativePath,
+        DU.Department + '_' + CONVERT(VARCHAR, @created, 105) as FileName,
         DU.Department AS Department,
         DU.CN AS Manager,
         DU.Mail AS ManagerMail,
