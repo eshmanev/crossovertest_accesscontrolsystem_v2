@@ -30,7 +30,7 @@ $userName = AskParameter -message "Enter client service user name" -default "evr
 $password = AskParameter -message "Enter client service password" -default "Test123"
 
 # RabbitMQ parameters
-$rabbitAddress = AskParameter -message "Enter RabbitMQ server address" -default "rabbitmq://192.168.1.220"
+$rabbitAddress = AskParameter -message "Enter RabbitMQ server address" -default "rabbitmq://192.168.1.230"
 $rabbitUserName = AskParameter -message "Enter RabbitMQ username" -default "evgeny"
 $rabbitPassword = AskParameter -message "Enter RabbitMQ password" -default "Test123"
 

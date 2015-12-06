@@ -81,6 +81,8 @@
       <CopyFiles Include="$(ScriptFolder)\common.ps1;
                           $(ScriptFolder)\install_server_services.ps1;
                           $(ScriptFolder)\uninstall_server_services.ps1;
+                          $(ScriptFolder)\install_web_app.ps1;
+                          $(ScriptFolder)\uninstall_web_app.ps1;
                           $(ScriptFolder)\install_client_services.ps1;
                           $(ScriptFolder)\uninstall_client_services.ps1;
                           $(MSBuildProjectDirectory)\.erlang.cookie"/>

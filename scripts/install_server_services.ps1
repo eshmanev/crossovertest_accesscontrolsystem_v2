@@ -29,7 +29,7 @@ $ldapAddress = AskParameter -message "Enter LDAP directory server address" -defa
 $ldapUserName = AskParameter -message "Enter LDAP directory username" -default "ldapservice"
 $ldapPassword = AskParameter -message "Enter LDAP directory password" -default "Test123"
 # RabbitMQ parameters
-$rabbitAddress = AskParameter -message "Enter RabbitMQ server address" -default "rabbitmq://192.168.1.220"
+$rabbitAddress = AskParameter -message "Enter RabbitMQ server address" -default "rabbitmq://192.168.1.230"
 $rabbitUserName = AskParameter -message "Enter RabbitMQ username" -default "evgeny"
 $rabbitPassword = AskParameter -message "Enter RabbitMQ password" -default "Test123"
 # Database parameters
@@ -64,6 +64,3 @@ ModifyConfigRabbit -file ".\AccessControl.Service.AccessPoint\AccessControl.Serv
 ModifyConnectionString -file ".\AccessControl.Service.AccessPoint\AccessControl.Service.AccessPoint.exe.config" -value $connectionString
 InstallAndRun(".\AccessControl.Service.AccessPoint\AccessControl.Service.AccessPoint.exe")
 
-Unzip "AccessControl.Web.zip" ".\AccessControl.Web"
-ModifyConfigRabbit -file ".\AccessControl.Web\web.config" -url $rabbitAddress -user $rabbitUserName -password $rabbitPassword -nodePath "configuration/rabbitMq"
-DeployWebsite -pool "AccessControl.Web" -dotNetVersion "v4.0" -appName "AccessControl.Web" -path ".\AccessControl.Web" -port 8967

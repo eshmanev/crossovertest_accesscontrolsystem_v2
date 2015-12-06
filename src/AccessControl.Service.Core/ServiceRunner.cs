@@ -37,10 +37,9 @@ namespace AccessControl.Service
                         recovery =>
                         {
                             recovery.RestartService(0);
-                            recovery.SetResetPeriod(10);
+                            recovery.SetResetPeriod(1);
                         });
 
-                    cfg.StartAutomatically();
                     cfg.UseUnityContainer(tuple.Item1);
                     cfg.Service<T>(
                         s =>
