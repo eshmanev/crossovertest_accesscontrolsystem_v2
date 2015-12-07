@@ -61,7 +61,7 @@ function DeployWebsite($pool, $dotNetVersion, $appName, $path, $port) {
   $fullPath = [System.IO.Path]::GetFullPath($path)
   New-Website -Name $appName -PhysicalPath $fullPath -ApplicationPool $pool
   Set-WebBinding -Name $appName -BindingInformation "*:80:" -PropertyName "Port" -Value "$port"
-  #Start-Website -Name $appName
+  Start-Website -Name $appName
 }
 
 function UninstallWebsite($pool, $dotNetVersion, $appName, $path, $port) {
@@ -89,8 +89,8 @@ function InstallAndRun($servicePath)
   try
   {
     $fullPath = [System.IO.Path]::GetFullPath($servicePath)
-    & $fullPath "install" "--localservice" "--manual"
-    #& $fullPath "start"
+    & $fullPath "install" "--localservice" "--autostart"
+    & $fullPath "start"
   }
   catch
   {

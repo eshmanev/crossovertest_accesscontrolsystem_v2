@@ -4,7 +4,6 @@ using AccessControl.Service.Configuration;
 using AccessControl.Service.Middleware;
 using MassTransit;
 using MassTransit.Log4NetIntegration;
-using MassTransit.Log4NetIntegration.Logging;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Practices.Unity;
 using Topshelf;

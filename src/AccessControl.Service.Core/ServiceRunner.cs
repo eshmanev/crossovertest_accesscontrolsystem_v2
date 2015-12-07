@@ -31,24 +31,29 @@ namespace AccessControl.Service
         {
             var tuple = builder.Build();
             HostFactory.Run(
-                cfg =>
+                host =>
                 {
-                    cfg.EnableServiceRecovery(
+                    // recovery
+                    host.EnableServiceRecovery(
                         recovery =>
                         {
                             recovery.RestartService(0);
                             recovery.SetResetPeriod(1);
                         });
 
-                    cfg.UseUnityContainer(tuple.Item1);
-                    cfg.Service<T>(
+                    // common dependecies.
+                    host.DependsOn("RabbitMQ");
+
+                    // control
+                    host.UseUnityContainer(tuple.Item1);
+                    host.Service<T>(
                         s =>
                         {
                             s.ConstructUsingUnityContainer();
                             s.WhenStarted((service, control) => service.Start(control));
                             s.WhenStopped((service, control) => service.Stop(control));
                         });
-                    config(cfg);
+                    config(host);
                 });
         }
     }

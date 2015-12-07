@@ -29,7 +29,7 @@ $ldapAddress = AskParameter -message "Enter LDAP directory server address" -defa
 $ldapUserName = AskParameter -message "Enter LDAP directory username" -default "ldapservice"
 $ldapPassword = AskParameter -message "Enter LDAP directory password" -default "Test123"
 # RabbitMQ parameters
-$rabbitAddress = AskParameter -message "Enter RabbitMQ server address" -default "rabbitmq://192.168.1.230"
+$rabbitAddress = AskParameter -message "Enter RabbitMQ server address" -default "rabbitmq://127.0.0.1"
 $rabbitUserName = AskParameter -message "Enter RabbitMQ username" -default "evgeny"
 $rabbitPassword = AskParameter -message "Enter RabbitMQ password" -default "Test123"
 # Database parameters
