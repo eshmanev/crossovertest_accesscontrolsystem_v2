@@ -95,7 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeContracts\IDirectoryConfigCollectionContract.cs" />
-    <Compile Include="CodeContracts\DirectoryConfigContract.cs" />
+    <Compile Include="CodeContracts\IDirectoryConfigContract.cs" />
     <Compile Include="CodeContracts\ILdapConfigContract.cs" />
     <Compile Include="CodeContracts\ILdapServiceContract.cs" />
     <Compile Include="Configuration\LdapConfiguration.cs" />
