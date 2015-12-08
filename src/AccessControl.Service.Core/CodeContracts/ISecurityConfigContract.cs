@@ -8,7 +8,7 @@ namespace AccessControl.Service.CodeContracts
     /// </summary>
     [ContractClassFor(typeof(ISecurityConfig))]
     // ReSharper disable once InconsistentNaming
-    public class ISecurityConfigContract : ISecurityConfig
+    internal abstract class ISecurityConfigContract : ISecurityConfig
     {
         public string Secret
         {

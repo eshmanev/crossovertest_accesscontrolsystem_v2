@@ -12,6 +12,7 @@ namespace AccessControl.Contracts.Impl.Dto
         ///     Initializes a new instance of the <see cref="WeeklySchedule" /> class.
         /// </summary>
         /// <param name="timeZone">The time zone.</param>
+        [Pure]
         public WeeklySchedule(string timeZone)
         {
             Contract.Ensures(TimeZoneInfo.FindSystemTimeZoneById(timeZone) != null);

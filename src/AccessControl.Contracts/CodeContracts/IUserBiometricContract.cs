@@ -8,8 +8,24 @@ namespace AccessControl.Contracts.CodeContracts
     /// </summary>
     [ContractClassFor(typeof(IUserBiometric))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IUserBiometricContract : IUserContract, IUserBiometric
+    internal abstract class IUserBiometricContract : IUserBiometric
     {
         public string BiometricHash => null;
+
+        string IUser.Department => null;
+
+        string IUser.DisplayName => null;
+
+        string IUser.Email => null;
+
+        IUserGroup[] IUser.Groups => null;
+
+        bool IUser.IsManager => false;
+
+        string IUser.ManagerName => null;
+
+        string IUser.PhoneNumber => null;
+
+        string IUser.UserName => null;
     }
 }

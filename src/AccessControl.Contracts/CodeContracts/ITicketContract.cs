@@ -14,7 +14,7 @@ namespace AccessControl.Contracts.CodeContracts
         {
             get
             {
-                Contract.Requires(Contract.Result<string>() != null);
+                Contract.Ensures(Contract.Result<string>() != null);
                 return null;
             }
         }
@@ -23,7 +23,7 @@ namespace AccessControl.Contracts.CodeContracts
         {
             get
             {
-                Contract.Requires(Contract.Result<string[]>() != null);
+                Contract.Ensures(Contract.Result<string[]>() != null);
                 return null;
             }
         }
@@ -32,7 +32,7 @@ namespace AccessControl.Contracts.CodeContracts
         {
             get
             {
-                Contract.Requires(Contract.Result<string[]>() != null);
+                Contract.Ensures(Contract.Result<string[]>() != null);
                 return null;
             }
         }

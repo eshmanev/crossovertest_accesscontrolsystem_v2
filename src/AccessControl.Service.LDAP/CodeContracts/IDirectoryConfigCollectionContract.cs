@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using AccessControl.Service.LDAP.Configuration;
 
@@ -9,7 +10,7 @@ namespace AccessControl.Service.LDAP.CodeContracts
     /// </summary>
     [ContractClassFor(typeof(IDirectoryConfigCollection))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IDirectoryConfigCollectionContract
+    internal abstract class IDirectoryConfigCollectionContract : IDirectoryConfigCollection
     {
         public IEnumerable<IDirectoryConfig> Domains
         {
@@ -28,6 +29,17 @@ namespace AccessControl.Service.LDAP.CodeContracts
                 Contract.Ensures(Contract.Result<IDirectoryConfig>() != null);
                 return null;
             }
+        }
+
+        public IEnumerator<IDirectoryConfig> GetEnumerator()
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            return null;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

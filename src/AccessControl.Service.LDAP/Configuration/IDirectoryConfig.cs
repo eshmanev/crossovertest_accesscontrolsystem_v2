@@ -6,7 +6,7 @@ namespace AccessControl.Service.LDAP.Configuration
     /// <summary>
     ///     Represents a configuration of LDAP directory.
     /// </summary>
-    [ContractClass(typeof(DirectoryConfigContract))]
+    [ContractClass(typeof(IDirectoryConfigContract))]
     public interface IDirectoryConfig
     {
         /// <summary>

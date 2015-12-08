@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics.Contracts;
 using AccessControl.Service.Configuration;
 using AccessControl.Service.Middleware;
 using MassTransit;
@@ -78,6 +79,7 @@ namespace AccessControl.Service
         /// <returns>This instance.</returns>
         public ServiceBuilder<T> ConfigureContainer(Action<IUnityContainer> config)
         {
+            Contract.Requires(config != null);
             config(_container);
             return this;
         }

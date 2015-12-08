@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using AccessControl.Contracts.Dto;
@@ -13,6 +14,7 @@ namespace AccessControl.Client.Data
         /// </summary>
         /// <param name="timeZone">The time zone.</param>
         /// <param name="entries">The entries.</param>
+        [Pure]
         public WeeklySchedule(string timeZone, WeeklyScheduleEntry[] entries)
         {
             Contract.Requires(TimeZoneInfo.FindSystemTimeZoneById(timeZone) != null);
@@ -59,6 +61,7 @@ namespace AccessControl.Client.Data
         /// </summary>
         /// <param name="schedule">The schedule.</param>
         /// <returns></returns>
+        [DebuggerStepThrough]
         public static WeeklySchedule Convert(IWeeklySchedule schedule)
         {
             var entries = schedule.DailyTimeRange.Select(x => new WeeklyScheduleEntry(x.Key, x.Value.FromTime, x.Value.ToTime)).ToArray();

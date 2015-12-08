@@ -9,7 +9,7 @@ namespace AccessControl.Contracts.CodeContracts
     /// </summary>
     [ContractClassFor(typeof(IListLogs))]
     // ReSharper disable once InconsistentNaming
-    public class IListLogsContract : IListLogs
+    internal abstract class IListLogsContract : IListLogs
     {
         public DateTime FromDateUtc => default(DateTime);
         public DateTime ToDateUtc => default(DateTime);

@@ -16,7 +16,7 @@ namespace AccessControl.Contracts.CodeContracts
         [ContractInvariantMethod]
         private void Invariant()
         {
-            Contract.Requires(Succeded || Fault != null);
+            Contract.Invariant(Succeded || Fault != null);
         }
     }
 }

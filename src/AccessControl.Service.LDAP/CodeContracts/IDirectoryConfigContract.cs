@@ -8,7 +8,7 @@ namespace AccessControl.Service.LDAP.CodeContracts
     /// </summary>
     [ContractClassFor(typeof(IDirectoryConfig))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class DirectoryConfigContract : IDirectoryConfig
+    internal abstract class IDirectoryConfigContract : IDirectoryConfig
     {
         public string Alias
         {

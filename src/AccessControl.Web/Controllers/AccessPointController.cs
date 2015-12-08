@@ -24,7 +24,7 @@ namespace AccessControl.Web.Controllers
         {
             Contract.Requires(listAccessPointsRequest != null);
             Contract.Requires(listDepartmentsRequest != null);
-            Contract.Requires(_registerAccessPointRequest != null);
+            Contract.Requires(registerAccessPointRequest != null);
 
             _listAccessPointsRequest = listAccessPointsRequest;
             _listDepartmentsRequest = listDepartmentsRequest;
