@@ -20,12 +20,20 @@
     </tr>
     <tr>
         <td colspan="2" class="schedule-summary">
-            @foreach (var entry in item.WeeklySchedule.DailyTimeRange)
-            {
+            @{
+                var zone = TimeZoneInfo.FindSystemTimeZoneById(item.WeeklySchedule.TimeZone);
+                var sign = zone.BaseUtcOffset.Hours > 0 ? "+" : "-";
                 <div>
-                    <label>@entry.Key</label>
-                    <span>@entry.Value.FromTime.ToString("hh\\:mm") - @entry.Value.ToTime.ToString("hh\\:mm")</span>
+                    <label>Time zone</label>
+                    <span>(UTC @sign @zone.BaseUtcOffset.ToString("hh\\:mm"))</span>
                 </div>
+                foreach (var entry in item.WeeklySchedule.DailyTimeRange)
+                {
+                    <div>
+                        <label>@entry.Key</label>
+                        <span>@entry.Value.FromTime.ToString("hh\\:mm") - @entry.Value.ToTime.ToString("hh\\:mm")</span>
+                    </div>
+                }
             }
         </td>
     </tr>
