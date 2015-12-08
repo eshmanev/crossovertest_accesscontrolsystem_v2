@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using AccessControl.Contracts.Commands.Management;
-using AccessControl.Contracts.Dto;
+using AccessControl.Contracts.Events;
 
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IScheduleUserGroupAccess" /> interface.
+    ///     Represents a contract class for the <see cref="IPermanentGroupAccessDenied" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IScheduleUserGroupAccess))]
+    [ContractClassFor(typeof(IPermanentGroupAccessDenied))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IScheduleUserGroupAccessContract : IScheduleUserGroupAccess
+    internal abstract class IPermanentGroupAccessDeniedContract : IPermanentGroupAccessDenied
     {
         public Guid AccessPointId
         {
             get
             {
                 Contract.Ensures(Contract.Result<Guid>() != Guid.Empty);
-                return default(Guid);
+                return Guid.Empty;
             }
         }
 
@@ -26,15 +25,6 @@ namespace AccessControl.Contracts.CodeContracts
             get
             {
                 Contract.Ensures(!string.IsNullOrWhiteSpace(Contract.Result<string>()));
-                return null;
-            }
-        }
-
-        public IWeeklySchedule WeeklySchedule
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<IWeeklySchedule>() != null);
                 return null;
             }
         }

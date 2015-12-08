@@ -89,7 +89,7 @@ namespace AccessControl.Service.AccessPoint.Services
         }
 
         /// <summary>
-        /// Searches a rule for the specified access point.
+        ///     Searches a rule for the specified access point.
         /// </summary>
         /// <param name="accessRights">The access rights.</param>
         /// <param name="accessPoint">The access point.</param>
@@ -107,6 +107,15 @@ namespace AccessControl.Service.AccessPoint.Services
         {
             return new T();
         }
+
+        /// <summary>
+        ///     Updates the access rule.
+        /// </summary>
+        /// <param name="rule">The rule.</param>
+        /// <returns>
+        ///     true if the rule was updated; otherwise, false.
+        /// </returns>
+        public abstract bool UpdateAccessRule(AccessRuleBase rule);
 
         /// <summary>
         ///     Publishes an access granted event.

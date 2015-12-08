@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using AccessControl.Contracts.Dto;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Data.Entities;
 using Microsoft.Practices.ObjectBuilder2;
@@ -32,7 +31,7 @@ namespace AccessControl.Service.AccessPoint.Helpers
         public void Visit(UserGroupAccessRights accessRights)
         {
             var rules = ConvertRules(accessRights);
-            var dto = AccessRights.ForUserGroup(accessRights.UserGroupName, rules.Permanent.ToArray());
+            var dto = AccessRights.ForUserGroup(accessRights.UserGroupName, rules.Permanent.ToArray(), rules.Scheduled.ToArray());
             UserGroupAccessRightsDto.Add(dto);
         }
 
@@ -63,7 +62,7 @@ namespace AccessControl.Service.AccessPoint.Helpers
 
             public void Visit(ScheduledAccessRule rule)
             {
-                var schedule = new Schedule(rule.TimeZone);
+                var schedule = new WeeklySchedule(rule.TimeZone);
                 rule.Entries.ForEach(x => schedule.DailyTimeRange.Add(x.Day, new TimeRange(x.FromTime, x.ToTime)));
                 var dto = AccessRule.Scheduled(rule.AccessPoint.AccessPointId, schedule);
                 Scheduled.Add(dto);

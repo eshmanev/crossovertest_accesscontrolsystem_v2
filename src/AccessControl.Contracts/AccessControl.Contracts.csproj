@@ -46,7 +46,13 @@
   <ItemGroup>
     <Compile Include="CodeContracts\IAccessAttemptedContract.cs" />
     <Compile Include="CodeContracts\IDenyUserScheduleContract.cs" />
-    <Compile Include="CodeContracts\IScheduleContract.cs" />
+    <Compile Include="CodeContracts\IRemoveGroupScheduleContract.cs" />
+    <Compile Include="CodeContracts\IRemoveUserScheduleContract.cs" />
+    <Compile Include="CodeContracts\IScheduledGroupAccessAllowedContract.cs" />
+    <Compile Include="CodeContracts\IWeeklyScheduleContract.cs" />
+    <Compile Include="CodeContracts\IScheduledGroupAccessDeniedContract.cs" />
+    <Compile Include="CodeContracts\IScheduledUserAccessAllowedContract.cs" />
+    <Compile Include="CodeContracts\IScheduledUserAccessDeniedContract.cs" />
     <Compile Include="CodeContracts\TimeRangeContract.cs" />
     <Compile Include="CodeContracts\IScheduleUserGroupAccessContract.cs" />
     <Compile Include="CodeContracts\IScheduleUserAccessContract.cs" />
@@ -58,6 +64,8 @@
     <Compile Include="CodeContracts\IFindUserGroupByNameContract.cs" />
     <Compile Include="CodeContracts\IFindUserGroupByNameResultContract.cs" />
     <Compile Include="Commands\Management\IDenyUserSchedule.cs" />
+    <Compile Include="Commands\Management\IRemoveGroupSchedule.cs" />
+    <Compile Include="Commands\Management\IRemoveUserSchedule.cs" />
     <Compile Include="Commands\Management\IScheduleUserAccess.cs" />
     <Compile Include="Commands\Management\IScheduleUserGroupAccess.cs" />
     <Compile Include="Commands\Ping.cs" />
@@ -76,8 +84,8 @@
     <Compile Include="CodeContracts\IManagementRightsRevokedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserAccessAllowedContract.cs" />
     <Compile Include="CodeContracts\IPermanentUserAccessDeniedContract.cs" />
-    <Compile Include="CodeContracts\IPermanentUserGroupAccessAllowedContract.cs" />
-    <Compile Include="CodeContracts\IPermanentUserGroupAccessDeniedContract.cs" />
+    <Compile Include="CodeContracts\IPermanentGroupAccessAllowedContract.cs" />
+    <Compile Include="CodeContracts\IPermanentGroupAccessDeniedContract.cs" />
     <Compile Include="CodeContracts\IRevokeManagementRightsContract.cs" />
     <Compile Include="CodeContracts\IUnregisterAccessPointContract.cs" />
     <Compile Include="CodeContracts\ITicketContract.cs" />
@@ -137,7 +145,7 @@
     <Compile Include="Dto\IAccessPoint.cs" />
     <Compile Include="Dto\IDepartment.cs" />
     <Compile Include="Dto\ILogEntry.cs" />
-    <Compile Include="Dto\ISchedule.cs" />
+    <Compile Include="Dto\IWeeklySchedule.cs" />
     <Compile Include="Dto\ITimeRange.cs" />
     <Compile Include="Dto\ITicket.cs" />
     <Compile Include="Dto\IPermanentAccessRule.cs" />
@@ -149,12 +157,16 @@
     <Compile Include="Dto\IValidationFault.cs" />
     <Compile Include="Dto\IValidationPropertyError.cs" />
     <Compile Include="Events\IAccessAttempted.cs" />
+    <Compile Include="Events\IScheduledGroupAccessAllowed.cs" />
     <Compile Include="Events\IManagementRightsGranted.cs" />
     <Compile Include="Events\IManagementRightsRevoked.cs" />
     <Compile Include="Events\IPermanentUserAccessAllowed.cs" />
     <Compile Include="Events\IPermanentUserAccessDenied.cs" />
-    <Compile Include="Events\IPermanentUserGroupAccessAllowed.cs" />
-    <Compile Include="Events\IPermanentUserGroupAccessDenied.cs" />
+    <Compile Include="Events\IPermanentGroupAccessAllowed.cs" />
+    <Compile Include="Events\IPermanentGroupAccessDenied.cs" />
+    <Compile Include="Events\IScheduledGroupAccessDenied.cs" />
+    <Compile Include="Events\IScheduledUserAccessAllowed.cs" />
+    <Compile Include="Events\IScheduledUserAccessDenied.cs" />
     <Compile Include="Events\IUserBiometricUpdated.cs" />
     <Compile Include="Events\IUserDeleted.cs" />
     <Compile Include="Impl\Commands\AllowUserGroupAccess.cs" />
@@ -166,6 +178,8 @@
     <Compile Include="Impl\Commands\FindUserByBiometrics.cs" />
     <Compile Include="Impl\Commands\FindUserGroupByName.cs" />
     <Compile Include="Impl\Commands\FindUserGroupByNameResult.cs" />
+    <Compile Include="Impl\Commands\RemoveGroupSchedule.cs" />
+    <Compile Include="Impl\Commands\RemoveWeeklyUserSchedule.cs" />
     <Compile Include="Impl\Commands\ScheduleUserAccess.cs" />
     <Compile Include="Impl\Commands\ScheduleUserGroupAccess.cs" />
     <Compile Include="Impl\Dto\AccessPoint.cs" />
@@ -176,7 +190,7 @@
     <Compile Include="Impl\Commands\CheckCredentials.cs" />
     <Compile Include="Impl\Dto\Department.cs" />
     <Compile Include="Impl\Dto\LogEntry.cs" />
-    <Compile Include="Impl\Dto\Schedule.cs" />
+    <Compile Include="Impl\Dto\WeeklySchedule.cs" />
     <Compile Include="Impl\Dto\TimeRange.cs" />
     <Compile Include="Impl\Events\AccessAttempted.cs" />
     <Compile Include="Events\IUserAddedToGroup.cs" />
@@ -185,8 +199,12 @@
     <Compile Include="Impl\Events\ManagementRightsGranted.cs" />
     <Compile Include="Impl\Events\PermanentUserAccessAllowed.cs" />
     <Compile Include="Impl\Events\PermanentUserAccessDenied.cs" />
-    <Compile Include="Impl\Events\PermanentUserGroupAccessDenied.cs" />
-    <Compile Include="Impl\Events\PermanentUserGroupAccessAllowed.cs" />
+    <Compile Include="Impl\Events\PermanentGroupAccessDenied.cs" />
+    <Compile Include="Impl\Events\PermanentGroupAccessAllowed.cs" />
+    <Compile Include="Impl\Events\ScheduledGroupAccessAllowed.cs" />
+    <Compile Include="Impl\Events\ScheduledGroupAccessDenied.cs" />
+    <Compile Include="Impl\Events\ScheduledUserAccessAllowed.cs" />
+    <Compile Include="Impl\Events\ScheduledUserAccessDenied.cs" />
     <Compile Include="Impl\Events\UserBiometricUpdatedImpl.cs" />
     <Compile Include="Impl\Commands\UnregisterAccessPoint.cs" />
     <Compile Include="Impl\Dto\Ticket.cs" />

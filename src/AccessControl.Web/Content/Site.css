@@ -32,3 +32,19 @@ textarea {
     display: block;
     text-align: center;
 }
+
+.schedule-summary div {
+    display: table;
+    float: left;
+    margin-right: 30px;
+    font-size: 0.7em;
+}
+.schedule-summary label {
+    display: table-row;
+    text-align: center;
+    width: 100%;
+    border-bottom: solid 1px blue;
+}
+.schedule-summary span {
+    display: table-row;
+}

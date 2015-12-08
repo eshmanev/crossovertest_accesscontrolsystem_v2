@@ -85,11 +85,26 @@ namespace AccessControl.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<ActionResult> Deny(bool group, string userOrGroupName, Guid accessPointId)
+        public async Task<ActionResult> DenyPermanent(bool group, string userOrGroupName, Guid accessPointId)
         {
             var result = !group
                              ? await _accessRightsService.DenyUserAccess(userOrGroupName, accessPointId)
                              : await _accessRightsService.DenyGroupAccess(userOrGroupName, accessPointId);
+
+            if (!result.Succeded)
+            {
+                ModelState.AddModelError(string.Empty, result.Fault.Summary);
+                return await Index();
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> DenySchedule(bool group, string userOrGroupName, Guid accessPointId)
+        {
+            var result = !group
+                             ? await _accessRightsService.DenyScheduledUserAccess(userOrGroupName, accessPointId)
+                             : await _accessRightsService.DenyScheduledGroupAccess(userOrGroupName, accessPointId);
 
             if (!result.Succeded)
             {
@@ -116,7 +131,7 @@ namespace AccessControl.Web.Controllers
 
         private Task<IVoidResult> ScheduleAccess(EditAccessRightsViewModel editor)
         {
-            var schedule = new Schedule(editor.SchedulerTimeZone);
+            var schedule = new WeeklySchedule(editor.SchedulerTimeZone);
             foreach (var item in editor.TimeRangePerDays)
             {
                 DayOfWeek day;
@@ -129,8 +144,8 @@ namespace AccessControl.Web.Controllers
             }
 
             return string.IsNullOrWhiteSpace(editor.UserName)
-                       ? _accessRightsService.ScheduleGroupAccess(editor.UserGroupName, editor.AccessPointId, schedule)
-                       : _accessRightsService.ScheduleUserAccess(editor.UserName, editor.AccessPointId, schedule);
+                       ? _accessRightsService.AllowScheduledGroupAccess(editor.UserGroupName, editor.AccessPointId, schedule)
+                       : _accessRightsService.AllowScheduledUserAccess(editor.UserName, editor.AccessPointId, schedule);
         }
 
         private async Task Initialize(AccessRightsIndexViewModel model)

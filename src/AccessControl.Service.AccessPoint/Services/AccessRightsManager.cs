@@ -48,15 +48,22 @@ namespace AccessControl.Service.AccessPoint.Services
             }
 
             var accessRights = strategy.FindAccessRights() ?? strategy.CreateAccessRights();
-            if (strategy.FindAccessRule(accessRights, accessPoint) != null)
+            var rule = strategy.FindAccessRule(accessRights, accessPoint);
+            if (rule == null)
             {
-                return new VoidResult();
+                rule = strategy.CreateAccessRule();
+                rule.AccessPoint = accessPoint;
+                accessRights.AddAccessRule(rule);
+            }
+            else
+            {
+                if (!strategy.UpdateAccessRule(rule))
+                {
+                    return new VoidResult();
+                }
             }
 
 
-            var rule = strategy.CreateAccessRule();
-            rule.AccessPoint = accessPoint;
-            accessRights.AddAccessRule(rule);
             if (accessRights.Id == 0)
             {
                 _databaseContext.AccessRights.Insert(accessRights);

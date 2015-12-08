@@ -20,11 +20,11 @@ namespace AccessControl.Contracts.CodeContracts
             }
         }
 
-        public ISchedule Schedule
+        public IWeeklySchedule WeeklySchedule
         {
             get
             {
-                Contract.Ensures(Contract.Result<ISchedule>() != null);
+                Contract.Ensures(Contract.Result<IWeeklySchedule>() != null);
                 return null;
             }
         }

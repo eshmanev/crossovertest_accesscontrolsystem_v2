@@ -23,9 +23,10 @@ namespace AccessControl.Service.AccessPoint.Consumers
                                           IConsumer<IDenyUserAccess>,
                                           IConsumer<IDenyUserGroupAccess>,
                                           IConsumer<IScheduleUserAccess>,
-                                          IConsumer<IScheduleUserGroupAccess>
+                                          IConsumer<IScheduleUserGroupAccess>,
+                                          IConsumer<IRemoveUserSchedule>,
+                                          IConsumer<IRemoveGroupSchedule>
     {
-        private readonly IBus _bus;
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
         private readonly IRequestClient<IFindUserGroupByName, IFindUserGroupByNameResult> _findUserGroupRequest;
         private readonly IRequestClient<IListUsersInGroup, IListUsersInGroupResult> _listUsersInGroupRequest;
@@ -35,27 +36,23 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <summary>
         ///     Initializes a new instance of the <see cref="AccessRightsConsumer" /> class.
         /// </summary>
-        /// <param name="bus">The bus.</param>
         /// <param name="findUserRequest">The find user request.</param>
         /// <param name="findUserGroupRequest">The find user group request.</param>
         /// <param name="listUsersInGroupRequest">The list users in group request.</param>
         /// <param name="accessRightsManager">The access rights service.</param>
         /// <param name="databaseContext">The database context.</param>
-        public AccessRightsConsumer(IBus bus,
-                                    IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest,
+        public AccessRightsConsumer(IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest,
                                     IRequestClient<IFindUserGroupByName, IFindUserGroupByNameResult> findUserGroupRequest,
                                     IRequestClient<IListUsersInGroup, IListUsersInGroupResult> listUsersInGroupRequest,
                                     IAccessRightsManager accessRightsManager,
                                     IDatabaseContext databaseContext)
         {
-            Contract.Requires(bus != null);
             Contract.Requires(findUserRequest != null);
             Contract.Requires(findUserGroupRequest != null);
             Contract.Requires(listUsersInGroupRequest != null);
             Contract.Requires(accessRightsManager != null);
             Contract.Requires(databaseContext != null);
 
-            _bus = bus;
             _findUserRequest = findUserRequest;
             _findUserGroupRequest = findUserGroupRequest;
             _listUsersInGroupRequest = listUsersInGroupRequest;
@@ -119,7 +116,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IScheduleUserAccess> context)
         {
-            var strategy = new ScheduledUserAccessStrategy(_databaseContext, _findUserRequest, context.Message);
+            var strategy = new ScheduledUserAccessStrategy(_databaseContext, _findUserRequest, context.Message.UserName, context.Message.WeeklySchedule);
             var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
         }
@@ -131,6 +128,33 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IScheduleUserGroupAccess> context)
         {
+            var strategy = new ScheduledGroupAccessStrategy(_databaseContext, _findUserGroupRequest, _listUsersInGroupRequest, context.Message.UserGroupName, context.Message.WeeklySchedule);
+            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
+            await context.RespondAsync(response);
+        }
+
+        /// <summary>
+        ///     Removes weekly scheduler for the user and access point.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public async Task Consume(ConsumeContext<IRemoveUserSchedule> context)
+        {
+            var strategy = new ScheduledUserAccessStrategy(_databaseContext, _findUserRequest, context.Message.UserName);
+            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
+            await context.RespondAsync(response);
+        }
+
+        /// <summary>
+        ///     Removes weekly scheduler for the user group and access point.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public async Task Consume(ConsumeContext<IRemoveGroupSchedule> context)
+        {
+            var strategy = new ScheduledGroupAccessStrategy(_databaseContext, _findUserGroupRequest, _listUsersInGroupRequest, context.Message.UserGroupName);
+            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
+            await context.RespondAsync(response);
         }
 
         /// <summary>

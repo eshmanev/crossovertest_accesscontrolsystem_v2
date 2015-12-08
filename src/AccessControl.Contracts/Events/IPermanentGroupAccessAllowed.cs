@@ -4,8 +4,8 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts.Events
 {
-    [ContractClass(typeof(IPermanentUserGroupAccessAllowedContract))]
-    public interface IPermanentUserGroupAccessAllowed
+    [ContractClass(typeof(IPermanentGroupAccessAllowedContract))]
+    public interface IPermanentGroupAccessAllowed
     {
         /// <summary>
         ///     Gets the access point identifier.

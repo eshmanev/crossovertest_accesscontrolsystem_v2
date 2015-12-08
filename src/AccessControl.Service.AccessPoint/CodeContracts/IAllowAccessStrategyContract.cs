@@ -43,6 +43,12 @@ namespace AccessControl.Service.AccessPoint.CodeContracts
             return null;
         }
 
+        public bool UpdateAccessRule(AccessRuleBase rule)
+        {
+            Contract.Requires(rule != null);
+            return false;
+        }
+
         public Task OnAccessGranted(IBus bus, Data.Entities.AccessPoint accessPoint)
         {
             Contract.Requires(bus != null);

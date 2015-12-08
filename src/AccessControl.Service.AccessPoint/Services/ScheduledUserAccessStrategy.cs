@@ -1,7 +1,8 @@
-using System.Diagnostics.Contracts;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Commands.Search;
+using AccessControl.Contracts.Dto;
+using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
 using AccessControl.Data.Entities;
 using MassTransit;
@@ -10,40 +11,74 @@ namespace AccessControl.Service.AccessPoint.Services
 {
     internal class ScheduledUserAccessStrategy : UserAccessStrategyBase<ScheduledAccessRule>
     {
-        private readonly IScheduleUserAccess _message;
+        private readonly IWeeklySchedule _schedule;
 
-        public ScheduledUserAccessStrategy(IDatabaseContext databaseContext, IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest, IScheduleUserAccess message)
-            : base(databaseContext, findUserRequest, message.UserName)
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="ScheduledUserAccessStrategy" /> class.
+        /// </summary>
+        /// <param name="databaseContext">The database context.</param>
+        /// <param name="findUserRequest">The find user request.</param>
+        /// <param name="userName">Name of the user.</param>
+        /// <param name="schedule">The schedule.</param>
+        public ScheduledUserAccessStrategy(IDatabaseContext databaseContext, IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest, string userName, IWeeklySchedule schedule = null)
+            : base(databaseContext, findUserRequest, userName)
         {
-            Contract.Requires(message != null);
-            _message = message;
+            _schedule = schedule;
         }
 
+        /// <summary>
+        ///     Creates a new access rule.
+        /// </summary>
+        /// <returns></returns>
         public override AccessRuleBase CreateAccessRule()
         {
-            var rule = (ScheduledAccessRule)base.CreateAccessRule();
-            rule.TimeZone = _message.Schedule.TimeZone;
-            foreach (var item in _message.Schedule.DailyTimeRange)
-            {
-                var entry = new SchedulerEntry
-                {
-                    Day = item.Key,
-                    FromTime = item.Value.FromTime,
-                    ToTime = item.Value.ToTime,
-                };
-                rule.AddEntry(entry);
-            }
+            Debug.Assert(_schedule != null);
+
+            var rule = (ScheduledAccessRule) base.CreateAccessRule();
+            rule.Update(_schedule);
             return rule;
         }
 
-        public override Task OnAccessGranted(IBus bus, Data.Entities.AccessPoint accessPoint)
+        /// <summary>
+        ///     Updates the access rule.
+        /// </summary>
+        /// <param name="rule">The rule.</param>
+        /// <returns>
+        ///     true if the rule was updated; otherwise, false.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        public override bool UpdateAccessRule(AccessRuleBase rule)
         {
-            throw new System.NotImplementedException();
+            Debug.Assert(_schedule != null);
+
+            var scheduledRule = (ScheduledAccessRule) rule;
+            scheduledRule.Update(_schedule);
+            return true;
         }
 
+        /// <summary>
+        ///     Raises the <see cref="ScheduledUserAccessAllowed" /> event.
+        /// </summary>
+        /// <param name="bus">The bus.</param>
+        /// <param name="accessPoint">The access point.</param>
+        /// <returns></returns>
+        public override Task OnAccessGranted(IBus bus, Data.Entities.AccessPoint accessPoint)
+        {
+            Debug.Assert(_schedule != null);
+
+            var hash = FindUserHash(UserName);
+            return bus.Publish(new ScheduledUserAccessAllowed(accessPoint.AccessPointId, UserName, hash, _schedule));
+        }
+
+        /// <summary>
+        ///     Raises the <see cref="ScheduledUserAccessDenied" /> event.
+        /// </summary>
+        /// <param name="bus">The bus.</param>
+        /// <param name="accessPoint">The access point.</param>
+        /// <returns></returns>
         public override Task OnAccessDenied(IBus bus, Data.Entities.AccessPoint accessPoint)
         {
-            throw new System.NotImplementedException();
+            return bus.Publish(new ScheduledUserAccessDenied(accessPoint.AccessPointId, UserName));
         }
     }
 }

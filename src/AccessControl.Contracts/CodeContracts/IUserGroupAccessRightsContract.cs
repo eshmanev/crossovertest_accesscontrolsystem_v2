@@ -27,5 +27,13 @@ namespace AccessControl.Contracts.CodeContracts
                 return null;
             }
         }
+
+        public IScheduledAccessRule[] ScheduledAccessRules {
+            get
+            {
+                Contract.Ensures(Contract.Result<IScheduledAccessRule[]>() != null);
+                return null;
+            }
+        }
     }
 }

@@ -6,15 +6,15 @@ using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Impl.Dto
 {
-    public class Schedule : ISchedule
+    public class WeeklySchedule : IWeeklySchedule
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Schedule" /> class.
+        ///     Initializes a new instance of the <see cref="WeeklySchedule" /> class.
         /// </summary>
         /// <param name="timeZone">The time zone.</param>
-        public Schedule(string timeZone)
+        public WeeklySchedule(string timeZone)
         {
-            Contract.Requires(TimeZoneInfo.GetSystemTimeZones().Any(x => x.StandardName == timeZone));
+            Contract.Requires(TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id == timeZone));
             TimeZone = timeZone;
             DailyTimeRange = new Dictionary<DayOfWeek, ITimeRange>();
         }

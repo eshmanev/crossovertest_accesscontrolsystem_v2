@@ -38,14 +38,24 @@ namespace AccessControl.Web.Services
             return _bus.AccessControlClient<IDenyUserGroupAccess, IVoidResult>().Request(new DenyUserGroupAccess(accessPointId, groupName));
         }
 
-        public Task<IVoidResult> ScheduleUserAccess(string userName, Guid accessPointId, ISchedule schedule)
+        public Task<IVoidResult> AllowScheduledUserAccess(string userName, Guid accessPointId, IWeeklySchedule weeklySchedule)
         {
-            return _bus.AccessControlClient<IScheduleUserAccess, IVoidResult>().Request(new ScheduleUserAccess(accessPointId, userName, schedule));
+            return _bus.AccessControlClient<IScheduleUserAccess, IVoidResult>().Request(new ScheduleUserAccess(accessPointId, userName, weeklySchedule));
         }
 
-        public Task<IVoidResult> ScheduleGroupAccess(string groupName, Guid accessPointId, ISchedule schedule)
+        public Task<IVoidResult> AllowScheduledGroupAccess(string groupName, Guid accessPointId, IWeeklySchedule weeklySchedule)
         {
-            return _bus.AccessControlClient<IScheduleUserGroupAccess, IVoidResult>().Request(new ScheduleUserGroupAccess(accessPointId, groupName, schedule));
+            return _bus.AccessControlClient<IScheduleUserGroupAccess, IVoidResult>().Request(new ScheduleUserGroupAccess(accessPointId, groupName, weeklySchedule));
+        }
+
+        public Task<IVoidResult> DenyScheduledUserAccess(string userName, Guid accessPointId)
+        {
+            return _bus.AccessControlClient<IRemoveUserSchedule, IVoidResult>().Request(new RemoveUserSchedule(accessPointId, userName));
+        }
+
+        public Task<IVoidResult> DenyScheduledGroupAccess(string groupName, Guid accessPointId)
+        {
+            return _bus.AccessControlClient<IRemoveGroupSchedule, IVoidResult>().Request(new RemoveGroupSchedule(accessPointId, groupName));
         }
     }
 }

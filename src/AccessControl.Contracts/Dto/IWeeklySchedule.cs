@@ -5,8 +5,8 @@ using AccessControl.Contracts.CodeContracts;
 
 namespace AccessControl.Contracts.Dto
 {
-    [ContractClass(typeof(IScheduleContract))]
-    public interface ISchedule
+    [ContractClass(typeof(IWeeklyScheduleContract))]
+    public interface IWeeklySchedule
     {
         /// <summary>
         ///     Gets the time zone for the schedule.

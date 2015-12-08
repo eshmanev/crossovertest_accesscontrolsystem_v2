@@ -4,14 +4,14 @@ using AccessControl.Contracts.Events;
 
 namespace AccessControl.Contracts.Impl.Events
 {
-    public class PermanentUserGroupAccessDenied : IPermanentUserGroupAccessDenied
+    public class ScheduledGroupAccessDenied : IScheduledGroupAccessDenied
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PermanentUserGroupAccessDenied" /> class.
+        ///     Initializes a new instance of the <see cref="ScheduledGroupAccessDenied" /> class.
         /// </summary>
         /// <param name="accessPointId">The access point identifier.</param>
         /// <param name="userGroupName">Name of the user group.</param>
-        public PermanentUserGroupAccessDenied(Guid accessPointId, string userGroupName)
+        public ScheduledGroupAccessDenied(Guid accessPointId, string userGroupName)
         {
             Contract.Requires(accessPointId != Guid.Empty);
             Contract.Requires(!string.IsNullOrWhiteSpace(userGroupName));

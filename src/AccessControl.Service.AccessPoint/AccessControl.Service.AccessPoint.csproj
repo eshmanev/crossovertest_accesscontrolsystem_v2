@@ -115,6 +115,8 @@
     <Compile Include="Services\IAccessRightsManager.cs" />
     <Compile Include="Services\PermanentUserAccessStrategy.cs" />
     <Compile Include="Services\PermanentGroupAccessStrategy.cs" />
+    <Compile Include="Services\RuleHelper.cs" />
+    <Compile Include="Services\ScheduledGroupAccessStrategy.cs" />
     <Compile Include="Services\ScheduledUserAccessStrategy.cs" />
     <Compile Include="Services\UserAccessStrategyBase.cs" />
     <Compile Include="Services\UserGroupAccessStrategyBase.cs" />

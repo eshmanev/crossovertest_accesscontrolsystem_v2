@@ -24,5 +24,13 @@ namespace AccessControl.Contracts.Dto
         ///     The permanent access rules.
         /// </value>
         IPermanentAccessRule[] PermanentAccessRules { get; }
+
+        /// <summary>
+        ///     Gets the scheduled access rules.
+        /// </summary>
+        /// <value>
+        ///     The scheduled access rules.
+        /// </value>
+        IScheduledAccessRule[] ScheduledAccessRules { get; }
     }
 }

@@ -7,8 +7,8 @@ namespace AccessControl.Contracts.Events
     /// <summary>
     ///     Occurs when permanent access is denied for a user group.
     /// </summary>
-    [ContractClass(typeof(IPermanentUserGroupAccessDeniedContract))]
-    public interface IPermanentUserGroupAccessDenied
+    [ContractClass(typeof(IPermanentGroupAccessDeniedContract))]
+    public interface IPermanentGroupAccessDenied
     {
         /// <summary>
         ///     Gets the access point identifier.

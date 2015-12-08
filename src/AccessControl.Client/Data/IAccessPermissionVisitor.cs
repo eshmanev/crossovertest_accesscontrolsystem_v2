@@ -5,5 +5,6 @@
         void Visit(PermanentUserAccess permission);
         void Visit(PermanentGroupAccess permission);
         void Visit(ScheduledUserAccess permission);
+        void Visit(ScheduledGroupAccess permission);
     }
 }

@@ -2,10 +2,10 @@
 using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts.Dto
+namespace AccessControl.Contracts.Events
 {
-    [ContractClass(typeof(IScheduledAccessRuleContract))]
-    public interface IScheduledAccessRule
+    [ContractClass(typeof(IScheduledUserAccessDeniedContract))]
+    public interface IScheduledUserAccessDenied
     {
         /// <summary>
         ///     Gets the access point identifier.
@@ -16,11 +16,11 @@ namespace AccessControl.Contracts.Dto
         Guid AccessPointId { get; }
 
         /// <summary>
-        ///     Gets the schedule.
+        ///     Gets the name of the user.
         /// </summary>
         /// <value>
-        ///     The schedule.
+        ///     The name of the user.
         /// </value>
-        IWeeklySchedule WeeklySchedule { get; }
+        string UserName { get; }
     }
 }

@@ -7,7 +7,7 @@ using MassTransit;
 namespace AccessControl.Service.AccessPoint.Services
 {
     /// <summary>
-    /// Defines an access management strategy.
+    ///     Defines an access management strategy.
     /// </summary>
     [ContractClass(typeof(IAllowAccessStrategyContract))]
     internal interface IAccessManagementStrategy
@@ -43,6 +43,13 @@ namespace AccessControl.Service.AccessPoint.Services
         /// </summary>
         /// <returns></returns>
         AccessRuleBase CreateAccessRule();
+
+        /// <summary>
+        /// Updates the access rule.
+        /// </summary>
+        /// <param name="rule">The rule.</param>
+        /// <returns>true if the rule was updated; otherwise, false.</returns>
+        bool UpdateAccessRule(AccessRuleBase rule);
 
         /// <summary>
         ///     Publishes an access granted event.

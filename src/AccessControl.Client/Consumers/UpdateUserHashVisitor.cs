@@ -58,11 +58,23 @@ namespace AccessControl.Client.Consumers
             var replacement = new ScheduledUserAccess(
                 permission.AccessPointId,
                 new UserHash(permission.UserHash.UserName, _newHash),
-                permission.DayOfWeek,
-                permission.SourceFromTime,
-                permission.SourceToTime,
-                permission.SourceTimeZone);
+                permission.WeeklySchedule);
 
+            _accessPermissions.AddOrUpdatePermission(replacement);
+        }
+
+        public void Visit(ScheduledGroupAccess permission)
+        {
+            var hashes = permission.UserHashes.ToList();
+            var index = hashes.FindIndex(x => string.Equals(x.UserName, _userName));
+            if (index == -1)
+            {
+                return;
+            }
+
+            var old = hashes[index];
+            hashes[index] = new UserHash(old.UserName, _newHash);
+            var replacement = new ScheduledGroupAccess(permission.AccessPointId, permission.UserGroupName, hashes.ToArray(), permission.WeeklySchedule);
             _accessPermissions.AddOrUpdatePermission(replacement);
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Client.Data;
@@ -11,9 +12,13 @@ namespace AccessControl.Client.Consumers
 {
     internal class EventConsumer : IConsumer<IUserBiometricUpdated>,
                                    IConsumer<IPermanentUserAccessAllowed>,
-                                   IConsumer<IPermanentUserGroupAccessAllowed>,
+                                   IConsumer<IPermanentGroupAccessAllowed>,
                                    IConsumer<IPermanentUserAccessDenied>,
-                                   IConsumer<IPermanentUserGroupAccessDenied>
+                                   IConsumer<IPermanentGroupAccessDenied>,
+                                   IConsumer<IScheduledUserAccessAllowed>,
+                                   IConsumer<IScheduledGroupAccessAllowed>,
+                                   IConsumer<IScheduledUserAccessDenied>,
+                                   IConsumer<IScheduledGroupAccessDenied>
     {
         private readonly IAccessPermissionCollection _accessPermissions;
         private readonly IAccessPermissionService _service;
@@ -43,46 +48,76 @@ namespace AccessControl.Client.Consumers
             return Task.FromResult(true);
         }
 
-        public Task Consume(ConsumeContext<IPermanentUserGroupAccessAllowed> context)
+        public Task Consume(ConsumeContext<IPermanentGroupAccessAllowed> context)
         {
-            var hashes = new UserHash[context.Message.UsersInGroup.Length];
-            for (var i = 0; i < context.Message.UsersInGroup.Length; i++)
-                hashes[i] = new UserHash(context.Message.UsersInGroup[i], context.Message.UsersBiometrics[i]);
-
+            var hashes = CombineHashes(context.Message.UsersInGroup, context.Message.UsersBiometrics);
             _accessPermissions.AddOrUpdatePermission(new PermanentGroupAccess(context.Message.AccessPointId, context.Message.UserGroupName, hashes));
             _service.Save(_accessPermissions);
+            return Task.FromResult(true);
+        }
 
+        public Task Consume(ConsumeContext<IScheduledUserAccessAllowed> context)
+        {
+            var hash = new UserHash(context.Message.UserName, context.Message.BiometricHash);
+            _accessPermissions.AddOrUpdatePermission(new ScheduledUserAccess(context.Message.AccessPointId, hash, context.Message.WeeklySchedule));
+            _service.Save(_accessPermissions);
+            return Task.FromResult(true);
+        }
+
+        public Task Consume(ConsumeContext<IScheduledGroupAccessAllowed> context)
+        {
+            var hashes = CombineHashes(context.Message.UsersInGroup, context.Message.UsersBiometrics);
+            _accessPermissions.AddOrUpdatePermission(new ScheduledGroupAccess(context.Message.AccessPointId, context.Message.UserGroupName, hashes, context.Message.WeeklySchedule));
+            _service.Save(_accessPermissions);
             return Task.FromResult(true);
         }
 
         public Task Consume(ConsumeContext<IPermanentUserAccessDenied> context)
         {
-            var permission = _accessPermissions
-                .OfType<PermanentUserAccess>()
-                .FirstOrDefault(x => x.AccessPointId == context.Message.AccessPointId && x.UserHash.UserName == context.Message.UserName);
-
-            if (permission != null)
-            {
-                _accessPermissions.RemovePermission(permission);
-                _service.Save(_accessPermissions);
-            }
-
+            RemovePermission<PermanentUserAccess>(
+                x => x.AccessPointId == context.Message.AccessPointId && x.UserHash.UserName.Equals(context.Message.UserName, StringComparison.InvariantCultureIgnoreCase));
             return Task.FromResult(true);
         }
 
-        public Task Consume(ConsumeContext<IPermanentUserGroupAccessDenied> context)
+        public Task Consume(ConsumeContext<IPermanentGroupAccessDenied> context)
         {
-            var permission = _accessPermissions
-                .OfType<PermanentGroupAccess>()
-                .FirstOrDefault(x => x.AccessPointId == context.Message.AccessPointId && x.UserGroupName == context.Message.UserGroupName);
+            RemovePermission<PermanentGroupAccess>(
+                x => x.AccessPointId == context.Message.AccessPointId && x.UserGroupName.Equals(context.Message.UserGroupName, StringComparison.InvariantCultureIgnoreCase));
+            return Task.FromResult(true);
+        }
 
+        public Task Consume(ConsumeContext<IScheduledUserAccessDenied> context)
+        {
+            RemovePermission<ScheduledUserAccess>(
+                x => x.AccessPointId == context.Message.AccessPointId && x.UserHash.UserName.Equals(context.Message.UserName, StringComparison.InvariantCultureIgnoreCase));
+            return Task.FromResult(true);
+        }
+
+        public Task Consume(ConsumeContext<IScheduledGroupAccessDenied> context)
+        {
+            RemovePermission<ScheduledGroupAccess>(
+                x => x.AccessPointId == context.Message.AccessPointId && x.UserGroupName.Equals(context.Message.UserGroupName, StringComparison.InvariantCultureIgnoreCase));
+            return Task.FromResult(true);
+        }
+
+        private UserHash[] CombineHashes(string[] usersInGroup, string[] userHashes)
+        {
+            var hashes = new UserHash[usersInGroup.Length];
+            for (var i = 0; i < usersInGroup.Length; i++)
+            {
+                hashes[i] = new UserHash(usersInGroup[i], userHashes[i]);
+            }
+            return hashes;
+        }
+
+        private void RemovePermission<T>(Predicate<T> predicate) where T : IAccessPermission
+        {
+            var permission = _accessPermissions.OfType<T>().FirstOrDefault(x => predicate(x));
             if (permission != null)
             {
                 _accessPermissions.RemovePermission(permission);
                 _service.Save(_accessPermissions);
             }
-
-            return Task.FromResult(true);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Dto;
 
-namespace AccessControl.Contracts.Helpers
+namespace AccessControl.Contracts.Impl.Dto
 {
     public abstract class AccessRights
     {
@@ -13,27 +13,31 @@ namespace AccessControl.Contracts.Helpers
             return new UserAccessRights(userName, permanentAccessRules, scheduledAccessRules);
         }
 
-        public static IUserGroupAccessRights ForUserGroup(string userGroupName, IPermanentAccessRule[] permanentAccessRules)
+        public static IUserGroupAccessRights ForUserGroup(string userGroupName, IPermanentAccessRule[] permanentAccessRules, IScheduledAccessRule[] scheduledAccessRules)
         {
             Contract.Requires(!string.IsNullOrWhiteSpace(userGroupName));
             Contract.Requires(permanentAccessRules != null);
-            return new UserGroupAccessRights(userGroupName, permanentAccessRules);
+            Contract.Requires(scheduledAccessRules != null);
+            return new UserGroupAccessRights(userGroupName, permanentAccessRules, scheduledAccessRules);
         }
 
         private class UserGroupAccessRights : AccessRights, IUserGroupAccessRights
         {
-            public UserGroupAccessRights(string userGroupName, IPermanentAccessRule[] permanentAccessRules)
+            public UserGroupAccessRights(string userGroupName, IPermanentAccessRule[] permanentAccessRules, IScheduledAccessRule[] scheduledAccessRules)
             {
                 Contract.Requires(!string.IsNullOrWhiteSpace(userGroupName));
                 Contract.Requires(permanentAccessRules != null);
+                Contract.Requires(scheduledAccessRules != null);
 
                 UserGroupName = userGroupName;
                 PermanentAccessRules = permanentAccessRules;
+                ScheduledAccessRules = scheduledAccessRules;
             }
 
             public string UserGroupName { get; }
 
             public IPermanentAccessRule[] PermanentAccessRules { get; }
+            public IScheduledAccessRule[] ScheduledAccessRules { get; }
         }
 
         private class UserAccessRights : AccessRights, IUserAccessRights

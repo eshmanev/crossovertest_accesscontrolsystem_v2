@@ -5,11 +5,11 @@ using AccessControl.Contracts.Events;
 namespace AccessControl.Contracts.CodeContracts
 {
     /// <summary>
-    ///     Represents a contract class for the <see cref="IPermanentUserGroupAccessAllowed" /> interface.
+    ///     Represents a contract class for the <see cref="IPermanentGroupAccessAllowed" /> interface.
     /// </summary>
-    [ContractClassFor(typeof(IPermanentUserGroupAccessAllowed))]
+    [ContractClassFor(typeof(IPermanentGroupAccessAllowed))]
     // ReSharper disable once InconsistentNaming
-    internal abstract class IPermanentUserGroupAccessAllowedContract : IPermanentUserGroupAccessAllowed
+    internal abstract class IPermanentGroupAccessAllowedContract : IPermanentGroupAccessAllowed
     {
         public Guid AccessPointId
         {

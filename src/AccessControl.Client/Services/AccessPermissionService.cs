@@ -104,11 +104,8 @@ namespace AccessControl.Client.Services
                 userAccessRights.ScheduledAccessRules.ForEach(
                     rule =>
                     {
-                        foreach (var entry in rule.Schedule.DailyTimeRange)
-                        {
-                            var permission = new ScheduledUserAccess(rule.AccessPointId, userHash, entry.Key, entry.Value.FromTime, entry.Value.ToTime, rule.Schedule.TimeZone);
-                            accessPermissions.AddOrUpdatePermission(permission);
-                        }
+                        var permission = new ScheduledUserAccess(rule.AccessPointId, userHash, rule.WeeklySchedule);
+                        accessPermissions.AddOrUpdatePermission(permission);
                     });
             }
 
@@ -123,6 +120,13 @@ namespace AccessControl.Client.Services
                     rule =>
                     {
                         var permission = new PermanentGroupAccess(rule.AccessPointId, groupName, userHashes);
+                        accessPermissions.AddOrUpdatePermission(permission);
+                    });
+
+                groupRights.ScheduledAccessRules.ForEach(
+                    rule =>
+                    {
+                        var permission = new ScheduledGroupAccess(rule.AccessPointId, groupName, userHashes, rule.WeeklySchedule);
                         accessPermissions.AddOrUpdatePermission(permission);
                     });
             }

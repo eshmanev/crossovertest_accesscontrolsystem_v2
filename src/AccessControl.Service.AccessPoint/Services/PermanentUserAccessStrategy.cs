@@ -21,6 +21,18 @@ namespace AccessControl.Service.AccessPoint.Services
         }
 
         /// <summary>
+        ///     Updates the access rule.
+        /// </summary>
+        /// <param name="rule">The rule.</param>
+        /// <returns>
+        ///     true if the rule was updated; otherwise, false.
+        /// </returns>
+        public override bool UpdateAccessRule(AccessRuleBase rule)
+        {
+            return false;
+        }
+
+        /// <summary>
         ///     Publishes the <see cref="PermanentUserAccessAllowed" /> event.
         /// </summary>
         /// <param name="bus">The bus.</param>

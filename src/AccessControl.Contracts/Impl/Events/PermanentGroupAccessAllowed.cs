@@ -4,9 +4,9 @@ using AccessControl.Contracts.Events;
 
 namespace AccessControl.Contracts.Impl.Events
 {
-    public class PermanentUserGroupAccessAllowed : IPermanentUserGroupAccessAllowed
+    public class PermanentGroupAccessAllowed : IPermanentGroupAccessAllowed
     {
-        public PermanentUserGroupAccessAllowed(Guid accessPointId, string userGroupName, string[] usersInGroup, string[] usersBiometrics)
+        public PermanentGroupAccessAllowed(Guid accessPointId, string userGroupName, string[] usersInGroup, string[] usersBiometrics)
         {
             Contract.Requires(accessPointId != Guid.Empty);
             Contract.Requires(!string.IsNullOrWhiteSpace(userGroupName));

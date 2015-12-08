@@ -16,12 +16,29 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var rights in Model.UserAccessRights.OrderBy(x => x.UserName))
-    {
-        <tr><td rowspan="@(2 + rights.PermanentAccessRules.Length + rights.ScheduledAccessRules.Length)">@Model.GetDisplayUserName(rights.UserName)</td></tr>
-        @Html.Partial("PermanentPartial", new { Rules = rights.PermanentAccessRules, Owner = Model, Identity = rights.UserName, IsGroup = false })
-        @Html.Partial("ScheduledPartial", new { Rules = rights.ScheduledAccessRules, Owner = Model, Identity = rights.UserName, IsGroup = false })
-    }
+        @foreach (var rights in Model.UserAccessRights.OrderBy(x => x.UserName))
+        {
+            var rowspan = 1;
+            if (rights.PermanentAccessRules.Length > 0)
+            {
+                rowspan += rights.PermanentAccessRules.Length;
+            }
+
+            if (rights.ScheduledAccessRules.Length > 0)
+            {
+                rowspan += rights.ScheduledAccessRules.Length*2;
+            }
+
+            <tr><td rowspan="@rowspan">@Model.GetDisplayUserName(rights.UserName)</td></tr>
+            @Html.Partial("PermanentPartial", new
+            {
+                Owner = Model,
+                PermanentAccessRules = rights.PermanentAccessRules,
+                ScheduledAccessRules = rights.ScheduledAccessRules,
+                UserOrGroupName = rights.UserName,
+                IsGroup = false
+            })
+        }
     </tbody>
 </table>
 <br/>
@@ -43,8 +60,26 @@
     <tbody>
         @foreach (var rights in Model.UserGroupAccessRights)
         {
-            <tr><td rowspan="@(2 + rights.PermanentAccessRules.Length)">@Model.GetDisplayGroupName(rights.UserGroupName)</td></tr>
-            @Html.Partial("PermanentPartial", new { Rules = rights.PermanentAccessRules, Owner = Model, Identity = rights.UserGroupName, IsGroup = true })
+            var rowspan = 1;
+            if (rights.PermanentAccessRules.Length > 0)
+            {
+                rowspan += rights.PermanentAccessRules.Length;
+            }
+
+            if (rights.ScheduledAccessRules.Length > 0)
+            {
+                rowspan += rights.ScheduledAccessRules.Length*2;
+            }
+
+            <tr><td rowspan="@rowspan">@Model.GetDisplayGroupName(rights.UserGroupName)</td></tr>
+            @Html.Partial("PermanentPartial", new
+            {
+                Owner = Model,
+                PermanentAccessRules = rights.PermanentAccessRules,
+                ScheduledAccessRules = rights.ScheduledAccessRules,
+                UserOrGroupName = rights.UserGroupName,
+                IsGroup = true
+            })
         }
     </tbody>
 </table>

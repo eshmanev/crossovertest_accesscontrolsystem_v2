@@ -1,27 +1,23 @@
-﻿using System;
+using System;
 using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Commands.Management;
-using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.Impl.Commands
 {
-    public class ScheduleUserGroupAccess : IScheduleUserGroupAccess
+    public class RemoveGroupSchedule : IRemoveGroupSchedule
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="ScheduleUserAccess" /> class.
+        ///     Initializes a new instance of the <see cref="RemoveGroupSchedule" /> class.
         /// </summary>
         /// <param name="accessPointId">The access point identifier.</param>
         /// <param name="userGroupName">Name of the user group.</param>
-        /// <param name="weeklySchedule">The schedule.</param>
-        public ScheduleUserGroupAccess(Guid accessPointId, string userGroupName, IWeeklySchedule weeklySchedule)
+        public RemoveGroupSchedule(Guid accessPointId, string userGroupName)
         {
-            Contract.Requires(weeklySchedule != null);
             Contract.Requires(accessPointId != Guid.Empty);
             Contract.Requires(!string.IsNullOrWhiteSpace(userGroupName));
 
             AccessPointId = accessPointId;
             UserGroupName = userGroupName;
-            WeeklySchedule = weeklySchedule;
         }
 
         /// <summary>
@@ -33,13 +29,5 @@ namespace AccessControl.Contracts.Impl.Commands
         ///     Gets the user group name.
         /// </summary>
         public string UserGroupName { get; }
-
-        /// <summary>
-        ///     Gets the schedule.
-        /// </summary>
-        /// <value>
-        ///     The schedule.
-        /// </value>
-        public IWeeklySchedule WeeklySchedule { get; }
     }
 }

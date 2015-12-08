@@ -12,11 +12,11 @@ namespace AccessControl.Contracts.Impl.Dto
             return new PermanentAccessRule(accessPointId);
         }
 
-        public static IScheduledAccessRule Scheduled(Guid accessPointId, ISchedule schedule)
+        public static IScheduledAccessRule Scheduled(Guid accessPointId, IWeeklySchedule weeklySchedule)
         {
             Contract.Requires(accessPointId != Guid.Empty);
-            Contract.Requires(schedule != null);
-            return new ScheduledAccessRule(accessPointId, schedule);
+            Contract.Requires(weeklySchedule != null);
+            return new ScheduledAccessRule(accessPointId, weeklySchedule);
         }
 
         private class PermanentAccessRule : AccessRule, IPermanentAccessRule
@@ -32,16 +32,16 @@ namespace AccessControl.Contracts.Impl.Dto
 
         private class ScheduledAccessRule : AccessRule, IScheduledAccessRule
         {
-            public ScheduledAccessRule(Guid accessPointId, ISchedule schedule)
+            public ScheduledAccessRule(Guid accessPointId, IWeeklySchedule weeklySchedule)
             {
                 Contract.Requires(accessPointId != Guid.Empty);
-                Contract.Requires(schedule != null);
+                Contract.Requires(weeklySchedule != null);
                 AccessPointId = accessPointId;
-                Schedule = schedule;
+                WeeklySchedule = weeklySchedule;
             }
 
             public Guid AccessPointId { get; }
-            public ISchedule Schedule { get; }
+            public IWeeklySchedule WeeklySchedule { get; }
         }
     }
 }

@@ -10,7 +10,9 @@ namespace AccessControl.Web.Services
         Task<IVoidResult> AllowGroupAccess(string groupName, Guid accessPointId);
         Task<IVoidResult> DenyUserAccess(string userName, Guid accessPointId);
         Task<IVoidResult> DenyGroupAccess(string groupName, Guid accessPointId);
-        Task<IVoidResult> ScheduleUserAccess(string userName, Guid accessPointId, ISchedule schedule);
-        Task<IVoidResult> ScheduleGroupAccess(string groupName, Guid accessPointId, ISchedule schedule);
+        Task<IVoidResult> AllowScheduledUserAccess(string userName, Guid accessPointId, IWeeklySchedule weeklySchedule);
+        Task<IVoidResult> AllowScheduledGroupAccess(string groupName, Guid accessPointId, IWeeklySchedule weeklySchedule);
+        Task<IVoidResult> DenyScheduledUserAccess(string userName, Guid accessPointId);
+        Task<IVoidResult> DenyScheduledGroupAccess(string groupName, Guid accessPointId);
     }
 }

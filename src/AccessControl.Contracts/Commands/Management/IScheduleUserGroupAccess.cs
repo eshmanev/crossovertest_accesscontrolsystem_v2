@@ -24,6 +24,6 @@ namespace AccessControl.Contracts.Commands.Management
         /// <value>
         ///     The schedule.
         /// </value>
-        ISchedule Schedule { get; }
+        IWeeklySchedule WeeklySchedule { get; }
     }
 }

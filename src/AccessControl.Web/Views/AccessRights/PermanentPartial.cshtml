@@ -1,15 +1,32 @@
-﻿@using AccessControl.Web.Models.AccessRights
-@model dynamic
+﻿@model dynamic
 
-@if (Model.Rules.Length > 0)
+@foreach (var item in Model.PermanentAccessRules)
 {
-    <tr><td rowspan="@(2 + Model.Rules.Length)">Permanent:</td></tr>
-    foreach (var item in Model.Rules)
-    {
-        <tr>
-            <td>@Model.Owner.GetDepartment(item.AccessPointId)</td>
-            <td>@Model.Owner.GetName(item.AccessPointId)</td>
-            <td>@Html.ActionLink("deny", "Deny", new { userOrGroupName = Model.Identity, accessPointId = item.AccessPointId, group = Model.IsGroup })</td>
-        </tr>
-    }
+    <tr>
+        <td>Permanent Access</td>
+        <td>@Model.Owner.GetDepartment(item.AccessPointId)</td>
+        <td>@Model.Owner.GetName(item.AccessPointId)</td>
+        <td>@Html.ActionLink("deny", "DenyPermanent", new { accessPointId = item.AccessPointId, userOrGroupName = Model.UserOrGroupName, group = Model.IsGroup })</td>
+    </tr>
+}
+
+@foreach (var item in Model.ScheduledAccessRules)
+{
+    <tr>
+        <td rowspan="2">Weekly schedule</td>
+        <td>@Model.Owner.GetDepartment(item.AccessPointId)</td>
+        <td>@Model.Owner.GetName(item.AccessPointId)</td>
+        <td rowspan="2">@Html.ActionLink("deny", "DenySchedule", new {accessPointId = item.AccessPointId, userOrGroupName = Model.UserOrGroupName, group = Model.IsGroup})</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="schedule-summary">
+            @foreach (var entry in item.WeeklySchedule.DailyTimeRange)
+            {
+                <div>
+                    <label>@entry.Key</label>
+                    <span>@entry.Value.FromTime.ToString("hh\\:mm") - @entry.Value.ToTime.ToString("hh\\:mm")</span>
+                </div>
+            }
+        </td>
+    </tr>
 }

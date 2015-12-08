@@ -1,18 +1,18 @@
 ﻿@using AccessControl.Web.Models.AccessRights
 @model dynamic
-@{
-    var owner = (AccessRightsIndexViewModel)ViewData["Owner"];
-}
 
 @if (Model.Rules.Length > 0)
 {
-    <tr><td rowspan="@(2 + Model.Rules.Length)">Permanent:</td></tr>
     foreach (var item in Model.Rules)
     {
         <tr>
+            <td rowspan="2">Weekly schedule</td>
             <td>@Model.Owner.GetDepartment(item.AccessPointId)</td>
             <td>@Model.Owner.GetName(item.AccessPointId)</td>
-            <td>deny</td>
+            <td rowspan="2">@Html.ActionLink("deny", "DenySchedule", new { userOrGroupName = Model.Identity, accessPointId = item.AccessPointId, group = Model.IsGroup })</td>
+        </tr>
+        <tr>
+            <td colspan="2">Test</td>
         </tr>
     }
 }

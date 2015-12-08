@@ -2,10 +2,13 @@
 using System.Diagnostics.Contracts;
 using AccessControl.Contracts.CodeContracts;
 
-namespace AccessControl.Contracts.Dto
+namespace AccessControl.Contracts.Commands.Management
 {
-    [ContractClass(typeof(IScheduledAccessRuleContract))]
-    public interface IScheduledAccessRule
+    /// <summary>
+    ///     Removes the weekly schedule for the specified user and access point.
+    /// </summary>
+    [ContractClass(typeof(IRemoveGroupScheduleContract))]
+    public interface IRemoveGroupSchedule
     {
         /// <summary>
         ///     Gets the access point identifier.
@@ -16,11 +19,11 @@ namespace AccessControl.Contracts.Dto
         Guid AccessPointId { get; }
 
         /// <summary>
-        ///     Gets the schedule.
+        ///     Gets the name of the user group.
         /// </summary>
         /// <value>
-        ///     The schedule.
+        ///     The name of the user group.
         /// </value>
-        IWeeklySchedule WeeklySchedule { get; }
+        string UserGroupName { get; }
     }
 }
