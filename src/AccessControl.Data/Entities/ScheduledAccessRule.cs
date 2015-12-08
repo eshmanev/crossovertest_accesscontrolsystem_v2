@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 
 namespace AccessControl.Data.Entities
 {
@@ -7,21 +7,27 @@ namespace AccessControl.Data.Entities
     /// </summary>
     public class ScheduledAccessRule : AccessRuleBase
     {
-        /// <summary>
-        ///     Gets or sets from time in UTC format.
-        /// </summary>
-        /// <value>
-        ///     From time UTC.
-        /// </value>
-        public virtual TimeSpan FromTimeUtc { get; set; }
+        private IList<SchedulerEntry> _entries = new List<SchedulerEntry>();
 
         /// <summary>
-        ///     Gets or sets to time in UTC format.
+        /// Gets or sets the time zone.
         /// </summary>
         /// <value>
-        ///     To time UTC.
+        /// The time zone.
         /// </value>
-        public virtual TimeSpan ToTimeUtc { get; set; }
+        public virtual string TimeZone { get; set; }
+
+        /// <summary>
+        /// Gets the entries.
+        /// </summary>
+        /// <value>
+        /// The entries.
+        /// </value>
+        public virtual IEnumerable<SchedulerEntry> Entries
+        {
+            get { return _entries; }
+            protected set { _entries = (IList<SchedulerEntry>)value; }
+        }
 
         /// <summary>
         ///     Accepts the specified visitor.
@@ -30,6 +36,32 @@ namespace AccessControl.Data.Entities
         public override void Accept(IAccessRuleVisitor visitor)
         {
             visitor.Visit(this);
+        }
+
+        /// <summary>
+        ///     Adds the scheduler entry.
+        /// </summary>
+        /// <param name="entry">The entry.</param>
+        public virtual void AddEntry(SchedulerEntry entry)
+        {
+            if (!_entries.Contains(entry))
+            {
+                _entries.Add(entry);
+                entry.Rule = this;
+            }
+        }
+
+        /// <summary>
+        ///     Removes the scheduler entry.
+        /// </summary>
+        /// <param name="entry">The entry.</param>
+        public virtual void RemoveEntry(SchedulerEntry entry)
+        {
+            if (_entries.Contains(entry))
+            {
+                _entries.Remove(entry);
+                entry.Rule = null;
+            }
         }
     }
 }

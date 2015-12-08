@@ -8,8 +8,8 @@ namespace AccessControl.Data.Mappings
         public ScheduledAccessRuleMap()
         {
             DiscriminatorValue(1);
-            Map(x => x.FromTimeUtc);
-            Map(x => x.ToTimeUtc);
+            Map(x => x.TimeZone);
+            HasMany(x => x.Entries).Inverse().Cascade.AllDeleteOrphan();
         }
     }
 }

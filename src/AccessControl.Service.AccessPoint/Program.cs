@@ -8,6 +8,7 @@ using AccessControl.Data;
 using AccessControl.Data.Configuration;
 using AccessControl.Data.Session;
 using AccessControl.Service.AccessPoint.Consumers;
+using AccessControl.Service.AccessPoint.Services;
 using AccessControl.Service.Middleware;
 using AccessControl.Service.Security;
 using MassTransit;
@@ -43,6 +44,7 @@ namespace AccessControl.Service.AccessPoint
                         cfg
                             .RegisterInstance((IDataConfiguration)ConfigurationManager.GetSection("dataConfig"), new ContainerControlledLifetimeManager())
                             .RegisterType<ISessionFactoryHolder, SessionFactoryHolder>(new ContainerControlledLifetimeManager())
+                            .RegisterType<IAccessRightsManager, AccessRightsManager>()
                             .RegisterType<IEncryptor, Encryptor>();
 
                         // request clients

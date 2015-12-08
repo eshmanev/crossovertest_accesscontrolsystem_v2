@@ -1,35 +1,68 @@
 ﻿@using AccessControl.Web.Models.Validation
 @model AccessControl.Web.Models.AccessRights.AccessRightsIndexViewModel
 
-@using (Html.BeginForm("Index", "AccessRights", new {ViewBag.ReturnUrl}, FormMethod.Post, new {@class = "form-inline", role = "form"}))
+@using (Html.BeginForm("Index", "AccessRights", new { ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+    @Html.ValidationSummary(true, "The following errors found", new { @class = "text-danger" })
 
-    <fieldset>
-        <legend>Allow access to user/group</legend>
-        <div>
-            <div class="form-group">
+    <div id="accessRightsEditor" class="panel panel-default">
+        <div class="panel-heading"><h4>Allow access to user/group</h4></div>
+        <div class="panel-body row">
+            <div class="col-sm-4">
                 <label class="control-label">Access Point:</label>
-                @Html.DropDownListFor(x => x.Editor.AccessPointId, new SelectList(Model.Editor.AccessPoints, "AccessPointId", "Name"), RequiredSelect.Empty, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Editor.AccessPointId, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(x => x.Editor.AccessPointId, new SelectList(Model.Editor.AccessPoints.OrderBy(x => x.Name), "AccessPointId", "Name"), RequiredSelect.Empty, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Editor.AccessPointId, "", new {@class = "text-danger"})
             </div>
 
-            <div class="form-group">
+            <div class="col-sm-4">
                 <label class="control-label">User:</label>
-                @Html.DropDownListFor(x => x.Editor.UserName, new SelectList(Model.Editor.Users, "UserName", "DisplayName"), RequiredSelect.Empty, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Editor.UserName, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(x => x.Editor.UserName, new SelectList(Model.Editor.Users.OrderBy(x => x.UserName), "UserName", "DisplayName"), RequiredSelect.Empty, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Editor.UserName, "", new {@class = "text-danger"})
             </div>
 
-            <div class="form-group">
+            <div class="col-sm-4">
                 <label class="control-label">User Group:</label>
-                @Html.DropDownListFor(x => x.Editor.UserGroupName, new SelectList(Model.Editor.UserGroups, "Name", "DisplayName"), RequiredSelect.Empty, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Editor.UserGroupName, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(x => x.Editor.UserGroupName, new SelectList(Model.Editor.UserGroups.OrderBy(x => x.Name), "Name", "DisplayName"), RequiredSelect.Empty, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Editor.UserGroupName, "", new {@class = "text-danger"})
             </div>
         </div>
-        <br />
-        <div>
-            <button class="btn btn-default">Apply</button>
+        @Html.HiddenFor(x => x.Editor.ScheduleApplied, new { @id = "scheduleApplied" })
+        <table id="schedule" class="table hidden">
+            <tr>
+                <td colspan="3">
+                    <label class="control-label">Time Zone:</label>
+                    @Html.DropDownListFor(x => x.Editor.SchedulerTimeZone, new SelectList(TimeZoneInfo.GetSystemTimeZones(), "Id", "DisplayName"), new { @class = "form-control" })
+                </td>
+            </tr>
+            @foreach (var day in Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().Select(x => x.ToString()))
+            {
+                <tr>
+                    <td width="50%"><label>@day</label></td>
+                    <td>
+                        <div class="input-group time" style="width: 200px">
+                            @Html.TextBoxFor(x => x.Editor.TimeRangePerDays[day].FromTime, new {@class = "form-control"})
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(x => x.Editor.TimeRangePerDays[day].FromTime, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        <div class="input-group time" style="width: 200px">
+                            @Html.TextBoxFor(x => x.Editor.TimeRangePerDays[day].ToTime, new {@class = "form-control"})
+                            <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                        </div>
+                        @Html.ValidationMessageFor(x => x.Editor.TimeRangePerDays[day].ToTime, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            }
+        </table>
+        <div class="panel-footer">
+            <button class="btn btn-primary">Apply</button>
+            <button id="toggleSchedule" class="btn btn-default">Show schedule</button>
         </div>
-    </fieldset>
+    </div>
 }

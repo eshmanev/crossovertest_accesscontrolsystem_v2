@@ -45,6 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeContracts\IAccessAttemptedContract.cs" />
+    <Compile Include="CodeContracts\IDenyUserScheduleContract.cs" />
+    <Compile Include="CodeContracts\IScheduleContract.cs" />
+    <Compile Include="CodeContracts\TimeRangeContract.cs" />
+    <Compile Include="CodeContracts\IScheduleUserGroupAccessContract.cs" />
+    <Compile Include="CodeContracts\IScheduleUserAccessContract.cs" />
     <Compile Include="CodeContracts\ICheckCredentialsContract.cs" />
     <Compile Include="CodeContracts\ICheckCredentialsResultContract.cs" />
     <Compile Include="CodeContracts\IFindAccessPointByIdContract.cs" />
@@ -52,6 +57,9 @@
     <Compile Include="CodeContracts\IFindUserByBiometricsContract.cs" />
     <Compile Include="CodeContracts\IFindUserGroupByNameContract.cs" />
     <Compile Include="CodeContracts\IFindUserGroupByNameResultContract.cs" />
+    <Compile Include="Commands\Management\IDenyUserSchedule.cs" />
+    <Compile Include="Commands\Management\IScheduleUserAccess.cs" />
+    <Compile Include="Commands\Management\IScheduleUserGroupAccess.cs" />
     <Compile Include="Commands\Ping.cs" />
     <Compile Include="Commands\Search\IFindAccessPointById.cs" />
     <Compile Include="Commands\Search\IFindAccessPointByIdResult.cs" />
@@ -129,6 +137,8 @@
     <Compile Include="Dto\IAccessPoint.cs" />
     <Compile Include="Dto\IDepartment.cs" />
     <Compile Include="Dto\ILogEntry.cs" />
+    <Compile Include="Dto\ISchedule.cs" />
+    <Compile Include="Dto\ITimeRange.cs" />
     <Compile Include="Dto\ITicket.cs" />
     <Compile Include="Dto\IPermanentAccessRule.cs" />
     <Compile Include="Dto\IScheduledAccessRule.cs" />
@@ -147,21 +157,27 @@
     <Compile Include="Events\IPermanentUserGroupAccessDenied.cs" />
     <Compile Include="Events\IUserBiometricUpdated.cs" />
     <Compile Include="Events\IUserDeleted.cs" />
+    <Compile Include="Impl\Commands\AllowUserGroupAccess.cs" />
     <Compile Include="Impl\Commands\CheckCredentialsResult.cs" />
+    <Compile Include="Impl\Commands\DenyUserAccess.cs" />
     <Compile Include="Impl\Commands\FindAccessPointById.cs" />
     <Compile Include="Impl\Commands\FindAccessPointByIdResult.cs" />
     <Compile Include="Impl\Commands\FindUserByBiometricsResult.cs" />
     <Compile Include="Impl\Commands\FindUserByBiometrics.cs" />
     <Compile Include="Impl\Commands\FindUserGroupByName.cs" />
     <Compile Include="Impl\Commands\FindUserGroupByNameResult.cs" />
+    <Compile Include="Impl\Commands\ScheduleUserAccess.cs" />
+    <Compile Include="Impl\Commands\ScheduleUserGroupAccess.cs" />
     <Compile Include="Impl\Dto\AccessPoint.cs" />
     <Compile Include="Impl\Dto\AccessRights.cs" />
     <Compile Include="Impl\Dto\AccessRule.cs" />
-    <Compile Include="Impl\Commands\AllowDenyUserAccess.cs" />
-    <Compile Include="Impl\Commands\AllowDenyUserGroupAccess.cs" />
+    <Compile Include="Impl\Commands\AllowUserAccess.cs" />
+    <Compile Include="Impl\Commands\DenyUserGroupAccess.cs" />
     <Compile Include="Impl\Commands\CheckCredentials.cs" />
     <Compile Include="Impl\Dto\Department.cs" />
     <Compile Include="Impl\Dto\LogEntry.cs" />
+    <Compile Include="Impl\Dto\Schedule.cs" />
+    <Compile Include="Impl\Dto\TimeRange.cs" />
     <Compile Include="Impl\Events\AccessAttempted.cs" />
     <Compile Include="Events\IUserAddedToGroup.cs" />
     <Compile Include="Events\IUserRemovedFromGroup.cs" />

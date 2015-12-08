@@ -1,4 +1,7 @@
-﻿using AccessControl.Web.Owin;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
+using AccessControl.Web.Owin;
 using Microsoft.Owin;
 using Owin;
 
@@ -11,6 +14,8 @@ namespace AccessControl.Web
         {
             app.UseUnityMiddleware(UnityConfig.Container);
             ConfigureAuth(app);
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
         }
     }
 }

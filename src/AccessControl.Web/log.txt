@@ -1,0 +1,120 @@
+2015-12-07 16:28:55,072 [5] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestTimeoutException: Timeout waiting for response, RequestId: 885e0000-5ad1-2cd0-9d7c-08d2ff0a48c6
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-07 19:10:42,930 [5] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-07 19:43:29,338 [44] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-07 20:19:16,487 [6] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-08 01:02:13,087 [5] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-08 01:34:36,142 [9] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-08 02:05:32,975 [9] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-08 02:06:19,348 [22] ERROR AccessControl.Web.Services.ApplicationSignInManager - An error occurred while authentication
+MassTransit.RequestTimeoutException: Timeout waiting for response, RequestId: 885e0000-5ad1-2cd0-5939-08d2ff5af278
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.ApplicationSignInManager.<PasswordSignInAsync>d__5.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\ApplicationSignInManager.cs:строка 48
+2015-12-08 02:46:39,398 [5] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-08 02:46:39,410 [6] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-08 03:17:38,719 [5] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53
+2015-12-08 03:17:39,139 [5] ERROR AccessControl.Web.Services.LdapUserStore - An error occurred while searching a user
+MassTransit.RequestFaultException: The AccessControl.Contracts.Commands.Search.IFindUserByName request faulted: Ссылка на объект не указывает на экземпляр объекта.
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в MassTransit.MessageRequestClient`2.<MassTransit-IRequestClient<TRequest\,TResponse>-Request>d__4.MoveNext()
+--- Конец трассировка стека из предыдущего расположения, где возникло исключение ---
+   в System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   в System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   в AccessControl.Web.Services.LdapUserStore.<FindByNameAsync>d__8.MoveNext() в D:\Work\Crossover\AccessControlSystem\src\AccessControl.Web\Services\LDAPUserStore.cs:строка 53

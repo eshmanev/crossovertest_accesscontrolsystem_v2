@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using AccessControl.Data;
 using AccessControl.Data.Session;
@@ -30,8 +31,16 @@ namespace AccessControl.Service.AccessPoint
                     throw new ConsumerException($"Unable to resolve consumer type '{TypeMetadataCache<TConsumer>.ShortName}'.");
                 }
 
-                await next.Send(context.PushConsumer(consumer));
-                databaseContext.Commit();
+                try
+                {
+                    await next.Send(context.PushConsumer(consumer));
+                    databaseContext.Commit();
+                }
+                catch
+                {
+                    databaseContext.Rollback();
+                    throw;
+                }
             }
         }
 

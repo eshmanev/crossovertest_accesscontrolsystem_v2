@@ -1,19 +1,13 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using AccessControl.Contracts;
 using AccessControl.Contracts.Commands.Lists;
 using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Commands.Search;
-using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Impl.Commands;
-using AccessControl.Contracts.Impl.Dto;
-using AccessControl.Contracts.Impl.Events;
 using AccessControl.Data;
-using AccessControl.Data.Entities;
 using AccessControl.Service.AccessPoint.Helpers;
+using AccessControl.Service.AccessPoint.Services;
 using AccessControl.Service.Security;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
@@ -23,16 +17,19 @@ namespace AccessControl.Service.AccessPoint.Consumers
     /// <summary>
     ///     Represents a consumer of access rights.
     /// </summary>
-    public class AccessRightsConsumer : IConsumer<IListAccessRights>,
-                                        IConsumer<IAllowUserAccess>,
-                                        IConsumer<IAllowUserGroupAccess>,
-                                        IConsumer<IDenyUserAccess>,
-                                        IConsumer<IDenyUserGroupAccess>
+    internal class AccessRightsConsumer : IConsumer<IListAccessRights>,
+                                          IConsumer<IAllowUserAccess>,
+                                          IConsumer<IAllowUserGroupAccess>,
+                                          IConsumer<IDenyUserAccess>,
+                                          IConsumer<IDenyUserGroupAccess>,
+                                          IConsumer<IScheduleUserAccess>,
+                                          IConsumer<IScheduleUserGroupAccess>
     {
         private readonly IBus _bus;
         private readonly IRequestClient<IFindUserByName, IFindUserByNameResult> _findUserRequest;
         private readonly IRequestClient<IFindUserGroupByName, IFindUserGroupByNameResult> _findUserGroupRequest;
         private readonly IRequestClient<IListUsersInGroup, IListUsersInGroupResult> _listUsersInGroupRequest;
+        private readonly IAccessRightsManager _accessRightsManager;
         private readonly IDatabaseContext _databaseContext;
 
         /// <summary>
@@ -42,23 +39,27 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <param name="findUserRequest">The find user request.</param>
         /// <param name="findUserGroupRequest">The find user group request.</param>
         /// <param name="listUsersInGroupRequest">The list users in group request.</param>
+        /// <param name="accessRightsManager">The access rights service.</param>
         /// <param name="databaseContext">The database context.</param>
         public AccessRightsConsumer(IBus bus,
-                                    IRequestClient<IFindUserByName,IFindUserByNameResult> findUserRequest,
+                                    IRequestClient<IFindUserByName, IFindUserByNameResult> findUserRequest,
                                     IRequestClient<IFindUserGroupByName, IFindUserGroupByNameResult> findUserGroupRequest,
                                     IRequestClient<IListUsersInGroup, IListUsersInGroupResult> listUsersInGroupRequest,
+                                    IAccessRightsManager accessRightsManager,
                                     IDatabaseContext databaseContext)
         {
             Contract.Requires(bus != null);
             Contract.Requires(findUserRequest != null);
             Contract.Requires(findUserGroupRequest != null);
             Contract.Requires(listUsersInGroupRequest != null);
+            Contract.Requires(accessRightsManager != null);
             Contract.Requires(databaseContext != null);
 
             _bus = bus;
             _findUserRequest = findUserRequest;
             _findUserGroupRequest = findUserGroupRequest;
             _listUsersInGroupRequest = listUsersInGroupRequest;
+            _accessRightsManager = accessRightsManager;
             _databaseContext = databaseContext;
         }
 
@@ -69,26 +70,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IAllowUserAccess> context)
         {
-            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                await context.RespondAsync(new VoidResult("Not authorized"));
-                return;
-            }
-
-            var userResult = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
-            if (userResult == null)
-            {
-                await context.RespondAsync(new VoidResult("Invalid user name"));
-                return;
-            }
-
-            var accessRights = GetUserAccessRights(context.Message.UserName) ?? new UserAccessRights {UserName = context.Message.UserName};
-            IVoidResult response;
-            if (TryAllowPermanentAccess(context.Message.AccessPointId, accessRights, out response))
-            {
-                var hash = FindUserHash(context.Message.UserName);
-                await _bus.Publish(new PermanentUserAccessAllowed(context.Message.AccessPointId, context.Message.UserName, hash));
-            }
+            var strategy = new PermanentUserAccessStrategy(_databaseContext, _findUserRequest, context.Message.UserName);
+            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
         }
 
@@ -99,33 +82,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IAllowUserGroupAccess> context)
         {
-            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                await context.RespondAsync(new VoidResult("Not authorized"));
-                return;
-            }
-
-            var groupResult = await _findUserGroupRequest.Request(new FindUserGroupByName(context.Message.UserGroupName));
-            if (groupResult == null)
-            {
-                await context.RespondAsync(new VoidResult("Invalid group name"));
-                return;
-            }
-
-            var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName) ?? new UserGroupAccessRights {UserGroupName = context.Message.UserGroupName};
-            IVoidResult response;
-            if (TryAllowPermanentAccess(context.Message.AccessPointId, accessRights, out response))
-            {
-                var usersInGroupResult = await _listUsersInGroupRequest.Request(ListCommand.ListUsersInGroup(context.Message.UserGroupName));
-                var userNames = usersInGroupResult.Users.Select(x => x.UserName).ToArray();
-                var userHashes = new string[userNames.Length];
-                for (var i = 0; i < userNames.Length; i++)
-                {
-                    userHashes[i] = FindUserHash(userNames[i]);
-                }
-
-                await _bus.Publish(new PermanentUserGroupAccessAllowed(context.Message.AccessPointId, context.Message.UserGroupName, userNames, userHashes));
-            }
+            var strategy = new PermanentGroupAccessStrategy(_databaseContext, _findUserGroupRequest, _listUsersInGroupRequest, context.Message.UserGroupName);
+            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
         }
 
@@ -136,25 +94,8 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IDenyUserAccess> context)
         {
-            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                await context.RespondAsync(new VoidResult("Not authorized"));
-                return;
-            }
-
-            var userResult = await _findUserRequest.Request(new FindUserByName(context.Message.UserName));
-            if (userResult == null)
-            {
-                await context.RespondAsync(new VoidResult("Invalid user name"));
-                return;
-            }
-
-            var accessRights = GetUserAccessRights(context.Message.UserName);
-            IVoidResult response;
-            if (TryDenyPermanentAccess(context.Message.AccessPointId, accessRights, out response))
-            {
-                await _bus.Publish(new PermanentUserAccessDenied(context.Message.AccessPointId, context.Message.UserName));
-            }
+            var strategy = new PermanentUserAccessStrategy(_databaseContext, _findUserRequest, context.Message.UserName);
+            var response = await _accessRightsManager.DenyAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
         }
 
@@ -165,26 +106,31 @@ namespace AccessControl.Service.AccessPoint.Consumers
         /// <returns></returns>
         public async Task Consume(ConsumeContext<IDenyUserGroupAccess> context)
         {
-            if (!Thread.CurrentPrincipal.IsInRole(WellKnownRoles.Manager))
-            {
-                await context.RespondAsync(new VoidResult("Not authorized"));
-                return;
-            }
-
-            var groupResult = await _findUserGroupRequest.Request(new FindUserGroupByName(context.Message.UserGroupName));
-            if (groupResult == null)
-            {
-                await context.RespondAsync(new VoidResult("Invalid group name"));
-                return;
-            }
-
-            var accessRights = GetUserGroupAccessRights(context.Message.UserGroupName);
-            IVoidResult response;
-            if (TryDenyPermanentAccess(context.Message.AccessPointId, accessRights, out response))
-            {
-                await _bus.Publish(new PermanentUserGroupAccessDenied(context.Message.AccessPointId, context.Message.UserGroupName));
-            }
+            var strategy = new PermanentGroupAccessStrategy(_databaseContext, _findUserGroupRequest, _listUsersInGroupRequest, context.Message.UserGroupName);
+            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
+        }
+
+
+        /// <summary>
+        ///     Schedules user access.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public async Task Consume(ConsumeContext<IScheduleUserAccess> context)
+        {
+            var strategy = new ScheduledUserAccessStrategy(_databaseContext, _findUserRequest, context.Message);
+            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
+            await context.RespondAsync(response);
+        }
+
+        /// <summary>
+        ///     Schedules user group access.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public async Task Consume(ConsumeContext<IScheduleUserGroupAccess> context)
+        {
         }
 
         /// <summary>
@@ -204,90 +150,6 @@ namespace AccessControl.Service.AccessPoint.Consumers
             var visitor = new ConvertAccessRightsVisitor();
             accessRights.ForEach(x => x.Accept(visitor));
             return context.RespondAsync(ListCommand.AccessRightsResult(visitor.UserAccessRightsDto.ToArray(), visitor.UserGroupAccessRightsDto.ToArray()));
-        }
-
-        private string FindUserHash(string userName)
-        {
-            var hashEntity = _databaseContext.Users.Filter(x => x.UserName == userName).SingleOrDefault();
-            return hashEntity?.BiometricHash;
-        }
-
-        private UserAccessRights GetUserAccessRights(string userName)
-        {
-            return _databaseContext.AccessRights.Filter(x => x is UserAccessRights && ((UserAccessRights) x).UserName == userName)
-                                          .Cast<UserAccessRights>()
-                                          .FirstOrDefault();
-        }
-
-        private UserGroupAccessRights GetUserGroupAccessRights(string userGroupName)
-        {
-            return _databaseContext.AccessRights.Filter(x => x is UserGroupAccessRights && ((UserGroupAccessRights) x).UserGroupName == userGroupName)
-                                          .Cast<UserGroupAccessRights>()
-                                          .FirstOrDefault();
-        }
-
-        private bool TryAllowPermanentAccess(Guid accessPointId, AccessRightsBase accessRights, out IVoidResult response)
-        {
-            if (accessRights.AccessRules.OfType<PermanentAccessRule>().Any(x => x.AccessPoint.AccessPointId == accessPointId))
-            {
-                response = new VoidResult();
-                return false;
-            }
-
-            var accessPoint = _databaseContext.AccessPoints.GetById(accessPointId);
-            if (accessPoint == null)
-            {
-                response = new VoidResult($"Access point {accessPointId} is not registered.");
-                return false;
-            }
-
-            accessRights.AddAccessRule(new PermanentAccessRule {AccessPoint = accessPoint});
-            if (accessRights.Id == 0)
-            {
-                _databaseContext.AccessRights.Insert(accessRights);
-            }
-            else
-            {
-                _databaseContext.AccessRights.Update(accessRights);
-            }
-            _databaseContext.Commit();
-
-            response = new VoidResult();
-            return true;
-        }
-
-        private bool TryDenyPermanentAccess(Guid accessPointId, AccessRightsBase accessRights, out IVoidResult response)
-        {
-            if (accessRights == null)
-            {
-                response = new VoidResult();
-                return false;
-            }
-
-            var accessRule = accessRights.AccessRules
-                                         .OfType<PermanentAccessRule>()
-                                         .FirstOrDefault(x => x.AccessPoint.AccessPointId == accessPointId);
-
-            if (accessRule == null)
-            {
-                response = new VoidResult();
-                return false;
-            }
-
-            accessRights.RemoveAccessRule(accessRule);
-            if (accessRights.AccessRules.Any())
-            {
-                _databaseContext.AccessRights.Update(accessRights);
-            }
-
-            else
-            {
-                _databaseContext.AccessRights.Delete(accessRights);
-            }
-            _databaseContext.Commit();
-
-            response = new VoidResult();
-            return true;
         }
     }
 }

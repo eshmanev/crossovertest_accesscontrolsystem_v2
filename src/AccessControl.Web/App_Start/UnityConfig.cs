@@ -1,4 +1,3 @@
-using System;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
@@ -37,6 +36,7 @@ namespace AccessControl.Web
             container
                 .RegisterType<IUserStore<ApplicationUser>, LdapUserStore>()
                 .RegisterType<IAuthenticationManager>(new InjectionFactory(_ => HttpContext.Current.GetOwinContext().Authentication))
+                .RegisterType<IAccessRightsService, AccessRightsService>()
 
                 // LDAP
                 .RegisterRequestClient<IFindUserByName, IFindUserByNameResult>(WellKnownQueues.Ldap)
@@ -75,9 +75,7 @@ namespace AccessControl.Web
                             _ =>
                             {
                                 var bus = container.Resolve<IBus>();
-                                var config = container.Resolve<IRabbitMqConfig>();
-                                var url = config.Url.EndsWith("/") ? $"{config.Url}{queueName}" : $"{config.Url}/{queueName}";
-                                return new MessageRequestClient<TRequest, TResponse>(bus, new Uri(url), TimeSpan.FromSeconds(30));
+                                return bus.GetClient<TRequest, TResponse>(queueName);
                             }));
         }
     }

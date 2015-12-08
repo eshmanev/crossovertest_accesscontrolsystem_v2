@@ -20,6 +20,17 @@ namespace AccessControl.Contracts.CodeContracts
             }
         }
 
+        public ISchedule Schedule
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<ISchedule>() != null);
+                return null;
+            }
+        }
+
+        public DayOfWeek Day => default(DayOfWeek);
+
         public TimeSpan FromTimeUtc => default(TimeSpan);
 
         public TimeSpan ToTimeUtc => default(TimeSpan);

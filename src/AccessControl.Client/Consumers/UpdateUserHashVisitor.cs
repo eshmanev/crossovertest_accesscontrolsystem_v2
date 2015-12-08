@@ -25,7 +25,9 @@ namespace AccessControl.Client.Consumers
         public void Visit(PermanentUserAccess permission)
         {
             if (!string.Equals(permission.UserHash.UserName, _userName))
+            {
                 return;
+            }
 
             var replacement = new PermanentUserAccess(permission.AccessPointId, new UserHash(permission.UserHash.UserName, _newHash));
             _accessPermissions.AddOrUpdatePermission(replacement);
@@ -36,7 +38,9 @@ namespace AccessControl.Client.Consumers
             var hashes = permission.UserHashes.ToList();
             var index = hashes.FindIndex(x => string.Equals(x.UserName, _userName));
             if (index == -1)
+            {
                 return;
+            }
 
             var old = hashes[index];
             hashes[index] = new UserHash(old.UserName, _newHash);
@@ -47,13 +51,17 @@ namespace AccessControl.Client.Consumers
         public void Visit(ScheduledUserAccess permission)
         {
             if (!string.Equals(permission.UserHash.UserName, _userName))
+            {
                 return;
+            }
 
             var replacement = new ScheduledUserAccess(
                 permission.AccessPointId,
                 new UserHash(permission.UserHash.UserName, _newHash),
-                permission.FromTimeUtc,
-                permission.ToTimeUtc);
+                permission.DayOfWeek,
+                permission.SourceFromTime,
+                permission.SourceToTime,
+                permission.SourceTimeZone);
 
             _accessPermissions.AddOrUpdatePermission(replacement);
         }

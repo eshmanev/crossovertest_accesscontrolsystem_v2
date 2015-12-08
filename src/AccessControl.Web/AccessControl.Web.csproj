@@ -203,12 +203,16 @@
     <Compile Include="Models\AccessPoint\EditAccessPointViewModel.cs" />
     <Compile Include="Models\AccessRights\AccessRightsIndexViewModel.cs" />
     <Compile Include="Models\AccessRights\EditAccessRightsViewModel.cs" />
+    <Compile Include="Models\AccessRights\TimeRange.cs" />
     <Compile Include="Models\Delegate\IndexViewModel.cs" />
     <Compile Include="Models\Delegate\UserViewModel.cs" />
     <Compile Include="Models\Logs\IndexViewModel.cs" />
     <Compile Include="Models\Validation\RequiredGuid.cs" />
     <Compile Include="Models\Validation\RequiredSelect.cs" />
+    <Compile Include="Services\AccessRightsService.cs" />
+    <Compile Include="Services\BusExtensions.cs" />
     <Compile Include="Services\HttpContextExtensions.cs" />
+    <Compile Include="Services\IAccessRightsService.cs" />
     <Compile Include="Services\SmsService.cs" />
     <Compile Include="Services\ApplicationUserManager.cs" />
     <Compile Include="Services\ApplicationSignInManager.cs" />
@@ -267,6 +271,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\node-main.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\site.js" />

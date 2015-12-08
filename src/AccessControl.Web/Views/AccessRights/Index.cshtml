@@ -16,7 +16,7 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var rights in Model.UserAccessRights)
+    @foreach (var rights in Model.UserAccessRights.OrderBy(x => x.UserName))
     {
         <tr><td rowspan="@(2 + rights.PermanentAccessRules.Length + rights.ScheduledAccessRules.Length)">@Model.GetDisplayUserName(rights.UserName)</td></tr>
         @Html.Partial("PermanentPartial", new { Rules = rights.PermanentAccessRules, Owner = Model, Identity = rights.UserName, IsGroup = false })

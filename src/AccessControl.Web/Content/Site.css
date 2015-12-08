@@ -22,3 +22,13 @@ select,
 textarea {
     max-width: 280px;
 }
+
+#accessRightsEditor input, #accessRightsEditor select, #accessRightsEditor textarea {
+    max-width: inherit;
+}
+
+#schedule td label, #schedule td input {
+    font-size: 1.3em;
+    display: block;
+    text-align: center;
+}

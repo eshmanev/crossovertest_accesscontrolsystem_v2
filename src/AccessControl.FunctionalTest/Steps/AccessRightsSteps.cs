@@ -22,7 +22,7 @@ namespace AccessControl.FunctionalTest.Steps
         [When(@"I grant access rights to access point with ID = ""(.*)"" for my employee")]
         public void WhenIGrantAccessRightsToAccessPointWithIDForMyEmployee(Guid accessPointId)
         {
-            Bus.Request<IAllowUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, AppSettings.ManagedUserName));
+            Bus.Request<IAllowUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowUserAccess(accessPointId, AppSettings.ManagedUserName));
 
             // this is just to ensure that all necessary events are delivered and processed
             Thread.Sleep(1000);
@@ -31,7 +31,7 @@ namespace AccessControl.FunctionalTest.Steps
         [When(@"I deny access rights to access point with ID = ""(.*)"" for my employee")]
         public void WhenIDenyAccessRightsToAccessPointWithIDForMyEmployee(Guid accessPointId)
         {
-            Bus.Request<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new AllowDenyUserAccess(accessPointId, AppSettings.ManagedUserName));
+            Bus.Request<IDenyUserAccess, IVoidResult>(WellKnownQueues.AccessControl, new DenyUserAccess(accessPointId, AppSettings.ManagedUserName));
 
             // this is just to ensure that all necessary events are delivered and processed
             Thread.Sleep(1000);

@@ -11,16 +11,25 @@ namespace AccessControl.Client.Data
         /// </summary>
         /// <param name="accessPointId">The access point identifier.</param>
         /// <param name="userHash">The user hash.</param>
-        /// <param name="fromTimeUtc">From time UTC.</param>
-        /// <param name="toTimeUtc">To time UTC.</param>
-        public ScheduledUserAccess(Guid accessPointId, UserHash userHash, TimeSpan fromTimeUtc, TimeSpan toTimeUtc)
+        /// <param name="dayOfWeek">The day of week.</param>
+        /// <param name="sourceFromTime">From time UTC.</param>
+        /// <param name="sourceToTime">To time UTC.</param>
+        /// <param name="sourceTimeZone">The source time zone.</param>
+        public ScheduledUserAccess(Guid accessPointId, UserHash userHash, DayOfWeek dayOfWeek, TimeSpan sourceFromTime, TimeSpan sourceToTime, string sourceTimeZone)
         {
             Contract.Requires(accessPointId != Guid.Empty);
+            Contract.Requires(sourceTimeZone != null);
 
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(sourceTimeZone);
             AccessPointId = accessPointId;
             UserHash = userHash;
-            FromTimeUtc = fromTimeUtc;
-            ToTimeUtc = toTimeUtc;
+            DayOfWeek = dayOfWeek;
+            SourceFromTime = sourceFromTime;
+            SourceToTime = sourceToTime;
+            SourceTimeZone = sourceTimeZone;
+
+            LocalFromTime = TimeZoneInfo.ConvertTime(new DateTime(sourceFromTime.Ticks), timeZoneInfo, TimeZoneInfo.Local).TimeOfDay;
+            LocalToTime = TimeZoneInfo.ConvertTime(new DateTime(sourceToTime.Ticks), timeZoneInfo, TimeZoneInfo.Local).TimeOfDay;
         }
 
         /// <summary>
@@ -32,20 +41,44 @@ namespace AccessControl.Client.Data
         public Guid AccessPointId { get; }
 
         /// <summary>
-        ///     Gets from time UTC.
+        ///     Gets From time.
         /// </summary>
         /// <value>
-        ///     From time UTC.
+        ///     From time.
         /// </value>
-        public TimeSpan FromTimeUtc { get; }
+        public TimeSpan SourceFromTime { get; }
 
         /// <summary>
-        ///     Gets to time UTC.
+        /// Gets the local From time.
         /// </summary>
         /// <value>
-        ///     To time UTC.
+        /// The local from time.
         /// </value>
-        public TimeSpan ToTimeUtc { get; }
+        public TimeSpan LocalFromTime { get; private set; }
+
+        /// <summary>
+        ///     Gets to time.
+        /// </summary>
+        /// <value>
+        ///     To time.
+        /// </value>
+        public TimeSpan SourceToTime { get; }
+
+        /// <summary>
+        /// Gets the local TO time.
+        /// </summary>
+        /// <value>
+        /// The local to time.
+        /// </value>
+        public TimeSpan LocalToTime { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the time zone.
+        /// </summary>
+        /// <value>
+        ///     The time zone.
+        /// </value>
+        public string SourceTimeZone { get; set; }
 
         /// <summary>
         ///     Gets the user hash.
@@ -54,6 +87,14 @@ namespace AccessControl.Client.Data
         ///     The user hash.
         /// </value>
         public UserHash UserHash { get; }
+
+        /// <summary>
+        ///     Gets the day of week.
+        /// </summary>
+        /// <value>
+        ///     The day of week.
+        /// </value>
+        public DayOfWeek DayOfWeek { get; }
 
         /// <summary>
         ///     Determines whether the specified user hash is allowed.
@@ -72,9 +113,9 @@ namespace AccessControl.Client.Data
             {
                 return false;
             }
-
-            var now = DateTime.UtcNow.TimeOfDay;
-            return now >= FromTimeUtc && now <= ToTimeUtc;
+            
+            var now = DateTime.Now;
+            return now.DayOfWeek == DayOfWeek && now.TimeOfDay >= LocalFromTime && now.TimeOfDay <= LocalToTime;
         }
 
         /// <summary>

@@ -6,7 +6,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using AccessControl.Client.Data;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Helpers;
 using AccessControl.Contracts.Impl.Commands;
 using log4net;
 using MassTransit;
@@ -105,8 +104,11 @@ namespace AccessControl.Client.Services
                 userAccessRights.ScheduledAccessRules.ForEach(
                     rule =>
                     {
-                        var permission = new ScheduledUserAccess(rule.AccessPointId, userHash, rule.FromTimeUtc, rule.ToTimeUtc);
-                        accessPermissions.AddOrUpdatePermission(permission);
+                        foreach (var entry in rule.Schedule.DailyTimeRange)
+                        {
+                            var permission = new ScheduledUserAccess(rule.AccessPointId, userHash, entry.Key, entry.Value.FromTime, entry.Value.ToTime, rule.Schedule.TimeZone);
+                            accessPermissions.AddOrUpdatePermission(permission);
+                        }
                     });
             }
 

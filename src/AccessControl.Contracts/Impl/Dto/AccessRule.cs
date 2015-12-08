@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Dto;
 
-namespace AccessControl.Contracts.Helpers
+namespace AccessControl.Contracts.Impl.Dto
 {
     public abstract class AccessRule
     {
@@ -12,10 +12,11 @@ namespace AccessControl.Contracts.Helpers
             return new PermanentAccessRule(accessPointId);
         }
 
-        public static IScheduledAccessRule Scheduled(Guid accessPointId, TimeSpan fromTimeUtc, TimeSpan toTimeUtc)
+        public static IScheduledAccessRule Scheduled(Guid accessPointId, ISchedule schedule)
         {
             Contract.Requires(accessPointId != Guid.Empty);
-            return new ScheduledAccessRule(accessPointId, fromTimeUtc, toTimeUtc);
+            Contract.Requires(schedule != null);
+            return new ScheduledAccessRule(accessPointId, schedule);
         }
 
         private class PermanentAccessRule : AccessRule, IPermanentAccessRule
@@ -31,17 +32,16 @@ namespace AccessControl.Contracts.Helpers
 
         private class ScheduledAccessRule : AccessRule, IScheduledAccessRule
         {
-            public ScheduledAccessRule(Guid accessPointId, TimeSpan fromTimeUtc, TimeSpan toTimeUtc)
+            public ScheduledAccessRule(Guid accessPointId, ISchedule schedule)
             {
                 Contract.Requires(accessPointId != Guid.Empty);
+                Contract.Requires(schedule != null);
                 AccessPointId = accessPointId;
-                FromTimeUtc = fromTimeUtc;
-                ToTimeUtc = toTimeUtc;
+                Schedule = schedule;
             }
 
             public Guid AccessPointId { get; }
-            public TimeSpan FromTimeUtc { get; }
-            public TimeSpan ToTimeUtc { get; }
+            public ISchedule Schedule { get; }
         }
     }
 }

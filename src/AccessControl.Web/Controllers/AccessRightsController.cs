@@ -1,54 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using AccessControl.Contracts.Commands.Lists;
-using AccessControl.Contracts.Commands.Management;
 using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Impl.Commands;
+using AccessControl.Contracts.Impl.Dto;
 using AccessControl.Web.Models.AccessRights;
+using AccessControl.Web.Services;
 using MassTransit;
+using TimeRange = AccessControl.Web.Models.AccessRights.TimeRange;
 
 namespace AccessControl.Web.Controllers
 {
     [Authorize]
     public class AccessRightsController : Controller
     {
-        private readonly IRequestClient<IAllowUserGroupAccess, IVoidResult> _allowUserGroupRequest;
-        private readonly IRequestClient<IAllowUserAccess, IVoidResult> _allowUserRequest;
-        private readonly IRequestClient<IDenyUserGroupAccess, IVoidResult> _denyUserGroupRequest;
-        private readonly IRequestClient<IDenyUserAccess, IVoidResult> _denyUserRequest;
         private readonly IRequestClient<IListAccessPoints, IListAccessPointsResult> _listAccessPointsRequest;
         private readonly IRequestClient<IListAccessRights, IListAccessRightsResult> _listAccessRightsRequest;
         private readonly IRequestClient<IListUserGroups, IListUserGroupsResult> _listUserGroupsRequest;
+        private readonly IAccessRightsService _accessRightsService;
         private readonly IRequestClient<IListUsers, IListUsersResult> _listUsersRequest;
 
         public AccessRightsController(IRequestClient<IListAccessRights, IListAccessRightsResult> listAccessRightsRequest,
                                       IRequestClient<IListAccessPoints, IListAccessPointsResult> listAccessPointsRequest,
                                       IRequestClient<IListUsers, IListUsersResult> listUsersRequest,
                                       IRequestClient<IListUserGroups, IListUserGroupsResult> listUserGroupsRequest,
-                                      IRequestClient<IAllowUserAccess, IVoidResult> allowUserRequest,
-                                      IRequestClient<IAllowUserGroupAccess, IVoidResult> allowUserGroupRequest,
-                                      IRequestClient<IDenyUserAccess, IVoidResult> denyUserRequest,
-                                      IRequestClient<IDenyUserGroupAccess, IVoidResult> denyUserGroupRequest)
+                                      IAccessRightsService accessRightsService)
         {
             Contract.Requires(listAccessRightsRequest != null);
             Contract.Requires(listAccessPointsRequest != null);
             Contract.Requires(listUsersRequest != null);
             Contract.Requires(listUserGroupsRequest != null);
-            Contract.Requires(allowUserRequest != null);
-            Contract.Requires(allowUserGroupRequest != null);
-            Contract.Requires(denyUserRequest != null);
-            Contract.Requires(denyUserGroupRequest != null);
+            Contract.Requires(accessRightsService != null);
 
             _listAccessRightsRequest = listAccessRightsRequest;
             _listAccessPointsRequest = listAccessPointsRequest;
             _listUsersRequest = listUsersRequest;
             _listUserGroupsRequest = listUserGroupsRequest;
-            _allowUserRequest = allowUserRequest;
-            _allowUserGroupRequest = allowUserGroupRequest;
-            _denyUserRequest = denyUserRequest;
-            _denyUserGroupRequest = denyUserGroupRequest;
+            _accessRightsService = accessRightsService;
         }
 
         [HttpPost]
@@ -61,13 +53,31 @@ namespace AccessControl.Web.Controllers
                 return View(model);
             }
 
-            var result = !string.IsNullOrWhiteSpace(model.Editor.UserName)
-                             ? await _allowUserRequest.Request(new AllowDenyUserAccess(model.Editor.AccessPointId, model.Editor.UserName))
-                             : await _allowUserGroupRequest.Request(new AllowDenyUserGroupAccess(model.Editor.AccessPointId, model.Editor.UserGroupName));
+            IVoidResult result = null;
+            if (model.Editor.ScheduleApplied)
+            {
+                if (TimeZoneInfo.FindSystemTimeZoneById(model.Editor.SchedulerTimeZone) == null)
+                {
+                    ModelState.AddModelError("Editor_SchedulerTimeZone", "Invalid time zone");
+                }
 
-            if (!result.Succeded)
+                if (ModelState.IsValid)
+                {
+                    result = await ScheduleAccess(model.Editor);
+                }
+            }
+            else
+            {
+                result = await AllowPermanentAccess(model.Editor);
+            }
+
+            if (result != null && !result.Succeded)
             {
                 ModelState.AddModelError(string.Empty, result.Fault.Summary);
+            }
+
+            if (!ModelState.IsValid)
+            {
                 await Initialize(model);
                 return View(model);
             }
@@ -78,8 +88,8 @@ namespace AccessControl.Web.Controllers
         public async Task<ActionResult> Deny(bool group, string userOrGroupName, Guid accessPointId)
         {
             var result = !group
-                             ? await _denyUserRequest.Request(new AllowDenyUserAccess(accessPointId, userOrGroupName))
-                             : await _denyUserGroupRequest.Request(new AllowDenyUserGroupAccess(accessPointId, userOrGroupName));
+                             ? await _accessRightsService.DenyUserAccess(userOrGroupName, accessPointId)
+                             : await _accessRightsService.DenyGroupAccess(userOrGroupName, accessPointId);
 
             if (!result.Succeded)
             {
@@ -97,6 +107,32 @@ namespace AccessControl.Web.Controllers
             return View(model);
         }
 
+        private Task<IVoidResult> AllowPermanentAccess(EditAccessRightsViewModel editor)
+        {
+            return string.IsNullOrWhiteSpace(editor.UserName)
+                       ? _accessRightsService.AllowGroupAccess(editor.UserGroupName, editor.AccessPointId)
+                       : _accessRightsService.AllowUserAccess(editor.UserName, editor.AccessPointId);
+        }
+
+        private Task<IVoidResult> ScheduleAccess(EditAccessRightsViewModel editor)
+        {
+            var schedule = new Schedule(editor.SchedulerTimeZone);
+            foreach (var item in editor.TimeRangePerDays)
+            {
+                DayOfWeek day;
+                if (!Enum.TryParse(item.Key, out day))
+                {
+                    throw new HttpRequestValidationException();
+                }
+
+                schedule.DailyTimeRange.Add(day, new Contracts.Impl.Dto.TimeRange(item.Value.FromTime, item.Value.ToTime));
+            }
+
+            return string.IsNullOrWhiteSpace(editor.UserName)
+                       ? _accessRightsService.ScheduleGroupAccess(editor.UserGroupName, editor.AccessPointId, schedule)
+                       : _accessRightsService.ScheduleUserAccess(editor.UserName, editor.AccessPointId, schedule);
+        }
+
         private async Task Initialize(AccessRightsIndexViewModel model)
         {
             var accessRightsTask = _listAccessRightsRequest.Request(ListCommand.WithoutParameters);
@@ -111,6 +147,12 @@ namespace AccessControl.Web.Controllers
             model.Editor.AccessPoints = accessPointsTask.Result.AccessPoints;
             model.Editor.Users = usersTask.Result.Users;
             model.Editor.UserGroups = userGroupsTask.Result.Groups;
+            model.Editor.SchedulerTimeZone = TimeZoneInfo.Local.Id;
+            model.Editor.TimeRangePerDays = new Dictionary<string, TimeRange>();
+            foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                model.Editor.TimeRangePerDays[day.ToString()] = new TimeRange {FromTime = new TimeSpan(9, 0, 0), ToTime = new TimeSpan(18, 0, 0)};
+            }
         }
     }
 }

@@ -10,10 +10,10 @@ using Microsoft.Practices.ObjectBuilder2;
 namespace AccessControl.Client.Consumers
 {
     internal class EventConsumer : IConsumer<IUserBiometricUpdated>,
-        IConsumer<IPermanentUserAccessAllowed>,
-        IConsumer<IPermanentUserGroupAccessAllowed>,
-        IConsumer<IPermanentUserAccessDenied>,
-        IConsumer<IPermanentUserGroupAccessDenied>
+                                   IConsumer<IPermanentUserAccessAllowed>,
+                                   IConsumer<IPermanentUserGroupAccessAllowed>,
+                                   IConsumer<IPermanentUserAccessDenied>,
+                                   IConsumer<IPermanentUserGroupAccessDenied>
     {
         private readonly IAccessPermissionCollection _accessPermissions;
         private readonly IAccessPermissionService _service;

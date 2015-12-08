@@ -1,23 +1,23 @@
-﻿using System;
+using System;
 using System.Diagnostics.Contracts;
 using AccessControl.Contracts.Commands.Management;
 
 namespace AccessControl.Contracts.Impl.Commands
 {
-    public class AllowDenyUserAccess : IAllowUserAccess, IDenyUserAccess
+    public class AllowUserGroupAccess : IAllowUserGroupAccess
     {
         /// <summary>
-        ///     Initializes a new instance of the <see cref="AllowDenyUserAccess" /> class.
+        ///     Initializes a new instance of the <see cref="AllowUserGroupAccess" /> class.
         /// </summary>
         /// <param name="accessPointId">The access point identifier.</param>
-        /// <param name="userName">Name of the user.</param>
-        public AllowDenyUserAccess(Guid accessPointId, string userName)
+        /// <param name="userGroupName">Name of the user group.</param>
+        public AllowUserGroupAccess(Guid accessPointId, string userGroupName)
         {
             Contract.Requires(accessPointId != Guid.Empty);
-            Contract.Requires(!string.IsNullOrWhiteSpace(userName));
+            Contract.Requires(!string.IsNullOrWhiteSpace(userGroupName));
 
             AccessPointId = accessPointId;
-            UserName = userName;
+            UserGroupName = userGroupName;
         }
 
         /// <summary>
@@ -26,8 +26,8 @@ namespace AccessControl.Contracts.Impl.Commands
         public Guid AccessPointId { get; }
 
         /// <summary>
-        ///     Gets the user name.
+        ///     Gets the user group name.
         /// </summary>
-        public string UserName { get; }
+        public string UserGroupName { get; }
     }
 }

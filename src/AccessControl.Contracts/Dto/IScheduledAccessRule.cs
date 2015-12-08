@@ -16,19 +16,11 @@ namespace AccessControl.Contracts.Dto
         Guid AccessPointId { get; }
 
         /// <summary>
-        ///     Gets FROM time in UTC format.
+        ///     Gets the schedule.
         /// </summary>
         /// <value>
-        ///     FROM time, UTC.
+        ///     The schedule.
         /// </value>
-        TimeSpan FromTimeUtc { get; }
-
-        /// <summary>
-        ///     Gets TO time in UTC format.
-        /// </summary>
-        /// <value>
-        ///     TO time, UTC.
-        /// </value>
-        TimeSpan ToTimeUtc { get; }
+        ISchedule Schedule { get; }
     }
 }
