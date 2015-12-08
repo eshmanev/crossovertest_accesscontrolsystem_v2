@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AccessControl.Client.Data;
 using AccessControl.Client.Services;
+using AccessControl.Contracts.Dto;
 using AccessControl.Contracts.Events;
 using MassTransit;
 using Microsoft.Practices.ObjectBuilder2;
@@ -59,7 +60,8 @@ namespace AccessControl.Client.Consumers
         public Task Consume(ConsumeContext<IScheduledUserAccessAllowed> context)
         {
             var hash = new UserHash(context.Message.UserName, context.Message.BiometricHash);
-            _accessPermissions.AddOrUpdatePermission(new ScheduledUserAccess(context.Message.AccessPointId, hash, context.Message.WeeklySchedule));
+            var permission = new ScheduledUserAccess(context.Message.AccessPointId, hash, WeeklySchedule.Convert(context.Message.WeeklySchedule));
+            _accessPermissions.AddOrUpdatePermission(permission);
             _service.Save(_accessPermissions);
             return Task.FromResult(true);
         }
@@ -67,7 +69,8 @@ namespace AccessControl.Client.Consumers
         public Task Consume(ConsumeContext<IScheduledGroupAccessAllowed> context)
         {
             var hashes = CombineHashes(context.Message.UsersInGroup, context.Message.UsersBiometrics);
-            _accessPermissions.AddOrUpdatePermission(new ScheduledGroupAccess(context.Message.AccessPointId, context.Message.UserGroupName, hashes, context.Message.WeeklySchedule));
+            var permission = new ScheduledGroupAccess(context.Message.AccessPointId, context.Message.UserGroupName, hashes, WeeklySchedule.Convert(context.Message.WeeklySchedule));
+            _accessPermissions.AddOrUpdatePermission(permission);
             _service.Save(_accessPermissions);
             return Task.FromResult(true);
         }

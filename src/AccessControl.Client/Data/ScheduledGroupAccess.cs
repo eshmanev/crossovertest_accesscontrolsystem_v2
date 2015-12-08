@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Client.Data
 {
@@ -15,7 +14,7 @@ namespace AccessControl.Client.Data
         /// <param name="userGroupName">Name of the user group.</param>
         /// <param name="userHashes">The user hashes.</param>
         /// <param name="weeklySchedule">The schedule.</param>
-        public ScheduledGroupAccess(Guid accessPointId, string userGroupName, UserHash[] userHashes, IWeeklySchedule weeklySchedule)
+        public ScheduledGroupAccess(Guid accessPointId, string userGroupName, UserHash[] userHashes, WeeklySchedule weeklySchedule)
             :base(accessPointId, userGroupName, userHashes)
         {
             Contract.Requires(weeklySchedule != null);
@@ -28,7 +27,7 @@ namespace AccessControl.Client.Data
         /// <value>
         /// The schedule.
         /// </value>
-        public IWeeklySchedule WeeklySchedule { get; }
+        public WeeklySchedule WeeklySchedule { get; }
 
         /// <summary>
         ///     Determines whether the specified user hash is allowed.

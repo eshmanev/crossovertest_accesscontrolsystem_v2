@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace AccessControl.Client.Data
 {
+    [Serializable]
     internal abstract class GroupPermisionBase : IAccessPermission
     {
         /// <summary>

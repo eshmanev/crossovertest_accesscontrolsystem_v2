@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Contracts.CodeContracts
@@ -18,7 +17,7 @@ namespace AccessControl.Contracts.CodeContracts
             get
             {
                 Contract.Ensures(Contract.Result<string>() != null);
-                Contract.Ensures(TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id == Contract.Result<string>()));
+                Contract.Ensures(TimeZoneInfo.FindSystemTimeZoneById(Contract.Result<string>()) != null);
                 return null;
             }
         }

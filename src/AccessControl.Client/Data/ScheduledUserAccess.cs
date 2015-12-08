@@ -1,7 +1,5 @@
 using System;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using AccessControl.Contracts.Dto;
 
 namespace AccessControl.Client.Data
 {
@@ -14,20 +12,20 @@ namespace AccessControl.Client.Data
         /// <param name="accessPointId">The access point identifier.</param>
         /// <param name="userHash">The user hash.</param>
         /// <param name="weeklySchedule">The schedule.</param>
-        public ScheduledUserAccess(Guid accessPointId, UserHash userHash, IWeeklySchedule weeklySchedule)
-            :base(accessPointId, userHash)
+        public ScheduledUserAccess(Guid accessPointId, UserHash userHash, WeeklySchedule weeklySchedule)
+            : base(accessPointId, userHash)
         {
             Contract.Requires(weeklySchedule != null);
             WeeklySchedule = weeklySchedule;
         }
-        
+
         /// <summary>
-        /// Gets the schedule.
+        ///     Gets the schedule.
         /// </summary>
         /// <value>
-        /// The schedule.
+        ///     The schedule.
         /// </value>
-        public IWeeklySchedule WeeklySchedule { get; }
+        public WeeklySchedule WeeklySchedule { get; }
 
         /// <summary>
         ///     Determines whether the specified user hash is allowed.

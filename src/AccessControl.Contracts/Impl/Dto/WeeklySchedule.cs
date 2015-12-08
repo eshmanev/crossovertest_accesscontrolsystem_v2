@@ -14,7 +14,7 @@ namespace AccessControl.Contracts.Impl.Dto
         /// <param name="timeZone">The time zone.</param>
         public WeeklySchedule(string timeZone)
         {
-            Contract.Requires(TimeZoneInfo.GetSystemTimeZones().Any(x => x.Id == timeZone));
+            Contract.Ensures(TimeZoneInfo.FindSystemTimeZoneById(timeZone) != null);
             TimeZone = timeZone;
             DailyTimeRange = new Dictionary<DayOfWeek, ITimeRange>();
         }

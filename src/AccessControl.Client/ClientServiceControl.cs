@@ -22,7 +22,7 @@ namespace AccessControl.Client
 {
     public class ClientServiceControl : BusServiceControl
     {
-        private readonly Timer _timer = new Timer(TimeSpan.FromMinutes(30).TotalMilliseconds);
+        private readonly Timer _timer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds);
         private readonly IRequestClient<Ping, Ping> _ping;
         private readonly IBusControl _busControl;
         private readonly IUnityContainer _container;
