@@ -104,7 +104,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public async Task Consume(ConsumeContext<IDenyUserGroupAccess> context)
         {
             var strategy = new PermanentGroupAccessStrategy(_databaseContext, _findUserGroupRequest, _listUsersInGroupRequest, context.Message.UserGroupName);
-            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
+            var response = await _accessRightsManager.DenyAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
         }
 
@@ -141,7 +141,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public async Task Consume(ConsumeContext<IRemoveUserSchedule> context)
         {
             var strategy = new ScheduledUserAccessStrategy(_databaseContext, _findUserRequest, context.Message.UserName);
-            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
+            var response = await _accessRightsManager.DenyAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
         }
 
@@ -153,7 +153,7 @@ namespace AccessControl.Service.AccessPoint.Consumers
         public async Task Consume(ConsumeContext<IRemoveGroupSchedule> context)
         {
             var strategy = new ScheduledGroupAccessStrategy(_databaseContext, _findUserGroupRequest, _listUsersInGroupRequest, context.Message.UserGroupName);
-            var response = await _accessRightsManager.AllowAccess(context.Message.AccessPointId, strategy);
+            var response = await _accessRightsManager.DenyAccess(context.Message.AccessPointId, strategy);
             await context.RespondAsync(response);
         }
 

@@ -114,7 +114,7 @@ namespace AccessControl.Service.AccessPoint.Services
         /// <returns></returns>
         public AccessRuleBase FindAccessRule(AccessRightsBase accessRights, Data.Entities.AccessPoint accessPoint)
         {
-            return accessRights.AccessRules.OfType<PermanentAccessRule>().FirstOrDefault(x => x.AccessPoint == accessPoint);
+            return accessRights.AccessRules.OfType<T>().FirstOrDefault(x => x.AccessPoint == accessPoint);
         }
 
         /// <summary>
